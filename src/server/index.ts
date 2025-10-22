@@ -7,6 +7,8 @@ import { posRouter } from './routers/pos'
 import { inventoryRouter } from './routers/inventory'
 import { supplierRouter } from './routers/supplier'
 import { memberRouter } from './routers/member'
+import { activityRouter } from './routers/activity'
+import { reportRouter } from './routers/report'
 
 export const appRouter = router({
   health: healthRouter,
@@ -17,6 +19,8 @@ export const appRouter = router({
   inventory: inventoryRouter,
   supplier: supplierRouter,
   member: memberRouter,
+  activity: activityRouter,
+  report: reportRouter,
 })
 
 export type AppRouter = typeof appRouter
