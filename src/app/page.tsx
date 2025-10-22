@@ -9,20 +9,16 @@ export default function Home() {
   const { data, isLoading, error } = trpc.health.check.useQuery()
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 flex items-center justify-center p-4">
-      <div className="max-w-4xl w-full space-y-8">
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 to-green-50 p-4">
+      <div className="w-full max-w-4xl space-y-8">
         {/* Header */}
-        <div className="text-center space-y-4">
-          <h1 className="text-5xl font-bold text-gray-900">
-            🏗️ Web Koperasi UM Bandung
-          </h1>
-          <p className="text-xl text-gray-600">
-            Full Rebuild Project - Foundation Setup Complete
-          </p>
+        <div className="space-y-4 text-center">
+          <h1 className="text-5xl font-bold text-gray-900">🏗️ Web Koperasi UM Bandung</h1>
+          <p className="text-xl text-gray-600">Full Rebuild Project - Foundation Setup Complete</p>
         </div>
 
         {/* Status Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
           {/* Next.js */}
           <Card className="border-2 border-green-200 bg-white">
             <CardHeader className="pb-3">
@@ -116,18 +112,18 @@ export default function Home() {
               </div>
             )}
             {error && (
-              <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
-                <p className="text-red-700 font-medium">⚠️ API Error</p>
-                <p className="text-sm text-red-600 mt-1">{error.message}</p>
+              <div className="rounded-lg border border-red-200 bg-red-50 p-4">
+                <p className="font-medium text-red-700">⚠️ API Error</p>
+                <p className="mt-1 text-sm text-red-600">{error.message}</p>
               </div>
             )}
             {data && (
               <div className="space-y-3">
-                <div className="flex items-center gap-2 text-green-700 font-medium">
+                <div className="flex items-center gap-2 font-medium text-green-700">
                   <CheckCircle2 className="h-5 w-5" />
                   <span>API is running successfully!</span>
                 </div>
-                <div className="p-4 bg-gray-50 rounded-lg font-mono text-sm">
+                <div className="rounded-lg bg-gray-50 p-4 font-mono text-sm">
                   <pre>{JSON.stringify(data, null, 2)}</pre>
                 </div>
               </div>
@@ -136,7 +132,7 @@ export default function Home() {
         </Card>
 
         {/* Next Steps */}
-        <Card className="bg-gradient-to-br from-purple-50 to-pink-50 border-2 border-purple-200">
+        <Card className="border-2 border-purple-200 bg-gradient-to-br from-purple-50 to-pink-50">
           <CardHeader>
             <CardTitle className="text-purple-900">🎯 Next Steps</CardTitle>
           </CardHeader>
@@ -150,11 +146,12 @@ export default function Home() {
         </Card>
 
         {/* Action Buttons */}
-        <div className="flex gap-4 justify-center flex-wrap">
+        <div className="flex flex-wrap justify-center gap-4">
+          <Button size="lg" className="bg-purple-600 hover:bg-purple-700" asChild>
+            <a href="/login">🔐 Test Login System</a>
+          </Button>
           <Button size="lg" className="bg-green-600 hover:bg-green-700" asChild>
-            <a href="/test/products">
-              🛍️ Test Products API
-            </a>
+            <a href="/test/products">🛍️ Test Products API</a>
           </Button>
           <Button size="lg" className="bg-blue-600 hover:bg-blue-700">
             View Documentation
