@@ -15,12 +15,12 @@ export default function ProductsTestPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 p-4">
-      <div className="max-w-6xl mx-auto space-y-6">
+      <div className="mx-auto max-w-6xl space-y-6">
         {/* Header */}
         <div className="flex items-center gap-4">
           <Link href="/">
             <Button variant="outline" size="sm">
-              <ArrowLeft className="h-4 w-4 mr-2" />
+              <ArrowLeft className="mr-2 h-4 w-4" />
               Back to Home
             </Button>
           </Link>
@@ -31,7 +31,7 @@ export default function ProductsTestPage() {
         </div>
 
         {/* Statistics Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
           <Card className="border-2 border-blue-200">
             <CardHeader className="pb-3">
               <CardTitle className="text-sm text-gray-600">Total Products</CardTitle>
@@ -60,7 +60,7 @@ export default function ProductsTestPage() {
 
           <Card className="border-2 border-orange-200">
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm text-gray-600 flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2 text-sm text-gray-600">
                 <TrendingDown className="h-4 w-4" />
                 Low Stock
               </CardTitle>
@@ -103,22 +103,21 @@ export default function ProductsTestPage() {
                 <span className="ml-2 text-gray-600">Loading products...</span>
               </div>
             ) : productsData?.products.length === 0 ? (
-              <div className="text-center py-8 text-gray-500">
-                No products found
-              </div>
+              <div className="py-8 text-center text-gray-500">No products found</div>
             ) : (
               <div className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+                  {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                   {productsData?.products.map((product: any) => (
                     <Card key={product.id} className="border border-gray-200">
                       <CardHeader className="pb-3">
                         <div className="flex items-start justify-between">
                           <div>
                             <CardTitle className="text-base">{product.name}</CardTitle>
-                            <p className="text-xs text-gray-500 mt-1">{product.sku}</p>
+                            <p className="mt-1 text-xs text-gray-500">{product.sku}</p>
                           </div>
                           {product.stock <= product.min_stock && (
-                            <span className="bg-orange-100 text-orange-700 text-xs px-2 py-1 rounded">
+                            <span className="rounded bg-orange-100 px-2 py-1 text-xs text-orange-700">
                               Low Stock
                             </span>
                           )}
@@ -135,16 +134,22 @@ export default function ProductsTestPage() {
                         </div>
                         <div className="flex justify-between text-sm">
                           <span className="text-gray-600">Stock:</span>
-                          <span className={`font-bold ${
-                            product.stock <= product.min_stock ? 'text-orange-600' : 'text-green-600'
-                          }`}>
+                          <span
+                            className={`font-bold ${
+                              product.stock <= product.min_stock
+                                ? 'text-orange-600'
+                                : 'text-green-600'
+                            }`}
+                          >
                             {product.stock} units
                           </span>
                         </div>
-                        <div className="pt-2 border-t space-y-1">
+                        <div className="space-y-1 border-t pt-2">
                           <div className="flex justify-between text-sm">
                             <span className="text-gray-600">Purchase:</span>
-                            <span className="font-medium">Rp {product.purchase_price.toString()}</span>
+                            <span className="font-medium">
+                              Rp {product.purchase_price.toString()}
+                            </span>
                           </div>
                           <div className="flex justify-between text-sm">
                             <span className="text-gray-600">Selling:</span>
@@ -159,8 +164,9 @@ export default function ProductsTestPage() {
                 </div>
 
                 {/* Pagination Info */}
-                <div className="pt-4 border-t text-center text-sm text-gray-600">
-                  Showing {productsData?.products.length} of {productsData?.pagination.total} products
+                <div className="border-t pt-4 text-center text-sm text-gray-600">
+                  Showing {productsData?.products.length} of {productsData?.pagination.total}{' '}
+                  products
                 </div>
               </div>
             )}
@@ -173,7 +179,7 @@ export default function ProductsTestPage() {
             <CardTitle className="text-sm">🔍 Raw API Response</CardTitle>
           </CardHeader>
           <CardContent>
-            <pre className="text-xs overflow-auto max-h-60 bg-white p-4 rounded border">
+            <pre className="max-h-60 overflow-auto rounded border bg-white p-4 text-xs">
               {JSON.stringify(productsData, null, 2)}
             </pre>
           </CardContent>

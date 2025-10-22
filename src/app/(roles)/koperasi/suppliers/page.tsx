@@ -4,6 +4,9 @@ import { useState } from 'react'
 import { trpc } from '@/lib/trpc'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { PageContainer } from '@/components/shared/PageContainer'
+import { PageHeader } from '@/components/shared/PageHeader'
+import { MetricCard } from '@/components/shared/MetricCard'
 import { Plus, Search, Edit, Trash2, Users, Building2, Package, X, Phone, Mail } from 'lucide-react'
 
 type SupplierFormData = {
@@ -106,54 +109,48 @@ export default function SuppliersPage() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Manajemen Supplier</h1>
-        <Button onClick={() => setShowForm(true)} className="bg-green-600 hover:bg-green-700">
-          <Plus className="mr-2 h-4 w-4" />
-          Tambah Supplier
-        </Button>
-      </div>
+    <PageContainer>
+      <PageHeader
+        title="Manajemen Supplier"
+        subtitle="Kelola data supplier dan mitra koperasi"
+        action={
+          <Button onClick={() => setShowForm(true)} className="bg-green-600 hover:bg-green-700">
+            <Plus className="mr-2 h-4 w-4" />
+            Tambah Supplier
+          </Button>
+        }
+      />
 
       {/* Statistics Cards */}
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Total Supplier</CardTitle>
-            <Building2 className="h-4 w-4 text-gray-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats?.totalSuppliers || 0}</div>
-            <p className="mt-1 text-xs text-gray-500">{stats?.activeSuppliers || 0} Aktif</p>
-          </CardContent>
-        </Card>
+      <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <MetricCard
+          title="TOTAL SUPPLIER"
+          value={stats?.totalSuppliers || 0}
+          subtitle={`${stats?.activeSuppliers || 0} Supplier Aktif`}
+          icon={Building2}
+          variant="blue"
+        />
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Total Produk</CardTitle>
-            <Package className="h-4 w-4 text-gray-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats?.totalProducts || 0}</div>
-            <p className="mt-1 text-xs text-gray-500">Dari semua supplier</p>
-          </CardContent>
-        </Card>
+        <MetricCard
+          title="TOTAL PRODUK"
+          value={stats?.totalProducts || 0}
+          subtitle="Dari semua supplier"
+          icon={Package}
+          variant="green"
+        />
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Supplier Aktif</CardTitle>
-            <Users className="h-4 w-4 text-gray-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats?.activeSuppliers || 0}</div>
-            <p className="mt-1 text-xs text-gray-500">Supplier yang beroperasi</p>
-          </CardContent>
-        </Card>
+        <MetricCard
+          title="SUPPLIER AKTIF"
+          value={stats?.activeSuppliers || 0}
+          subtitle="Supplier dengan status aktif"
+          icon={Users}
+          variant="purple"
+        />
       </div>
 
       {/* Top Suppliers */}
       {stats?.topSuppliers && stats.topSuppliers.length > 0 && (
-        <Card>
+        <Card className="mb-6">
           <CardHeader>
             <CardTitle className="text-lg">Top 5 Supplier (Berdasarkan Jumlah Produk)</CardTitle>
           </CardHeader>
@@ -404,6 +401,6 @@ export default function SuppliersPage() {
           </Card>
         </div>
       )}
-    </div>
+    </PageContainer>
   )
 }

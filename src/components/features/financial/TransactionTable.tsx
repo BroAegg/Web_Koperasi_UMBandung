@@ -14,7 +14,8 @@ import {
 import { Download, Search, ChevronLeft, ChevronRight, Edit, Trash2 } from 'lucide-react'
 
 interface TransactionTableProps {
-  transactions: Transaction[]
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  transactions: any[]
   pagination: {
     total: number
     page: number

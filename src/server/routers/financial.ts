@@ -94,13 +94,13 @@ export const financialRouter = router({
         supplier: {
           select: {
             id: true,
-            businessName: true,
+            business_name: true,
           },
         },
         createdBy: {
           select: {
             id: true,
-            name: true,
+            full_name: true,
             role: true,
           },
         },
@@ -209,13 +209,13 @@ export const financialRouter = router({
           supplier: {
             select: {
               id: true,
-              businessName: true,
+              business_name: true,
             },
           },
           createdBy: {
             select: {
               id: true,
-              name: true,
+              full_name: true,
               role: true,
             },
           },
@@ -337,7 +337,7 @@ export const financialRouter = router({
           createdBy: {
             select: {
               id: true,
-              name: true,
+              full_name: true,
               role: true,
             },
           },
@@ -348,16 +348,11 @@ export const financialRouter = router({
       await prisma.activityLog.create({
         data: {
           user_id: userId,
-          user_role: ctx.user.role,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          role: ctx.user.role as any,
           action: 'CREATE',
           module: 'FINANCIAL',
           description: `Created transaction: ${input.description} - Rp ${input.amount.toLocaleString('id-ID')}`,
-          metadata: JSON.stringify({
-            transactionId: transaction.id,
-            type: input.type,
-            category: input.category,
-            amount: input.amount,
-          }),
         },
       })
 
@@ -397,7 +392,7 @@ export const financialRouter = router({
           createdBy: {
             select: {
               id: true,
-              name: true,
+              full_name: true,
               role: true,
             },
           },
@@ -408,14 +403,11 @@ export const financialRouter = router({
       await prisma.activityLog.create({
         data: {
           user_id: ctx.user.userId,
-          user_role: ctx.user.role,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          role: ctx.user.role as any,
           action: 'UPDATE',
           module: 'FINANCIAL',
           description: `Updated transaction: ${transaction.description}`,
-          metadata: JSON.stringify({
-            transactionId: id,
-            changes: data,
-          }),
         },
       })
 
@@ -459,13 +451,11 @@ export const financialRouter = router({
       await prisma.activityLog.create({
         data: {
           user_id: ctx.user.userId,
-          user_role: ctx.user.role,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          role: ctx.user.role as any,
           action: 'DELETE',
           module: 'FINANCIAL',
           description: `Deleted transaction: ${existingTransaction.description}`,
-          metadata: JSON.stringify({
-            transactionId: id,
-          }),
         },
       })
 

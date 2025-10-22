@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { trpc } from '@/lib/trpc'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Search, Activity, Filter } from 'lucide-react'
+import { Activity, Filter } from 'lucide-react'
 
 export default function ActivityPage() {
   const [moduleFilter, setModuleFilter] = useState('')

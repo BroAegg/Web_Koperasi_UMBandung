@@ -4,6 +4,9 @@ import { useState } from 'react'
 import { trpc } from '@/lib/trpc'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { PageContainer } from '@/components/shared/PageContainer'
+import { PageHeader } from '@/components/shared/PageHeader'
+import { MetricCard } from '@/components/shared/MetricCard'
 import {
   Package,
   Plus,
@@ -15,8 +18,6 @@ import {
   Box,
   DollarSign,
   X,
-  ArrowUp,
-  ArrowDown,
 } from 'lucide-react'
 
 type ProductFormData = {
@@ -165,68 +166,66 @@ export default function InventoryPage() {
     })
   }
 
+  const formatCurrency = (value: number) => {
+    return new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(value)
+  }
+
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Manajemen Inventori</h1>
-        <Button onClick={() => setShowForm(true)} className="bg-green-600 hover:bg-green-700">
-          <Plus className="mr-2 h-4 w-4" />
-          Tambah Produk
-        </Button>
-      </div>
+    <PageContainer>
+      <PageHeader
+        title="Manajemen Inventori"
+        subtitle="Kelola stok dan produk koperasi"
+        action={
+          <Button onClick={() => setShowForm(true)} className="bg-green-600 hover:bg-green-700">
+            <Plus className="mr-2 h-4 w-4" />
+            Tambah Produk
+          </Button>
+        }
+      />
 
       {/* Statistics Cards */}
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Total Produk</CardTitle>
-            <Package className="h-4 w-4 text-gray-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats?.totalProducts || 0}</div>
-            <p className="mt-1 text-xs text-gray-500">{stats?.activeProducts || 0} Aktif</p>
-          </CardContent>
-        </Card>
+      <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <MetricCard
+          title="TOTAL PRODUK"
+          value={stats?.totalProducts || 0}
+          subtitle={`${stats?.activeProducts || 0} Produk Aktif`}
+          icon={Package}
+          variant="green"
+        />
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Total Stok</CardTitle>
-            <Box className="h-4 w-4 text-gray-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats?.totalStock || 0}</div>
-            <p className="mt-1 text-xs text-gray-500">Unit</p>
-          </CardContent>
-        </Card>
+        <MetricCard
+          title="TOTAL STOK"
+          value={stats?.totalStock || 0}
+          subtitle="Unit tersedia"
+          icon={Box}
+          variant="blue"
+        />
 
-        <Card className="border-yellow-200">
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-yellow-700">Stok Menipis</CardTitle>
-            <AlertTriangle className="h-4 w-4 text-yellow-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-yellow-700">{stats?.lowStockProducts || 0}</div>
-            <p className="mt-1 text-xs text-yellow-600">Perlu Restock</p>
-          </CardContent>
-        </Card>
+        <MetricCard
+          title="STOK MENIPIS"
+          value={stats?.lowStockProducts || 0}
+          subtitle="Perlu restock"
+          icon={AlertTriangle}
+          variant="orange"
+        />
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Nilai Inventori</CardTitle>
-            <DollarSign className="h-4 w-4 text-gray-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              Rp {(stats?.inventoryValue || 0).toLocaleString('id-ID')}
-            </div>
-            <p className="mt-1 text-xs text-gray-500">Total Nilai</p>
-          </CardContent>
-        </Card>
+        <MetricCard
+          title="NILAI INVENTORI"
+          value={formatCurrency(Number(stats?.inventoryValue) || 0)}
+          subtitle="Total nilai stok"
+          icon={DollarSign}
+          variant="purple"
+        />
       </div>
 
       {/* Low Stock Alerts */}
       {lowStockAlerts && lowStockAlerts.length > 0 && (
-        <Card className="border-yellow-200 bg-yellow-50">
+        <Card className="mb-6 border-yellow-200 bg-yellow-50">
           <CardHeader>
             <CardTitle className="flex items-center text-lg text-yellow-700">
               <AlertTriangle className="mr-2 h-5 w-5" />
@@ -635,6 +634,6 @@ export default function InventoryPage() {
           </Card>
         </div>
       )}
-    </div>
+    </PageContainer>
   )
 }
