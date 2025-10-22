@@ -1,7 +1,17 @@
-import { PrismaClient, Role } from '@prisma/client'
+import { PrismaClient } from '@prisma/client'
 import * as bcrypt from 'bcryptjs'
 
 const prisma = new PrismaClient()
+
+// Enums
+const Role = {
+  DEVELOPER: 'DEVELOPER',
+  SUPER_ADMIN: 'SUPER_ADMIN',
+  ADMIN: 'ADMIN',
+  KASIR: 'KASIR',
+  STAFF: 'STAFF',
+  SUPPLIER: 'SUPPLIER',
+} as const
 
 async function main() {
   console.log('🌱 Starting database seed...')
@@ -24,7 +34,7 @@ async function main() {
   console.log('👥 Creating users...')
   const hashedPassword = await bcrypt.hash('password123', 10)
 
-  const developer = await prisma.user.create({
+  await prisma.user.create({
     data: {
       username: 'developer',
       email: 'developer@umbandung.com',
@@ -35,7 +45,7 @@ async function main() {
     },
   })
 
-  const superAdmin = await prisma.user.create({
+  await prisma.user.create({
     data: {
       username: 'superadmin',
       email: 'superadmin@umbandung.com',
@@ -191,12 +201,75 @@ async function main() {
   ])
   console.log(`✅ Created ${products.length} products`)
 
+  // Create transactions
+  console.log('💰 Creating transactions...')
+  const transactions = await Promise.all([
+    prisma.transaction.create({
+      data: {
+        type: 'CASH_IN',
+        category: 'SALES',
+        amount: 150000,
+        payment_method: 'CASH',
+        description: 'Penjualan ATK ke pelanggan',
+        notes: 'Penjualan tunai di toko',
+        created_by_id: kasir.id,
+      },
+    }),
+    prisma.transaction.create({
+      data: {
+        type: 'CASH_OUT',
+        category: 'PURCHASE',
+        amount: 75000,
+        payment_method: 'CASH',
+        description: 'Pembelian alat tulis dari supplier',
+        supplier_id: suppliers[0].id,
+        notes: 'Restok barang',
+        created_by_id: admin.id,
+      },
+    }),
+    prisma.transaction.create({
+      data: {
+        type: 'CASH_IN',
+        category: 'SALES',
+        amount: 50000,
+        payment_method: 'BANK_TRANSFER',
+        description: 'Penjualan pulpen',
+        notes: 'Transfer dari Bu Siti',
+        created_by_id: kasir.id,
+      },
+    }),
+    prisma.transaction.create({
+      data: {
+        type: 'CASH_OUT',
+        category: 'OPERATIONAL',
+        amount: 25000,
+        payment_method: 'CASH',
+        description: 'Biaya listrik toko',
+        notes: 'Bulan Oktober 2025',
+        created_by_id: admin.id,
+      },
+    }),
+    prisma.transaction.create({
+      data: {
+        type: 'CASH_IN',
+        category: 'MEMBER_DEPOSIT',
+        amount: 100000,
+        payment_method: 'CASH',
+        description: 'Simpanan pokok anggota',
+        notes: 'Anggota baru: Pak Ahmad',
+        created_by_id: kasir.id,
+      },
+    }),
+  ])
+  console.log(`✅ Created ${transactions.length} transactions`)
+
   console.log('✨ Seed completed successfully!')
   console.log('\n📋 Summary:')
   console.log(`   Users: 4 (developer, superadmin, admin, kasir)`)
   console.log(`   Categories: ${categories.length}`)
   console.log(`   Suppliers: ${suppliers.length}`)
   console.log(`   Products: ${products.length}`)
+  console.log(`   Transactions: ${transactions.length}`)
   console.log('\n🔑 Default credentials:')
   console.log(`   Username: developer | Password: password123`)
   console.log(`   Username: superadmin | Password: password123`)
