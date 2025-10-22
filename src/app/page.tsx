@@ -150,7 +150,12 @@ export default function Home() {
         </Card>
 
         {/* Action Buttons */}
-        <div className="flex gap-4 justify-center">
+        <div className="flex gap-4 justify-center flex-wrap">
+          <Button size="lg" className="bg-green-600 hover:bg-green-700" asChild>
+            <a href="/test/products">
+              🛍️ Test Products API
+            </a>
+          </Button>
           <Button size="lg" className="bg-blue-600 hover:bg-blue-700">
             View Documentation
           </Button>
