@@ -1,10 +1,10 @@
 'use client'
 
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { trpc } from '@/lib/trpc'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { ShoppingCart, Plus, Minus, Trash2, CreditCard, Search, X } from 'lucide-react'
+import { ShoppingCart, Plus, Minus, Trash2, CreditCard, Search, X, History, Receipt } from 'lucide-react'
 
 type CartItem = {
   product_id: string
@@ -18,6 +18,7 @@ type CartItem = {
 type PaymentMethod = 'CASH' | 'BANK_TRANSFER' | 'E_WALLET' | 'OTHER'
 
 export default function POSPage() {
+  const [activeTab, setActiveTab] = useState<'kasir' | 'riwayat'>('kasir')
   const [cart, setCart] = useState<CartItem[]>([])
   const [searchQuery, setSearchQuery] = useState('')
   const [showPayment, setShowPayment] = useState(false)
@@ -36,6 +37,15 @@ export default function POSPage() {
     limit: 50,
   })
 
+  // Get today's orders
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  const { data: ordersData, refetch: refetchOrders } = trpc.pos.getOrders.useQuery({
+    startDate: today,
+    page: 1,
+    limit: 20,
+  })
+
   const createOrderMutation = trpc.pos.createOrder.useMutation({
     onSuccess: (order) => {
       setLastOrder(order)
@@ -45,6 +55,9 @@ export default function POSPage() {
       setDiscount(0)
       setShowPayment(false)
       setShowReceipt(true)
+      // Switch to history tab and refetch
+      setActiveTab('riwayat')
+      refetchOrders()
     },
   })
 
@@ -68,9 +81,9 @@ export default function POSPage() {
           product_id: product.id,
           name: product.name,
           sku: product.sku,
-          price: product.selling_price,
+          price: Number(product.selling_price),
           quantity: 1,
-          stock: product.stock,
+          stock: Number(product.stock),
         },
       ])
     }
@@ -124,13 +137,13 @@ export default function POSPage() {
       customer_name: customerName || undefined,
       items: cart.map((item) => ({
         product_id: item.product_id,
-        quantity: item.quantity,
-        price: item.price,
+        quantity: Number(item.quantity),
+        price: Number(item.price),
       })),
       payment_method: paymentMethod,
-      payment_amount: paymentAmount,
-      discount,
-      tax,
+      payment_amount: Number(paymentAmount),
+      discount: Number(discount) || 0,
+      tax: Number(tax) || 0,
     })
   }
 
@@ -142,14 +155,36 @@ export default function POSPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Point of Sale (POS)</h1>
-        <div className="flex gap-2">
-          <Button variant="outline">
-            <ShoppingCart className="mr-2 h-4 w-4" />
-            Riwayat Penjualan
-          </Button>
-        </div>
       </div>
 
+      {/* Tabs */}
+      <div className="flex gap-2 border-b">
+        <button
+          onClick={() => setActiveTab('kasir')}
+          className={`flex items-center gap-2 px-4 py-2 font-medium transition-colors ${
+            activeTab === 'kasir'
+              ? 'border-b-2 border-green-600 text-green-600'
+              : 'text-gray-600 hover:text-gray-900'
+          }`}
+        >
+          <ShoppingCart className="h-4 w-4" />
+          Kasir
+        </button>
+        <button
+          onClick={() => setActiveTab('riwayat')}
+          className={`flex items-center gap-2 px-4 py-2 font-medium transition-colors ${
+            activeTab === 'riwayat'
+              ? 'border-b-2 border-green-600 text-green-600'
+              : 'text-gray-600 hover:text-gray-900'
+          }`}
+        >
+          <History className="h-4 w-4" />
+          Riwayat Hari Ini
+        </button>
+      </div>
+
+      {/* Tab Content - Kasir */}
+      {activeTab === 'kasir' && (
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         {/* Products Section */}
         <div className="space-y-4 lg:col-span-2">
@@ -293,6 +328,81 @@ export default function POSPage() {
           </Card>
         </div>
       </div>
+      )}
+
+      {/* Tab Content - Riwayat Hari Ini */}
+      {activeTab === 'riwayat' && (
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-xl font-semibold">Riwayat Penjualan Hari Ini</h2>
+            <div className="text-sm text-gray-600">
+              Total: {ordersData?.pagination.total || 0} transaksi
+            </div>
+          </div>
+
+          {/* Orders List */}
+          <div className="grid gap-4">
+            {ordersData?.orders && ordersData.orders.length > 0 ? (
+              ordersData.orders.map((order: any) => (
+                <Card key={order.id} className="hover:shadow-md transition-shadow">
+                  <CardContent className="p-4">
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className="font-mono font-semibold">{order.order_number}</span>
+                          <span className={`text-xs px-2 py-1 rounded-full ${
+                            order.status === 'COMPLETED' ? 'bg-green-100 text-green-700' :
+                            order.status === 'CANCELLED' ? 'bg-red-100 text-red-700' :
+                            'bg-yellow-100 text-yellow-700'
+                          }`}>
+                            {order.status}
+                          </span>
+                        </div>
+                        <p className="text-sm text-gray-600 mb-1">
+                          {new Date(order.created_at).toLocaleString('id-ID')}
+                        </p>
+                        {order.customer_name && (
+                          <p className="text-sm text-gray-600 mb-2">
+                            Pelanggan: {order.customer_name}
+                          </p>
+                        )}
+                        <div className="text-sm text-gray-700">
+                          {order.items.length} item • {order.payment_method}
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-lg font-bold text-green-600">
+                          Rp {Number(order.total).toLocaleString('id-ID')}
+                        </p>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="mt-2"
+                          onClick={() => {
+                            setLastOrder(order)
+                            setShowReceipt(true)
+                          }}
+                        >
+                          <Receipt className="mr-1 h-3 w-3" />
+                          Lihat Struk
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))
+            ) : (
+              <Card>
+                <CardContent className="py-12 text-center text-gray-400">
+                  <Receipt className="mx-auto mb-3 h-16 w-16 opacity-50" />
+                  <p className="text-lg font-medium">Belum ada transaksi hari ini</p>
+                  <p className="text-sm">Transaksi akan muncul di sini setelah checkout</p>
+                </CardContent>
+              </Card>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Payment Modal */}
       {showPayment && (
@@ -421,6 +531,7 @@ export default function POSPage() {
               </div>
 
               <div className="space-y-2">
+                {/* Map through order items */}
                 {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                 {lastOrder.items.map((item: any) => (
                   <div key={item.id} className="flex justify-between text-sm">

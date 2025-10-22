@@ -2,7 +2,6 @@ import { z } from 'zod'
 import { router, protectedProcedure } from '../trpc'
 import { prisma } from '@/lib/db'
 import { TRPCError } from '@trpc/server'
-import type { Prisma } from '@prisma/client'
 
 // Zod Schemas
 const getProductsSchema = z.object({
@@ -101,19 +100,62 @@ export const posRouter = router({
   createOrder: protectedProcedure.input(createOrderSchema).mutation(async ({ input, ctx }) => {
     const userId = ctx.user.userId
 
+    // Validate items
+    if (!input.items || input.items.length === 0) {
+      throw new TRPCError({
+        code: 'BAD_REQUEST',
+        message: 'Cart is empty. Please add items to cart.',
+      })
+    }
+
+    // Check stock availability BEFORE creating order
+    for (const item of input.items) {
+      const product = await prisma.product.findUnique({
+        where: { id: item.product_id },
+      })
+
+      if (!product) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: `Product not found`,
+        })
+      }
+
+      if (product.deleted_at) {
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: `Product "${product.name}" is no longer available`,
+        })
+      }
+
+      if (!product.is_active) {
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: `Product "${product.name}" is not active`,
+        })
+      }
+
+      if (product.stock < item.quantity) {
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: `Insufficient stock for "${product.name}". Available: ${product.stock}, Requested: ${item.quantity}`,
+        })
+      }
+    }
+
     // Calculate totals
     let subtotal = 0
     for (const item of input.items) {
-      subtotal += item.price * item.quantity
+      subtotal += Number(item.price) * Number(item.quantity)
     }
 
-    const total = subtotal - input.discount + input.tax
-    const change = input.payment_amount - total
+    const total = subtotal - Number(input.discount) + Number(input.tax)
+    const change = Number(input.payment_amount) - total
 
     if (change < 0) {
       throw new TRPCError({
         code: 'BAD_REQUEST',
-        message: 'Payment amount is insufficient',
+        message: `Payment insufficient. Total: Rp ${total.toLocaleString('id-ID')}, Payment: Rp ${input.payment_amount.toLocaleString('id-ID')}`,
       })
     }
 
@@ -122,7 +164,8 @@ export const posRouter = router({
     const orderNumber = `ORD-${new Date().getFullYear()}${String(new Date().getMonth() + 1).padStart(2, '0')}${String(new Date().getDate()).padStart(2, '0')}-${String(orderCount + 1).padStart(4, '0')}`
 
     // Create order with items in transaction
-    const order = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const order = await prisma.$transaction(async (tx: any) => {
       // Create order
       const newOrder = await tx.order.create({
         data: {
@@ -214,7 +257,8 @@ export const posRouter = router({
     await prisma.activityLog.create({
       data: {
         user_id: userId,
-        role: ctx.user.role,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        role: ctx.user.role as any,
         action: 'CREATE',
         module: 'POS',
         description: `Created order ${orderNumber} - Rp ${total.toLocaleString('id-ID')}`,
@@ -377,27 +421,25 @@ export const posRouter = router({
         take: 5,
       })
 
+      // Get top products with details
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const topProductsWithDetails = await Promise.all(
-        topProducts.map(
-          async (item: {
-            product_id: string
-            _sum: { quantity: number | null; subtotal: number | null }
-          }) => {
-            const product = await prisma.product.findUnique({
-              where: { id: item.product_id },
-              select: {
-                id: true,
-                name: true,
-                sku: true,
-              },
-            })
-            return {
-              ...product,
-              totalQuantity: item._sum.quantity || 0,
-              totalRevenue: item._sum.subtotal || 0,
-            }
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        topProducts.map(async (item: any) => {
+          const product = await prisma.product.findUnique({
+            where: { id: item.product_id },
+            select: {
+              id: true,
+              name: true,
+              sku: true,
+            },
+          })
+          return {
+            ...product,
+            totalQuantity: item._sum.quantity || 0,
+            totalRevenue: Number(item._sum.subtotal) || 0,
           }
-        )
+        })
       )
 
       return {
@@ -436,7 +478,8 @@ export const posRouter = router({
       }
 
       // Update order and restore stock
-      await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      await prisma.$transaction(async (tx: any) => {
         // Update order status
         await tx.order.update({
           where: { id },
@@ -473,7 +516,8 @@ export const posRouter = router({
       await prisma.activityLog.create({
         data: {
           user_id: ctx.user.userId,
-          role: ctx.user.role,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          role: ctx.user.role as any,
           action: 'UPDATE',
           module: 'POS',
           description: `Cancelled order ${order.order_number}${reason ? `: ${reason}` : ''}`,

@@ -70,9 +70,9 @@ export const inventoryRouter = router({
 
     if (search) {
       where.OR = [
-        { name: { contains: search, mode: 'insensitive' } },
-        { sku: { contains: search, mode: 'insensitive' } },
-        { description: { contains: search, mode: 'insensitive' } },
+        { name: { contains: search } },
+        { sku: { contains: search } },
+        { description: { contains: search } },
       ]
     }
 
@@ -186,10 +186,7 @@ export const inventoryRouter = router({
     }
 
     const product = await prisma.product.create({
-      data: {
-        ...input,
-        created_by: ctx.user.userId,
-      },
+      data: input,
       include: {
         category: true,
         supplier: true,
@@ -200,7 +197,8 @@ export const inventoryRouter = router({
     await prisma.activityLog.create({
       data: {
         user_id: ctx.user.userId,
-        role: ctx.user.role,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        role: ctx.user.role as any,
         action: 'CREATE',
         module: 'INVENTORY',
         description: `Created product ${input.name} (${input.sku})`,
@@ -260,7 +258,8 @@ export const inventoryRouter = router({
     await prisma.activityLog.create({
       data: {
         user_id: ctx.user.userId,
-        role: ctx.user.role,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        role: ctx.user.role as any,
         action: 'UPDATE',
         module: 'INVENTORY',
         description: `Updated product ${product.name} (${product.sku})`,
@@ -296,7 +295,8 @@ export const inventoryRouter = router({
       await prisma.activityLog.create({
         data: {
           user_id: ctx.user.userId,
-          role: ctx.user.role,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          role: ctx.user.role as any,
           action: 'DELETE',
           module: 'INVENTORY',
           description: `Deleted product ${product.name} (${product.sku})`,
@@ -368,7 +368,8 @@ export const inventoryRouter = router({
       await prisma.activityLog.create({
         data: {
           user_id: ctx.user.userId,
-          role: ctx.user.role,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          role: ctx.user.role as any,
           action: 'CREATE',
           module: 'INVENTORY',
           description: `Stock ${type} for ${product.name}: ${quantity} units`,
@@ -504,8 +505,11 @@ export const inventoryRouter = router({
       },
     })
 
+    // Calculate inventory value
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const inventoryValue = products.reduce(
-      (sum: number, p: { stock: number; purchase_price: number }) =>
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (sum: number, p: any) =>
         sum + p.stock * Number(p.purchase_price),
       0
     )

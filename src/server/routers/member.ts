@@ -45,7 +45,8 @@ export const memberRouter = router({
     await prisma.activityLog.create({
       data: {
         user_id: ctx.user.userId,
-        role: ctx.user.role,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        role: ctx.user.role as any,
         action: 'CREATE',
         module: 'MEMBER',
         description: `Recorded deposit for ${input.member_name}: Rp ${input.amount.toLocaleString('id-ID')}`,
@@ -75,7 +76,8 @@ export const memberRouter = router({
       await prisma.activityLog.create({
         data: {
           user_id: ctx.user.userId,
-          role: ctx.user.role,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          role: ctx.user.role as any,
           action: 'CREATE',
           module: 'MEMBER',
           description: `Recorded withdrawal for ${input.member_name}: Rp ${input.amount.toLocaleString('id-ID')}`,
@@ -102,7 +104,6 @@ export const memberRouter = router({
       if (member_name) {
         where.description = {
           contains: member_name,
-          mode: 'insensitive',
         }
       }
 

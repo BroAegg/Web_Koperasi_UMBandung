@@ -118,17 +118,30 @@ export const financialRouter = router({
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     transactions.forEach((tx: any) => {
+      const amount = Number(tx.amount)
+
       if (tx.type === 'CASH_IN') {
-        cashIn += tx.amount
-      } else {
-        cashOut += tx.amount
+        cashIn += amount
+      } else if (tx.type === 'CASH_OUT') {
+        cashOut += amount
       }
 
       // Calculate balance by category
-      if (tx.category === 'SALES' || tx.category === 'CASH_DEPOSIT') {
-        tokoBalance += tx.type === 'CASH_IN' ? tx.amount : -tx.amount
-      } else if (tx.category === 'CONSIGNMENT') {
-        titipanBalance += tx.type === 'CASH_IN' ? tx.amount : -tx.amount
+      // Toko: SALES (penjualan), MEMBER_DEPOSIT (simpanan anggota masuk ke kas toko)
+      if (tx.category === 'SALES' || tx.category === 'MEMBER_DEPOSIT') {
+        tokoBalance += tx.type === 'CASH_IN' ? amount : -amount
+      }
+      // Titipan: PURCHASE (pembelian barang), OPERATIONAL (operasional), MEMBER_WITHDRAWAL (penarikan anggota dari kas)
+      else if (
+        tx.category === 'PURCHASE' ||
+        tx.category === 'OPERATIONAL' ||
+        tx.category === 'MEMBER_WITHDRAWAL'
+      ) {
+        titipanBalance += tx.type === 'CASH_IN' ? amount : -amount
+      }
+      // OTHER: bisa masuk ke Toko atau disesuaikan kebutuhan
+      else if (tx.category === 'OTHER') {
+        tokoBalance += tx.type === 'CASH_IN' ? amount : -amount
       }
     })
 
@@ -297,6 +310,7 @@ export const financialRouter = router({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     transactions.forEach((tx: any) => {
       const dateKey = tx.created_at.toISOString().split('T')[0]
+      const amount = Number(tx.amount)
 
       if (!chartData[dateKey]) {
         chartData[dateKey] = {
@@ -308,11 +322,11 @@ export const financialRouter = router({
       }
 
       if (tx.type === 'CASH_IN') {
-        chartData[dateKey].cashIn += tx.amount
-        runningBalance += tx.amount
-      } else {
-        chartData[dateKey].cashOut += tx.amount
-        runningBalance -= tx.amount
+        chartData[dateKey].cashIn += amount
+        runningBalance += amount
+      } else if (tx.type === 'CASH_OUT') {
+        chartData[dateKey].cashOut += amount
+        runningBalance -= amount
       }
 
       chartData[dateKey].balance = runningBalance
