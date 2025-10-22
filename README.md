@@ -1,256 +1,337 @@
-# 🏗️ Web Koperasi UM Bandung - Full Rebuild Project
+# Web Koperasi UM Bandung 🏪
 
-> **Status:** 🚧 **UNDER RECONSTRUCTION** - Building from ground up with modern architecture  
-> **Start Date:** October 26, 2025  
-> **Target Launch:** November 30, 2025
+**Modern Cooperative Management System** - Sistem Informasi Manajemen Koperasi berbasis web untuk UM Bandung
 
-Sistem Informasi Koperasi Universitas Muhammadiyah Bandung - Dibangun ulang dengan arsitektur modern, type-safe, dan maintainable.
+[![Next.js](https://img.shields.io/badge/Next.js-16.0-black)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue)](https://www.typescriptlang.org/)
+[![Prisma](https://img.shields.io/badge/Prisma-6.x-2D3748)](https://www.prisma.io/)
+[![tRPC](https://img.shields.io/badge/tRPC-11.x-398CCB)](https://trpc.io/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-17-316192)](https://www.postgresql.org/)
 
----
+## 🚀 Fitur Utama
 
-## 📊 Project Status
+### 💰 **Manajemen Keuangan**
 
-| Aspect | Status |
-|--------|--------|
-| **Planning** | ✅ Complete |
-| **Tech Stack** | ✅ Decided |
-| **Week 1** | ⏳ Starting Oct 26 |
-| **Week 2-4** | 🔜 Feature Migration |
-| **Week 5-6** | 🔜 Testing & Docs |
-| **Week 7** | 🔜 Deployment |
+- Pencatatan transaksi masuk/keluar dengan kategori lengkap
+- Visualisasi grafik keuangan interaktif (Recharts)
+- Filter berdasarkan periode (hari, minggu, bulan)
+- Export data ke CSV
+- Ringkasan saldo harian real-time
 
----
+### 🛒 **Point of Sale (POS)**
 
-## 🎯 Why Rebuild?
+- Pencarian produk real-time
+- Keranjang belanja interaktif
+- Proses pembayaran lengkap (tunai, transfer, e-wallet)
+- Cetak struk pembelian
+- Riwayat penjualan
+- Statistik penjualan (revenue, AOV, top products)
 
-Previous version faced recurring issues:
-- 🔴 Database schema mismatches (field name errors)
-- 🔴 API inconsistencies (403/500 errors)
-- ⚠️ Scattered state management
-- ⚠️ 92 documentation files (chaos!)
-- ⚠️ No automated testing
+### 📦 **Manajemen Inventori**
 
-**Solution:** Fresh start with modern best practices.
+- CRUD produk lengkap
+- Manajemen stok (masuk/keluar/penyesuaian)
+- Peringatan stok menipis otomatis
+- Kategori dan supplier produk
+- Nilai total inventori
+- Stock movement tracking
 
-📖 **Read Full Analysis:** [PROJECT-REBUILD-ANALYSIS.md](./PROJECT-REBUILD-ANALYSIS.md)
+### 🏢 **Manajemen Supplier**
 
----
+- CRUD data supplier
+- Tracking produk per supplier
+- Top supplier ranking
+- Informasi kontak lengkap
 
-## 🚀 New Tech Stack
+### 👥 **Simpanan Anggota**
+
+- Pencatatan setoran anggota
+- Pencatatan penarikan
+- Riwayat transaksi lengkap
+- Saldo simpanan real-time
+
+### 📋 **Activity Logging**
+
+- Log semua aktivitas pengguna
+- Filter berdasarkan modul dan aksi
+- Tracking perubahan data
+- Audit trail lengkap
+
+### 📊 **Reporting & Analytics**
+
+- Dashboard komprehensif
+- Laporan keuangan
+- Laporan penjualan
+- Laporan inventori
+- Laporan simpanan anggota
+- Filter berdasarkan periode custom
+
+## 🛠️ Tech Stack
 
 ### Frontend
-- **Framework:** Next.js 15 (App Router) + React 19
-- **Styling:** Tailwind CSS 4
-- **UI Components:** shadcn/ui (Radix UI + Tailwind)
-- **State Management:** Zustand (global state)
-- **Data Fetching:** TanStack Query (via tRPC)
-- **Forms:** React Hook Form + Zod validation
+
+- Next.js 16.0 (App Router)
+- React 19.2
+- Tailwind CSS 4
+- shadcn/ui
+- Recharts
+- TypeScript (strict mode)
 
 ### Backend
-- **API Layer:** tRPC (end-to-end type safety)
-- **Database:** PostgreSQL + Prisma ORM (with proper migrations)
-- **Authentication:** NextAuth.js v5
-- **Validation:** Zod schemas
 
-### DevOps & Testing
-- **Unit Tests:** Vitest
-- **E2E Tests:** Playwright
-- **CI/CD:** GitHub Actions
-- **Containerization:** Docker
-- **Deployment:** Vercel/Railway
+- tRPC 11.x (Type-safe API)
+- PostgreSQL 17
+- Prisma ORM 6.17.1
+- Zod (validation)
+- Custom JWT Auth (jose)
 
----
+### Development
 
-## 📋 Prerequisites
+- ESLint + Prettier
+- Husky + lint-staged
+- Vitest (unit tests)
+- Playwright (E2E tests)
 
-- **Node.js:** >= 20.0.0
-- **npm:** >= 10.0.0
-- **PostgreSQL:** >= 16.0
-- **Git:** Latest version
+## 📦 Prerequisites
 
----
+- Node.js >= 18.x
+- PostgreSQL >= 14.x
+- npm/yarn/pnpm
+- Git
 
-## 🛠️ Quick Start (Coming Soon)
+## 🔧 Instalasi
+
+### 1. Clone Repository
 
 ```bash
-# Clone repository
 git clone https://github.com/BroAegg/Web_Koperasi_UMBandung.git
 cd Web_Koperasi_UMBandung
+```
 
-# Install dependencies
+### 2. Install Dependencies
+
+```bash
 npm install
+```
 
-# Setup environment
-cp .env.example .env.local
-# Edit .env.local with your database credentials
+### 3. Setup Environment
 
-# Setup database
+Buat file `.env`:
+
+```env
+DATABASE_URL="postgresql://username:password@localhost:5432/web_koperasi_umb?schema=public"
+JWT_SECRET="your-secret-key-here"
+NEXT_PUBLIC_APP_URL="http://localhost:3000"
+```
+
+Generate JWT Secret:
+
+```bash
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+```
+
+### 4. Setup Database
+
+```bash
+# Create database
+createdb web_koperasi_umb
+
+# Run migrations
 npx prisma migrate dev
+
+# Seed data (optional)
 npx prisma db seed
 
-# Start development server
+# Generate Prisma Client
+npx prisma generate
+```
+
+**Default Users After Seed:**
+
+- Admin: `admin` / `admin123`
+- Kasir: `kasir` / `kasir123`
+
+### 5. Run Development Server
+
+```bash
 npm run dev
 ```
 
-Visit `http://localhost:3000`
+Buka `http://localhost:3000`
 
----
-
-## 📁 Project Structure (Planned)
+## 📁 Struktur Proyek
 
 ```
-web-koperasi-umb/
-├── src/
-│   ├── app/                    # Next.js App Router
-│   │   ├── (auth)/            # Auth pages
-│   │   ├── (roles)/           # Role-based pages
-│   │   │   ├── koperasi/      # Admin/Koperasi dashboard
-│   │   │   ├── supplier/      # Supplier dashboard
-│   │   │   └── kasir/         # Kasir dashboard
-│   │   └── api/               # API routes (tRPC handlers)
-│   ├── server/                # tRPC backend
-│   │   ├── routers/           # API routers
-│   │   ├── middleware/        # Auth & logging middleware
-│   │   └── context.ts         # tRPC context
-│   ├── components/            # React components
-│   │   ├── ui/                # shadcn components
-│   │   ├── shared/            # Shared components
-│   │   └── features/          # Feature-specific components
-│   ├── lib/                   # Utilities
-│   │   ├── db.ts              # Prisma client
-│   │   ├── auth.ts            # NextAuth config
-│   │   └── validations/       # Zod schemas
-│   ├── hooks/                 # Custom React hooks
-│   ├── stores/                # Zustand stores
-│   └── types/                 # TypeScript types
-├── prisma/
-│   ├── schema.prisma          # Database schema
-│   ├── migrations/            # Migration history
-│   └── seed.ts                # Seed data
-├── tests/
-│   ├── unit/                  # Unit tests
-│   └── e2e/                   # E2E tests
-├── docs/                      # Documentation
-│   ├── API.md
-│   ├── DATABASE.md
-│   └── DEPLOYMENT.md
-└── .github/
-    └── workflows/             # CI/CD pipelines
+src/
+├── app/
+│   ├── (auth)/              # Login, Register
+│   ├── (roles)/koperasi/    # Dashboard & Features
+│   │   ├── financial/       # 💰 Keuangan
+│   │   ├── pos/             # 🛒 Point of Sale
+│   │   ├── inventory/       # 📦 Inventori
+│   │   ├── suppliers/       # 🏢 Supplier
+│   │   ├── members/         # 👥 Anggota
+│   │   ├── activity/        # 📋 Activity Log
+│   │   └── reports/         # 📊 Laporan
+│   └── api/trpc/            # tRPC endpoint
+├── components/
+│   ├── ui/                  # shadcn/ui
+│   └── features/            # Feature components
+├── lib/
+│   ├── auth.ts              # JWT utilities
+│   ├── db.ts                # Prisma client
+│   └── trpc.ts              # tRPC client
+├── server/
+│   ├── routers/             # tRPC routers
+│   ├── context.ts           # Request context
+│   └── index.ts             # Main router
+└── types/                   # TypeScript types
 ```
 
----
+## 🔐 Authentication
 
-## 🎯 Planned Features
+Custom JWT dengan httpOnly cookies (7 hari expire). Semua route di `/koperasi/*` dilindungi middleware.
 
-### 👥 Role Management
-- **DEVELOPER** (dev mode only)
-- **SUPER_ADMIN** (full access + activity logs)
-- **ADMIN** (koperasi operations)
-- **KASIR** (point of sale)
-- **STAFF** (inventory & members)
-- **SUPPLIER** (external partners)
+**Roles:**
 
-### 💰 Financial Module
-- Daily/Weekly/Monthly summary
-- Transaction management
-- Real-time balance tracking
-- Charts & analytics
-- Export to CSV/PDF
+- SUPER_ADMIN - Full access
+- ADMIN - Management
+- KASIR - POS & Financial
+- DEVELOPER - System
 
-### 🛒 Point of Sale
-- Fast product search
-- Multiple payment methods
-- Receipt printing
-- Transaction history
+## 📚 API Documentation
 
-### 📦 Inventory
-- Product CRUD with categories
-- Stock movements tracking
-- Low stock alerts
-- Bulk import/export
+### Financial Module
 
-### 🏢 Supplier Management
-- Registration & approval
-- Product linkage
-- Payment tracking
-- Performance analytics
+- `financial.getDailySummary` - Saldo & ringkasan
+- `financial.getTransactions` - List transaksi
+- `financial.getChartData` - Data grafik
+- `financial.createTransaction` - Buat transaksi
+- `financial.updateTransaction` - Update transaksi
+- `financial.deleteTransaction` - Hapus transaksi
 
----
+### POS Module
 
-## 📚 Documentation
+- `pos.getProducts` - Cari produk
+- `pos.createOrder` - Checkout order
+- `pos.getOrders` - Riwayat penjualan
+- `pos.getSalesStats` - Statistik
+- `pos.cancelOrder` - Cancel order
 
-- **[PROJECT-REBUILD-ANALYSIS.md](./PROJECT-REBUILD-ANALYSIS.md)** - Full rebuild analysis
-- **[ISSUES-TRACKER.md](./ISSUES-TRACKER.md)** - Bug tracking
+### Inventory Module
 
-More docs coming during development.
+- `inventory.getProducts` - List produk
+- `inventory.createProduct` - Buat produk
+- `inventory.updateProduct` - Update produk
+- `inventory.deleteProduct` - Hapus produk
+- `inventory.recordStockMovement` - Mutasi stok
+- `inventory.getLowStockAlerts` - Alert stok
 
----
+### Supplier Module
 
-## 📅 6-Week Roadmap
+- `supplier.getSuppliers` - List supplier
+- `supplier.createSupplier` - Buat supplier
+- `supplier.updateSupplier` - Update supplier
+- `supplier.deleteSupplier` - Hapus supplier
+- `supplier.getSupplierStats` - Statistik
 
-| Week | Focus | Status |
-|------|-------|--------|
-| **Week 1** | Foundation Setup | ⏳ Starting Oct 26 |
-| **Week 2** | Financial Module | 🔜 Coming |
-| **Week 3** | POS & Inventory | 🔜 Coming |
-| **Week 4** | Suppliers & Members | 🔜 Coming |
-| **Week 5** | Testing & Polish | 🔜 Coming |
-| **Week 6** | Deployment | 🔜 Coming |
+### Member Module
 
----
+- `member.recordDeposit` - Setoran
+- `member.recordWithdrawal` - Penarikan
+- `member.getMemberTransactions` - Riwayat
+- `member.getMemberStats` - Statistik
 
-## 👥 Team
+### Activity Module
 
-- **Aegner** - Lead Developer
-- **Reyvan** - Developer
-- **GitHub Copilot** - AI Assistant
+- `activity.getActivityLogs` - Log aktivitas
+- `activity.getActivityStats` - Statistik
 
----
+### Report Module
 
-**Built with ❤️ for UM Bandung Koperasi**
-- **Broadcasts** → Sistem pengumuman dan komunikasi
+- `report.getDashboardReport` - Dashboard lengkap
 
-### Key Features:
-- **Relational design** dengan foreign keys
-- **Decimal precision** untuk financial data
-- **Timestamps** untuk audit trail
-- **Enum types** untuk data consistency
-- **Unique constraints** untuk data integrity
+## 🧪 Testing
 
-## 🚀 Backend API
+```bash
+# Unit tests
+npm run test
 
-### API Endpoints:
-- `GET/POST /api/members` - Member management
-- `GET/POST /api/products` - Product management  
-- `GET/POST /api/financial/transactions` - Financial operations
-- `GET /api/financial/summary` - Daily financial summary
-- `GET/POST /api/stock-movements` - Inventory operations
-- `GET/POST /api/broadcasts` - Communication management
-- `GET /api/categories` - Product categories
-- `GET /api/dashboard` - Dashboard statistics
+# E2E tests
+npm run test:e2e
 
-### Features:
-- **RESTful API design** dengan proper HTTP methods
-- **TypeScript interfaces** untuk type safety
-- **Error handling middleware** dengan consistent responses
-- **Validation** di frontend dan backend
-- **Date-based filtering** untuk historical data
+# Coverage
+npm run test:coverage
+```
+
+## 🚢 Deployment
+
+### Vercel (Recommended)
+
+1. Push ke GitHub
+2. Import di Vercel
+3. Set environment variables
+4. Deploy
+
+### Manual
+
+```bash
+npm run build
+npm start
+```
+
+Setup PostgreSQL di server dan jalankan migrations:
+
+```bash
+npx prisma migrate deploy
+```
+
+## 🎨 Code Quality
+
+- **Auto-format**: Prettier on commit
+- **Auto-lint**: ESLint on commit
+- **Git hooks**: Husky + lint-staged
+- **Type-safe**: Full TypeScript coverage
+
+## 📊 Database Schema
+
+9 Models:
+
+- User
+- Transaction
+- Order & OrderItem
+- Product
+- Category
+- Supplier
+- StockMovement
+- ActivityLog
+
+Semua dengan soft deletes (`deleted_at`), timestamps, dan proper relations.
 
 ## 🤝 Contributing
 
-1. Fork the project
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+1. Fork repo
+2. Create branch (`git checkout -b feature/AmazingFeature`)
+3. Commit (`git commit -m 'Add AmazingFeature'`)
+4. Push (`git push origin feature/AmazingFeature`)
+5. Open Pull Request
 
 ## 📝 License
 
-This project is licensed under the MIT License.
+Private & Proprietary. All rights reserved.
 
-## 👥 Team
+## 👨‍💻 Team
 
-- **Development Team**: UMB Team
-- **Repository Owner**: BroAegg
+- **Developer**: [@BroAegg](https://github.com/BroAegg)
+- **Organization**: UM Bandung
+
+## 📞 Support
+
+- Email: support@umbandung.ac.id
+- GitHub Issues: [Create Issue](https://github.com/BroAegg/Web_Koperasi_UMBandung/issues)
 
 ---
+
+**Built with ❤️ for UM Bandung Cooperative**
+
+🌟 Star this repo if you find it helpful!
