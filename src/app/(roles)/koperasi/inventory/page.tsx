@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { PageContainer } from '@/components/shared/PageContainer'
 import { PageHeader } from '@/components/shared/PageHeader'
 import { MetricCard } from '@/components/shared/MetricCard'
+import Image from 'next/image'
 import {
   Package,
   Plus,
@@ -18,6 +19,9 @@ import {
   Box,
   DollarSign,
   X,
+  Grid3x3,
+  List,
+  ShoppingBag,
 } from 'lucide-react'
 
 type ProductFormData = {
@@ -39,6 +43,7 @@ export default function InventoryPage() {
   const [selectedCategory, setSelectedCategory] = useState('')
   const [showForm, setShowForm] = useState(false)
   const [showStockModal, setShowStockModal] = useState(false)
+  const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid')
   const [formData, setFormData] = useState<ProductFormData>({
     sku: '',
     name: '',
@@ -257,8 +262,8 @@ export default function InventoryPage() {
         </Card>
       )}
 
-      {/* Filters */}
-      <div className="flex gap-4">
+      {/* Filters & View Toggle */}
+      <div className="mb-6 flex flex-col gap-4 sm:flex-row">
         <div className="relative flex-1">
           <Search className="absolute top-3 left-3 h-4 w-4 text-gray-400" />
           <input
@@ -282,109 +287,315 @@ export default function InventoryPage() {
             </option>
           ))}
         </select>
+
+        {/* View Toggle */}
+        <div className="flex gap-2 rounded-lg border p-1">
+          <Button
+            variant={viewMode === 'grid' ? 'default' : 'ghost'}
+            size="sm"
+            onClick={() => setViewMode('grid')}
+            className={viewMode === 'grid' ? 'bg-green-600 hover:bg-green-700' : ''}
+          >
+            <Grid3x3 className="mr-1 h-4 w-4" />
+            Grid
+          </Button>
+          <Button
+            variant={viewMode === 'table' ? 'default' : 'ghost'}
+            size="sm"
+            onClick={() => setViewMode('table')}
+            className={viewMode === 'table' ? 'bg-green-600 hover:bg-green-700' : ''}
+          >
+            <List className="mr-1 h-4 w-4" />
+            Table
+          </Button>
+        </div>
       </div>
 
-      {/* Products Table */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Daftar Produk</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b">
-                  <th className="px-4 py-3 text-left">SKU</th>
-                  <th className="px-4 py-3 text-left">Nama Produk</th>
-                  <th className="px-4 py-3 text-left">Kategori</th>
-                  <th className="px-4 py-3 text-left">Supplier</th>
-                  <th className="px-4 py-3 text-right">Harga Beli</th>
-                  <th className="px-4 py-3 text-right">Harga Jual</th>
-                  <th className="px-4 py-3 text-center">Stok</th>
-                  <th className="px-4 py-3 text-center">Status</th>
-                  <th className="px-4 py-3 text-center">Aksi</th>
-                </tr>
-              </thead>
-              <tbody>
-                {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-                {productsData?.products.map((product: any) => (
-                  <tr key={product.id} className="border-b hover:bg-gray-50">
-                    <td className="px-4 py-3 font-mono text-sm">{product.sku}</td>
-                    <td className="px-4 py-3">
-                      <div>
-                        <p className="font-medium">{product.name}</p>
+      {/* Products Grid View */}
+      {viewMode === 'grid' && (
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {productsData?.products && productsData.products.length > 0 ? (
+            <>
+              {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+              {productsData.products.map((product: any) => {
+                const isLowStock = product.stock <= product.min_stock
+                const profitMargin = (
+                  ((product.selling_price - product.purchase_price) / product.purchase_price) *
+                  100
+                ).toFixed(1)
+
+                return (
+                  <Card
+                    key={product.id}
+                    className="group overflow-hidden transition-all hover:shadow-xl"
+                  >
+                    <CardContent className="p-0">
+                      {/* Product Image */}
+                      <div className="relative flex h-48 items-center justify-center overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100">
+                        {product.image_url ? (
+                          <Image
+                            src={product.image_url}
+                            alt={product.name}
+                            fill
+                            className="object-cover"
+                          />
+                        ) : (
+                          <ShoppingBag className="h-20 w-20 text-gray-300" />
+                        )}
+
+                        {/* Status Badge */}
+                        <div className="absolute top-2 left-2">
+                          <span
+                            className={`rounded-full px-2 py-1 text-xs font-bold shadow-lg ${
+                              product.is_active
+                                ? 'bg-green-500 text-white'
+                                : 'bg-gray-400 text-white'
+                            }`}
+                          >
+                            {product.is_active ? 'Aktif' : 'Non-aktif'}
+                          </span>
+                        </div>
+
+                        {/* Low Stock Badge */}
+                        {isLowStock && (
+                          <div className="absolute top-2 right-2">
+                            <span className="flex items-center gap-1 rounded-full bg-orange-500 px-2 py-1 text-xs font-bold text-white shadow-lg">
+                              <AlertTriangle className="h-3 w-3" />
+                              Stok Rendah
+                            </span>
+                          </div>
+                        )}
+
+                        {/* Quick Actions - appears on hover */}
+                        <div className="absolute inset-0 flex items-end justify-center gap-2 bg-gradient-to-t from-black/80 to-transparent pb-4 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+                          <Button
+                            size="sm"
+                            className="bg-white text-gray-900 shadow-lg hover:bg-gray-100"
+                            onClick={() => handleEdit(product)}
+                          >
+                            <Edit className="mr-1 h-3 w-3" />
+                            Edit
+                          </Button>
+                          <Button
+                            size="sm"
+                            className="bg-green-600 text-white shadow-lg hover:bg-green-700"
+                            onClick={() => {
+                              setSelectedProduct(product.id)
+                              setShowStockModal(true)
+                            }}
+                          >
+                            <TrendingDown className="mr-1 h-3 w-3" />
+                            Stok
+                          </Button>
+                          <Button
+                            size="sm"
+                            className="bg-red-600 text-white shadow-lg hover:bg-red-700"
+                            onClick={() => handleDelete(product.id)}
+                          >
+                            <Trash2 className="h-3 w-3" />
+                          </Button>
+                        </div>
+                      </div>
+
+                      {/* Product Info */}
+                      <div className="space-y-3 p-4">
+                        {/* SKU & Category */}
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="rounded bg-gray-100 px-2 py-1 font-mono text-xs text-gray-500">
+                            {product.sku}
+                          </span>
+                          <span className="rounded bg-blue-50 px-2 py-1 text-xs text-gray-600">
+                            {product.category?.name}
+                          </span>
+                        </div>
+
+                        {/* Product Name */}
+                        <div className="min-h-[48px]">
+                          <h3 className="line-clamp-2 leading-tight font-semibold text-gray-900">
+                            {product.name}
+                          </h3>
+                        </div>
+
+                        {/* Supplier */}
+                        <div className="flex items-center gap-1 text-xs text-gray-500">
+                          <Package className="h-3 w-3" />
+                          {product.supplier?.business_name}
+                        </div>
+
+                        {/* Description */}
                         {product.description && (
-                          <p className="line-clamp-1 text-xs text-gray-500">
+                          <p className="line-clamp-2 text-xs text-gray-500">
                             {product.description}
                           </p>
                         )}
+
+                        {/* Price & Stock */}
+                        <div className="space-y-2 border-t pt-3">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <p className="text-xs text-gray-500">Harga Jual</p>
+                              <p className="text-lg font-bold text-green-600">
+                                Rp {Number(product.selling_price).toLocaleString('id-ID')}
+                              </p>
+                            </div>
+                            <div className="text-right">
+                              <p className="text-xs text-gray-500">Stok</p>
+                              <p
+                                className={`text-2xl font-bold ${
+                                  isLowStock ? 'text-orange-600' : 'text-gray-900'
+                                }`}
+                              >
+                                {product.stock}
+                              </p>
+                            </div>
+                          </div>
+
+                          {/* Profit Margin */}
+                          <div className="flex items-center justify-between rounded bg-green-50 px-2 py-1 text-xs">
+                            <span className="text-gray-600">Margin Keuntungan</span>
+                            <span className="font-bold text-green-600">+{profitMargin}%</span>
+                          </div>
+                        </div>
                       </div>
-                    </td>
-                    <td className="px-4 py-3">{product.category?.name}</td>
-                    <td className="px-4 py-3">{product.supplier?.business_name}</td>
-                    <td className="px-4 py-3 text-right">
-                      Rp {Number(product.purchase_price).toLocaleString('id-ID')}
-                    </td>
-                    <td className="px-4 py-3 text-right font-medium">
-                      Rp {Number(product.selling_price).toLocaleString('id-ID')}
-                    </td>
-                    <td className="px-4 py-3 text-center">
-                      <div className="flex items-center justify-center gap-2">
+                    </CardContent>
+                  </Card>
+                )
+              })}
+            </>
+          ) : (
+            <div className="col-span-full">
+              <Card>
+                <CardContent className="py-16 text-center">
+                  <Package className="mx-auto mb-4 h-20 w-20 text-gray-300" />
+                  <h3 className="mb-2 text-lg font-semibold text-gray-900">
+                    {searchQuery || selectedCategory
+                      ? 'Produk tidak ditemukan'
+                      : 'Belum ada produk'}
+                  </h3>
+                  <p className="mb-4 text-sm text-gray-500">
+                    {searchQuery || selectedCategory
+                      ? 'Coba kata kunci atau kategori lain'
+                      : 'Klik tombol "Tambah Produk" untuk memulai'}
+                  </p>
+                  {!searchQuery && !selectedCategory && (
+                    <Button
+                      onClick={() => setShowForm(true)}
+                      className="bg-green-600 hover:bg-green-700"
+                    >
+                      <Plus className="mr-2 h-4 w-4" />
+                      Tambah Produk Pertama
+                    </Button>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Products Table View */}
+      {viewMode === 'table' && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Daftar Produk</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b">
+                    <th className="px-4 py-3 text-left">SKU</th>
+                    <th className="px-4 py-3 text-left">Nama Produk</th>
+                    <th className="px-4 py-3 text-left">Kategori</th>
+                    <th className="px-4 py-3 text-left">Supplier</th>
+                    <th className="px-4 py-3 text-right">Harga Beli</th>
+                    <th className="px-4 py-3 text-right">Harga Jual</th>
+                    <th className="px-4 py-3 text-center">Stok</th>
+                    <th className="px-4 py-3 text-center">Status</th>
+                    <th className="px-4 py-3 text-center">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                  {productsData?.products.map((product: any) => (
+                    <tr key={product.id} className="border-b hover:bg-gray-50">
+                      <td className="px-4 py-3 font-mono text-sm">{product.sku}</td>
+                      <td className="px-4 py-3">
+                        <div>
+                          <p className="font-medium">{product.name}</p>
+                          {product.description && (
+                            <p className="line-clamp-1 text-xs text-gray-500">
+                              {product.description}
+                            </p>
+                          )}
+                        </div>
+                      </td>
+                      <td className="px-4 py-3">{product.category?.name}</td>
+                      <td className="px-4 py-3">{product.supplier?.business_name}</td>
+                      <td className="px-4 py-3 text-right">
+                        Rp {Number(product.purchase_price).toLocaleString('id-ID')}
+                      </td>
+                      <td className="px-4 py-3 text-right font-medium">
+                        Rp {Number(product.selling_price).toLocaleString('id-ID')}
+                      </td>
+                      <td className="px-4 py-3 text-center">
+                        <div className="flex items-center justify-center gap-2">
+                          <span
+                            className={`font-bold ${
+                              product.stock <= product.min_stock
+                                ? 'text-yellow-600'
+                                : 'text-green-600'
+                            }`}
+                          >
+                            {product.stock}
+                          </span>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => {
+                              setSelectedProduct(product.id)
+                              setShowStockModal(true)
+                            }}
+                            className="h-6 w-6 p-0"
+                          >
+                            <TrendingDown className="h-3 w-3" />
+                          </Button>
+                        </div>
+                      </td>
+                      <td className="px-4 py-3 text-center">
                         <span
-                          className={`font-bold ${
-                            product.stock <= product.min_stock
-                              ? 'text-yellow-600'
-                              : 'text-green-600'
+                          className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ${
+                            product.is_active
+                              ? 'bg-green-100 text-green-700'
+                              : 'bg-gray-100 text-gray-700'
                           }`}
                         >
-                          {product.stock}
+                          {product.is_active ? 'Aktif' : 'Non-aktif'}
                         </span>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => {
-                            setSelectedProduct(product.id)
-                            setShowStockModal(true)
-                          }}
-                          className="h-6 w-6 p-0"
-                        >
-                          <TrendingDown className="h-3 w-3" />
-                        </Button>
-                      </div>
-                    </td>
-                    <td className="px-4 py-3 text-center">
-                      <span
-                        className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ${
-                          product.is_active
-                            ? 'bg-green-100 text-green-700'
-                            : 'bg-gray-100 text-gray-700'
-                        }`}
-                      >
-                        {product.is_active ? 'Aktif' : 'Non-aktif'}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3">
-                      <div className="flex items-center justify-center gap-2">
-                        <Button size="sm" variant="ghost" onClick={() => handleEdit(product)}>
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          onClick={() => handleDelete(product.id)}
-                          className="text-red-600 hover:text-red-700"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </CardContent>
-      </Card>
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="flex items-center justify-center gap-2">
+                          <Button size="sm" variant="ghost" onClick={() => handleEdit(product)}>
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => handleDelete(product.id)}
+                            className="text-red-600 hover:text-red-700"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Product Form Modal */}
       {showForm && (
