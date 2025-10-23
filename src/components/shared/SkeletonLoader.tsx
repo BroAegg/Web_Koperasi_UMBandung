@@ -15,10 +15,17 @@ interface SkeletonLoaderProps {
 }
 
 /**
- * Skeleton base component
+ * Skeleton base component with enhanced shimmer effect
  */
 function Skeleton({ className }: { className?: string }) {
-  return <div className={cn('animate-pulse rounded-md bg-neutral-200', className)} />
+  return (
+    <div
+      className={cn(
+        'relative overflow-hidden rounded-md bg-neutral-200 before:absolute before:inset-0 before:-translate-x-full before:animate-[shimmer_2s_infinite] before:bg-linear-to-r before:from-transparent before:via-white/60 before:to-transparent',
+        className
+      )}
+    />
+  )
 }
 
 /**
