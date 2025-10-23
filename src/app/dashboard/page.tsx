@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation'
 import { getSession } from '@/lib/auth'
-import { LogOut, User } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { User } from 'lucide-react'
+import { AppLayout } from '@/components/layout/app-layout'
 import { getRoleDisplayName, getRoleBadgeColor } from '@/lib/permissions'
 
 export default async function DashboardPage() {
@@ -13,27 +13,18 @@ export default async function DashboardPage() {
   }
 
   return (
-    <div className="bg-background min-h-screen">
-      {/* Header */}
-      <header className="bg-card border-b">
-        <div className="container mx-auto flex items-center justify-between px-4 py-4">
-          <div>
-            <h1 className="text-2xl font-bold">Dashboard</h1>
-            <p className="text-muted-foreground text-sm">Welcome to Web Koperasi UMB</p>
-          </div>
-          <form action="/api/auth/logout" method="POST">
-            <Button type="submit" variant="outline" size="sm">
-              <LogOut className="mr-2 h-4 w-4" />
-              Logout
-            </Button>
-          </form>
+    <AppLayout session={session}>
+      <div className="space-y-6">
+        {/* Welcome Header */}
+        <div className="mb-6">
+          <h1 className="text-3xl font-bold">Welcome back, {session.fullName}! 👋</h1>
+          <p className="text-muted-foreground mt-1">
+            Here&apos;s what&apos;s happening with your cooperative today
+          </p>
         </div>
-      </header>
 
-      {/* Main Content */}
-      <main className="container mx-auto px-4 py-8">
         {/* User Info Card */}
-        <div className="bg-card mb-8 rounded-lg border p-6">
+        <div className="bg-card rounded-lg border p-6">
           <div className="flex items-center space-x-4">
             <div className="bg-primary/10 flex h-16 w-16 items-center justify-center rounded-full">
               <User className="text-primary h-8 w-8" />
@@ -90,24 +81,23 @@ export default async function DashboardPage() {
           </div>
         </div>
 
-        {/* Phase 1.4 Complete Notice */}
-        <div className="mt-8 rounded-lg border border-green-200 bg-green-50 p-6 dark:border-green-800 dark:bg-green-950">
-          <h3 className="mb-2 text-lg font-semibold text-green-900 dark:text-green-100">
-            ✅ Phase 1.4 Complete: Authentication System
+        {/* Phase 2.2 Complete Notice */}
+        <div className="rounded-lg border border-blue-200 bg-blue-50 p-6 dark:border-blue-800 dark:bg-blue-950">
+          <h3 className="mb-2 text-lg font-semibold text-blue-900 dark:text-blue-100">
+            ✅ Phase 2.2 Complete: Layout & Navigation
           </h3>
-          <p className="text-sm text-green-800 dark:text-green-200">
-            Custom authentication with JWT sessions, role-based access control, and protected routes
-            are now fully functional!
+          <p className="text-sm text-blue-800 dark:text-blue-200">
+            Professional layout with collapsible sidebar, responsive header, and mobile navigation!
           </p>
-          <ul className="mt-4 space-y-1 text-sm text-green-700 dark:text-green-300">
-            <li>• Session management with 7-day expiration</li>
-            <li>• Password hashing with bcryptjs</li>
-            <li>• Role-based permissions (6 roles, 11 permissions)</li>
-            <li>• Modern login page with floating labels</li>
-            <li>• Protected routes with middleware</li>
+          <ul className="mt-4 space-y-1 text-sm text-blue-700 dark:text-blue-300">
+            <li>• Collapsible sidebar with role-based menu filtering</li>
+            <li>• Responsive header with breadcrumbs & search</li>
+            <li>• Mobile bottom navigation with sheet menu</li>
+            <li>• Theme toggle & user profile dropdown</li>
+            <li>• Smooth transitions & dark mode support</li>
           </ul>
         </div>
-      </main>
-    </div>
+      </div>
+    </AppLayout>
   )
 }
