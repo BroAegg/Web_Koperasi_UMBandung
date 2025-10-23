@@ -4,7 +4,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { LogOut, User, Clock, Shield, X } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { getCurrentUser, getRoleDisplayName, clearUserData, type UserData } from '@/lib/user-utils'
 
 interface LogoutModalProps {
@@ -15,8 +15,16 @@ interface LogoutModalProps {
 export function LogoutModal({ isOpen, onClose }: LogoutModalProps) {
   const router = useRouter()
   const [isLoggingOut, setIsLoggingOut] = useState(false)
-  // Initialize with current user data
-  const [userData] = useState<UserData>(() => getCurrentUser())
+  // Initialize with null, load on client side only
+  const [userData, setUserData] = useState<UserData | null>(null)
+
+  useEffect(() => {
+    // Load user data only on client side
+    if (isOpen) {
+      const timer = setTimeout(() => setUserData(getCurrentUser()), 0)
+      return () => clearTimeout(timer)
+    }
+  }, [isOpen])
 
   // Calculate session duration - computed on each render for accuracy
 

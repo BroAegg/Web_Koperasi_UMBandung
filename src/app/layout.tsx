@@ -3,7 +3,6 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import { TRPCProvider } from '@/components/providers/trpc-provider'
 import { ToastProvider } from '@/components/shared/ToastContext'
-import { ThemeProvider } from '@/components/providers/ThemeProvider'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -21,18 +20,11 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="id" suppressHydrationWarning>
+    <html lang="id">
       <body className={`${inter.variable} font-sans antialiased`}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="light"
-          enableSystem
-          disableTransitionOnChange={false}
-        >
-          <TRPCProvider>
-            <ToastProvider>{children}</ToastProvider>
-          </TRPCProvider>
-        </ThemeProvider>
+        <TRPCProvider>
+          <ToastProvider>{children}</ToastProvider>
+        </TRPCProvider>
       </body>
     </html>
   )

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import {
@@ -16,7 +16,6 @@ import {
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { getCurrentUser, type UserData } from '@/lib/user-utils'
-import { ThemeToggle } from '@/components/shared/ThemeToggle'
 
 const navigationItems = [
   { name: 'Dashboard', href: '/koperasi', icon: Home },
@@ -35,24 +34,28 @@ interface DesktopSidebarProps {
 
 export function DesktopSidebar({ onLogout }: DesktopSidebarProps) {
   const pathname = usePathname()
-  // Initialize with current user data
-  const [userData] = useState<UserData>(() => getCurrentUser())
+  // Initialize with null, then load on client side only
+  const [userData, setUserData] = useState<UserData | null>(null)
+
+  useEffect(() => {
+    // Load user data only on client side
+    // Use setTimeout to defer setState to next tick
+    const timer = setTimeout(() => setUserData(getCurrentUser()), 0)
+    return () => clearTimeout(timer)
+  }, [])
 
   return (
-    <aside className="hidden border-r border-gray-200 bg-white lg:fixed lg:inset-y-0 lg:left-0 lg:z-30 lg:flex lg:w-64 lg:flex-col dark:border-gray-800 dark:bg-gray-950">
+    <aside className="hidden border-r border-gray-200 bg-white lg:fixed lg:inset-y-0 lg:left-0 lg:z-30 lg:flex lg:w-64 lg:flex-col">
       <div className="flex h-full flex-col">
         {/* Sidebar Header */}
-        <div className="flex items-center justify-between border-b border-gray-200 px-6 py-5 dark:border-gray-800">
-          <div className="flex items-center gap-3">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-linear-to-br from-blue-600 to-indigo-600 shadow-lg">
-              <span className="text-xl font-bold text-white">K</span>
-            </div>
-            <div>
-              <h2 className="text-lg font-bold text-gray-900 dark:text-white">Koperasi</h2>
-              <p className="text-xs text-gray-500 dark:text-gray-400">UM Bandung</p>
-            </div>
+        <div className="flex items-center gap-3 border-b border-gray-200 px-6 py-5">
+          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-linear-to-br from-blue-600 to-indigo-600 shadow-lg">
+            <span className="text-xl font-bold text-white">K</span>
           </div>
-          <ThemeToggle />
+          <div>
+            <h2 className="text-lg font-bold text-gray-900">Koperasi</h2>
+            <p className="text-xs text-gray-500">UM Bandung</p>
+          </div>
         </div>
 
         {/* Navigation Links */}
@@ -68,20 +71,18 @@ export function DesktopSidebar({ onLogout }: DesktopSidebarProps) {
                   href={item.href}
                   className={`group flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-all ${
                     isActive
-                      ? 'bg-blue-50 text-blue-600 shadow-sm dark:bg-blue-950 dark:text-blue-400'
-                      : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-white'
+                      ? 'bg-blue-50 text-blue-600 shadow-sm'
+                      : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
                   }`}
                 >
                   <Icon
                     className={`h-5 w-5 transition-transform group-hover:scale-110 ${
-                      isActive
-                        ? 'text-blue-600 dark:text-blue-400'
-                        : 'text-gray-500 dark:text-gray-400'
+                      isActive ? 'text-blue-600' : 'text-gray-500'
                     }`}
                   />
                   {item.name}
                   {isActive && (
-                    <div className="ml-auto h-2 w-2 animate-pulse rounded-full bg-blue-600 dark:bg-blue-400" />
+                    <div className="ml-auto h-2 w-2 animate-pulse rounded-full bg-blue-600" />
                   )}
                 </Link>
               )
@@ -90,19 +91,17 @@ export function DesktopSidebar({ onLogout }: DesktopSidebarProps) {
         </nav>
 
         {/* User Info & Logout */}
-        <div className="border-t border-gray-200 p-4 dark:border-gray-800">
-          <div className="mb-3 rounded-lg bg-gray-50 p-3 dark:bg-gray-800">
+        <div className="border-t border-gray-200 p-4">
+          <div className="mb-3 rounded-lg bg-gray-50 p-3">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-linear-to-br from-purple-500 to-pink-500 text-sm font-bold text-white">
                 {userData?.initials || 'U'}
               </div>
               <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-semibold text-gray-900 dark:text-white">
+                <p className="truncate text-sm font-semibold text-gray-900">
                   {userData?.fullName || 'User'}
                 </p>
-                <p className="text-xs text-gray-500 dark:text-gray-400">
-                  {userData?.email || 'user@koperasi.com'}
-                </p>
+                <p className="text-xs text-gray-500">{userData?.email || 'user@koperasi.com'}</p>
               </div>
             </div>
           </div>
