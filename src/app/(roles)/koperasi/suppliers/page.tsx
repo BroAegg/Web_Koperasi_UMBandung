@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { PageContainer } from '@/components/shared/PageContainer'
 import { PageHeader } from '@/components/shared/PageHeader'
 import { MetricCard } from '@/components/shared/MetricCard'
+import { useDebounce } from '@/hooks/useDebounce'
 import {
   Plus,
   Search,
@@ -46,11 +47,14 @@ export default function SuppliersPage() {
     is_active: true,
   })
 
+  // Debounce search query to reduce API calls
+  const debouncedSearchQuery = useDebounce(searchQuery, 500)
+
   const utils = trpc.useUtils()
 
   // Queries
   const { data: suppliersData } = trpc.supplier.getSuppliers.useQuery({
-    search: searchQuery,
+    search: debouncedSearchQuery,
     page: 1,
     limit: 50,
   })
@@ -228,7 +232,7 @@ export default function SuppliersPage() {
                   >
                     <CardContent className="p-0">
                       {/* Card Header with Gradient */}
-                      <div className="relative bg-gradient-to-br from-blue-600 to-indigo-600 p-6 pb-12">
+                      <div className="relative bg-linear-to-br from-blue-600 to-indigo-600 p-6 pb-12">
                         {/* Status Badge */}
                         <div className="absolute top-4 right-4">
                           <span
@@ -261,7 +265,7 @@ export default function SuppliersPage() {
 
                       {/* Product Count Badge - Overlapping */}
                       <div className="relative -mt-6 px-6">
-                        <div className="rounded-xl bg-gradient-to-r from-green-500 to-emerald-500 p-4 shadow-lg">
+                        <div className="rounded-xl bg-linear-to-r from-green-500 to-emerald-500 p-4 shadow-lg">
                           <div className="flex items-center justify-between text-white">
                             <div>
                               <p className="text-xs font-medium opacity-90">Total Produk</p>
@@ -413,7 +417,7 @@ export default function SuppliersPage() {
         {showForm && (
           <div className="animate-in fade-in fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
             <Card className="animate-in zoom-in w-full max-w-2xl">
-              <CardHeader className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
+              <CardHeader className="bg-linear-to-r from-blue-600 to-indigo-600 text-white">
                 <div className="flex items-center justify-between">
                   <CardTitle className="flex items-center gap-2">
                     <Building2 className="h-5 w-5" />

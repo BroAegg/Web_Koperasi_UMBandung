@@ -9,6 +9,7 @@ import { PageHeader } from '@/components/shared/PageHeader'
 import { MetricCard } from '@/components/shared/MetricCard'
 import Image from 'next/image'
 import { ResponsiveLayout } from '@/components/layout'
+import { useDebounce } from '@/hooks/useDebounce'
 import {
   Package,
   Plus,
@@ -74,11 +75,14 @@ export default function InventoryPage() {
     notes: '',
   })
 
+  // Debounce search query to reduce API calls
+  const debouncedSearchQuery = useDebounce(searchQuery, 500)
+
   const utils = trpc.useUtils()
 
   // Queries
   const { data: productsData } = trpc.inventory.getProducts.useQuery({
-    search: searchQuery,
+    search: debouncedSearchQuery,
     category_id: selectedCategory || undefined,
     page: 1,
     limit: 50,
@@ -254,7 +258,7 @@ export default function InventoryPage() {
 
         {/* Low Stock Alerts - Enhanced */}
         {lowStockAlerts && lowStockAlerts.length > 0 && (
-          <Card className="mb-6 border-2 border-orange-200 bg-gradient-to-br from-orange-50 to-yellow-50 shadow-lg">
+          <Card className="mb-6 border-2 border-orange-200 bg-linear-to-br from-orange-50 to-yellow-50 shadow-lg">
             <CardHeader className="border-b border-orange-200 bg-white/80">
               <div className="flex items-center justify-between">
                 <CardTitle className="flex items-center gap-2 text-lg text-orange-700">
@@ -479,7 +483,7 @@ export default function InventoryPage() {
                     >
                       <CardContent className="p-0">
                         {/* Product Image */}
-                        <div className="relative flex h-48 items-center justify-center overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100">
+                        <div className="relative flex h-48 items-center justify-center overflow-hidden bg-linear-to-br from-gray-50 to-gray-100">
                           {product.image ? (
                             <Image
                               src={product.image}
@@ -515,7 +519,7 @@ export default function InventoryPage() {
                           )}
 
                           {/* Quick Actions - appears on hover */}
-                          <div className="absolute inset-0 flex items-end justify-center gap-2 bg-gradient-to-t from-black/80 to-transparent pb-4 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+                          <div className="absolute inset-0 flex items-end justify-center gap-2 bg-linear-to-t from-black/80 to-transparent pb-4 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
                             <Button
                               size="sm"
                               className="bg-white text-gray-900 shadow-lg hover:bg-gray-100"
@@ -749,7 +753,7 @@ export default function InventoryPage() {
         {showForm && (
           <div className="animate-in fade-in fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/50 p-4 backdrop-blur-sm duration-200">
             <Card className="animate-in zoom-in my-8 w-full max-w-3xl shadow-2xl duration-200">
-              <CardHeader className="bg-gradient-to-r from-green-600 to-emerald-600 text-white">
+              <CardHeader className="bg-linear-to-r from-green-600 to-emerald-600 text-white">
                 <div className="flex items-center justify-between">
                   <CardTitle className="flex items-center gap-2 text-xl">
                     <Package className="h-6 w-6" />
@@ -1004,7 +1008,7 @@ export default function InventoryPage() {
                         formData.min_stock !== undefined &&
                         formData.stock <= formData.min_stock && (
                           <div className="flex items-center gap-3 rounded-lg border-2 border-orange-300 bg-orange-100 p-3">
-                            <AlertTriangle className="h-5 w-5 flex-shrink-0 text-orange-600" />
+                            <AlertTriangle className="h-5 w-5 shrink-0 text-orange-600" />
                             <div>
                               <p className="text-sm font-bold text-orange-800">
                                 Peringatan Stok Rendah!
@@ -1171,7 +1175,7 @@ export default function InventoryPage() {
         {showStockModal && (
           <div className="animate-in fade-in fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
             <Card className="animate-in zoom-in max-h-[90vh] w-full max-w-4xl overflow-hidden">
-              <CardHeader className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white">
+              <CardHeader className="bg-linear-to-r from-purple-600 to-indigo-600 text-white">
                 <div className="flex items-center justify-between">
                   <div>
                     <CardTitle className="flex items-center gap-2">

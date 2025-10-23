@@ -4,6 +4,7 @@ import React, { useState } from 'react'
 import { trpc } from '@/lib/trpc'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { useDebounce } from '@/hooks/useDebounce'
 import {
   ShoppingCart,
   Plus,
@@ -44,9 +45,12 @@ export default function POSPage() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [lastOrder, setLastOrder] = useState<any>(null)
 
+  // Debounce search to avoid excessive queries during typing
+  const debouncedSearchQuery = useDebounce(searchQuery, 500)
+
   // Queries
   const { data: productsData } = trpc.pos.getProducts.useQuery({
-    search: searchQuery,
+    search: debouncedSearchQuery,
     page: 1,
     limit: 50,
   })
@@ -236,7 +240,7 @@ export default function POSPage() {
                         >
                           <CardContent className="p-0">
                             {/* Product Image */}
-                            <div className="relative flex h-40 items-center justify-center overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100">
+                            <div className="relative flex h-40 items-center justify-center overflow-hidden bg-linear-to-br from-gray-50 to-gray-100">
                               {product.image ? (
                                 <Image
                                   src={product.image}
@@ -279,7 +283,7 @@ export default function POSPage() {
 
                               {/* Quick Add Button - appears on hover */}
                               {!isOutOfStock && (
-                                <div className="absolute inset-0 flex items-end justify-center bg-gradient-to-t from-black/60 to-transparent pb-4 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+                                <div className="absolute inset-0 flex items-end justify-center bg-linear-to-t from-black/60 to-transparent pb-4 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
                                   <Button
                                     size="sm"
                                     className="bg-white text-green-600 shadow-lg hover:bg-green-50"
@@ -354,7 +358,7 @@ export default function POSPage() {
             {/* Cart Section */}
             <div className="space-y-4">
               <Card className="border-2 shadow-lg">
-                <CardHeader className="border-b bg-gradient-to-r from-green-50 to-emerald-50">
+                <CardHeader className="border-b bg-linear-to-r from-green-50 to-emerald-50">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <div className="rounded-lg bg-green-600 p-2">
@@ -398,7 +402,7 @@ export default function POSPage() {
                             className="group relative flex gap-3 rounded-lg border-2 p-3 transition-all hover:border-green-200 hover:bg-green-50/50"
                           >
                             {/* Product Image */}
-                            <div className="relative flex h-16 w-16 flex-shrink-0 items-center justify-center overflow-hidden rounded-md bg-gradient-to-br from-gray-50 to-gray-100">
+                            <div className="relative flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-md bg-linear-to-br from-gray-50 to-gray-100">
                               <Package className="h-8 w-8 text-gray-300" />
                             </div>
 
@@ -461,7 +465,7 @@ export default function POSPage() {
                       </div>
 
                       {/* Totals Summary */}
-                      <div className="mt-4 space-y-3 rounded-lg bg-gradient-to-br from-gray-50 to-gray-100 p-4">
+                      <div className="mt-4 space-y-3 rounded-lg bg-linear-to-br from-gray-50 to-gray-100 p-4">
                         <div className="flex justify-between text-sm">
                           <span className="font-medium text-gray-700">Subtotal</span>
                           <span className="font-semibold text-gray-900">
@@ -495,7 +499,7 @@ export default function POSPage() {
                       {/* Checkout Button */}
                       <Button
                         onClick={handleCheckout}
-                        className="mt-4 h-12 w-full bg-gradient-to-r from-green-600 to-emerald-600 text-base font-bold text-white shadow-lg transition-all duration-200 hover:from-green-700 hover:to-emerald-700 hover:shadow-xl"
+                        className="mt-4 h-12 w-full bg-linear-to-r from-green-600 to-emerald-600 text-base font-bold text-white shadow-lg transition-all duration-200 hover:from-green-700 hover:to-emerald-700 hover:shadow-xl"
                         size="lg"
                       >
                         <CreditCard className="mr-2 h-5 w-5" />
@@ -593,7 +597,7 @@ export default function POSPage() {
         {showPayment && (
           <div className="animate-in fade-in fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm duration-200">
             <Card className="animate-in zoom-in w-full max-w-md shadow-2xl duration-200">
-              <CardHeader className="bg-gradient-to-r from-green-600 to-emerald-600 text-white">
+              <CardHeader className="bg-linear-to-r from-green-600 to-emerald-600 text-white">
                 <CardTitle className="flex items-center gap-2">
                   <CreditCard className="h-6 w-6" />
                   Pembayaran
@@ -644,7 +648,7 @@ export default function POSPage() {
                 </div>
 
                 {/* Total Summary */}
-                <div className="rounded-xl border-2 border-green-100 bg-gradient-to-br from-green-50 to-emerald-50 p-4">
+                <div className="rounded-xl border-2 border-green-100 bg-linear-to-br from-green-50 to-emerald-50 p-4">
                   <div className="mb-2 flex justify-between text-sm">
                     <span className="text-gray-700">Subtotal:</span>
                     <span className="font-semibold">Rp {subtotal.toLocaleString('id-ID')}</span>
@@ -698,7 +702,7 @@ export default function POSPage() {
                 </div>
 
                 {paymentAmount >= total && (
-                  <div className="animate-in slide-in-from-bottom rounded-xl border-2 border-emerald-300 bg-gradient-to-br from-emerald-100 to-green-100 p-4 duration-300">
+                  <div className="animate-in slide-in-from-bottom rounded-xl border-2 border-emerald-300 bg-linear-to-br from-emerald-100 to-green-100 p-4 duration-300">
                     <div className="flex items-center justify-between">
                       <span className="text-lg font-bold text-gray-900">Kembalian:</span>
                       <span className="text-3xl font-bold text-emerald-600">
@@ -720,7 +724,7 @@ export default function POSPage() {
                   <Button
                     onClick={handlePayment}
                     disabled={paymentAmount < total || createOrderMutation.isPending}
-                    className="flex-1 bg-gradient-to-r from-green-600 to-emerald-600 text-white shadow-lg transition-all hover:from-green-700 hover:to-emerald-700 hover:shadow-xl disabled:cursor-not-allowed disabled:opacity-50"
+                    className="flex-1 bg-linear-to-r from-green-600 to-emerald-600 text-white shadow-lg transition-all hover:from-green-700 hover:to-emerald-700 hover:shadow-xl disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     {createOrderMutation.isPending ? (
                       <>
@@ -744,7 +748,7 @@ export default function POSPage() {
         {showReceipt && lastOrder && (
           <div className="animate-in fade-in fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm duration-200">
             <Card className="animate-in zoom-in w-full max-w-md shadow-2xl duration-200">
-              <CardHeader className="bg-gradient-to-r from-green-600 to-emerald-600 text-white">
+              <CardHeader className="bg-linear-to-r from-green-600 to-emerald-600 text-white">
                 <div className="flex items-center justify-between">
                   <CardTitle className="flex items-center gap-2">
                     <Receipt className="h-6 w-6" />
@@ -901,7 +905,7 @@ export default function POSPage() {
                   </Button>
                   <Button
                     onClick={handlePrintReceipt}
-                    className="flex-1 bg-gradient-to-r from-green-600 to-emerald-600 text-white shadow-lg hover:from-green-700 hover:to-emerald-700"
+                    className="flex-1 bg-linear-to-r from-green-600 to-emerald-600 text-white shadow-lg hover:from-green-700 hover:to-emerald-700"
                   >
                     <Receipt className="mr-2 h-4 w-4" />
                     Cetak Struk

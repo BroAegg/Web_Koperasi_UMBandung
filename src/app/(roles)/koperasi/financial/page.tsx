@@ -14,6 +14,7 @@ import {
 import type { Transaction, Period } from '@/types/financial'
 import { PiggyBank, TrendingUp, ArrowUp, ArrowDown, DollarSign, Plus } from 'lucide-react'
 import { ResponsiveLayout } from '@/components/layout'
+import { useDebounce } from '@/hooks/useDebounce'
 
 export default function FinancialPage() {
   const [period, setPeriod] = useState<Period>('today')
@@ -22,6 +23,9 @@ export default function FinancialPage() {
   const [isFormOpen, setIsFormOpen] = useState(false)
   const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null)
 
+  // Debounce search query to avoid excessive API calls
+  const debouncedSearchQuery = useDebounce(searchQuery, 500)
+
   // Queries
   const totalBalanceQuery = trpc.financial.getTotalBalance.useQuery()
   const summaryQuery = trpc.financial.getDailySummary.useQuery({ period })
@@ -29,7 +33,7 @@ export default function FinancialPage() {
     period,
     page,
     limit: 10,
-    search: searchQuery,
+    search: debouncedSearchQuery,
   })
   const chartQuery = trpc.financial.getChartData.useQuery({ period })
 
@@ -140,7 +144,7 @@ export default function FinancialPage() {
 
         {/* Saldo Tersedia Card (Total Balance - All Time) */}
         <div className="mb-6 flex justify-center">
-          <Card className="w-full max-w-md border-2 border-green-300 bg-gradient-to-br from-green-50 to-green-100">
+          <Card className="w-full max-w-md border-2 border-green-300 bg-linear-to-br from-green-50 to-green-100">
             <CardContent className="pt-6 pb-4">
               {/* Icon */}
               <div className="mb-4 flex justify-center">

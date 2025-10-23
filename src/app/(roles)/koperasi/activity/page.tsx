@@ -184,12 +184,12 @@ export default function ActivityPage() {
 
         {/* Statistics */}
         <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
-          <Card className="border-2 border-indigo-200 bg-gradient-to-br from-indigo-50 to-purple-50">
+          <Card className="border-2 border-indigo-200 bg-linear-to-br from-indigo-50 to-purple-50">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-sm font-semibold text-indigo-700">
                 Total Aktivitas
               </CardTitle>
-              <div className="rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 p-2">
+              <div className="rounded-full bg-linear-to-br from-indigo-500 to-purple-500 p-2">
                 <Activity className="h-5 w-5 text-white" />
               </div>
             </CardHeader>
@@ -308,8 +308,8 @@ export default function ActivityPage() {
                               {/* Left Side: User & Action Info */}
                               <div className="flex flex-1 gap-4">
                                 {/* User Avatar */}
-                                <div className="flex-shrink-0">
-                                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 text-sm font-bold text-white ring-2 ring-indigo-200">
+                                <div className="shrink-0">
+                                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-linear-to-br from-indigo-500 to-purple-500 text-sm font-bold text-white ring-2 ring-indigo-200">
                                     {getUserInitials(log.user.full_name)}
                                   </div>
                                 </div>
@@ -347,7 +347,7 @@ export default function ActivityPage() {
                               </div>
 
                               {/* Right Side: Action Badge */}
-                              <div className="flex-shrink-0">
+                              <div className="shrink-0">
                                 <div
                                   className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-semibold ${actionColors.light} ${actionColors.text}`}
                                 >

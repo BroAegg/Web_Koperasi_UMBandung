@@ -5,6 +5,7 @@ import { trpc } from '@/lib/trpc'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { ResponsiveLayout } from '@/components/layout'
+import { useDebounce } from '@/hooks/useDebounce'
 import {
   Plus,
   Users,
@@ -35,11 +36,14 @@ export default function MembersPage() {
   const [filterType, setFilterType] = useState<TransactionType | ''>('')
   const [viewMode, setViewMode] = useState<ViewMode>('members')
 
+  // Debounce search query
+  const debouncedSearchQuery = useDebounce(searchQuery, 500)
+
   const utils = trpc.useUtils()
 
   // Queries
   const { data: transactionsData } = trpc.member.getMemberTransactions.useQuery({
-    member_name: searchQuery || undefined,
+    member_name: debouncedSearchQuery || undefined,
     type: filterType || undefined,
     page: 1,
     limit: 50,
@@ -151,7 +155,7 @@ export default function MembersPage() {
           </div>
           <Button
             onClick={() => setShowForm(true)}
-            className="bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700"
+            className="bg-linear-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700"
           >
             <Plus className="mr-2 h-4 w-4" />
             Transaksi Baru
@@ -160,10 +164,10 @@ export default function MembersPage() {
 
         {/* Statistics Cards */}
         <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
-          <Card className="border-2 border-teal-200 bg-gradient-to-br from-teal-50 to-cyan-50">
+          <Card className="border-2 border-teal-200 bg-linear-to-br from-teal-50 to-cyan-50">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-sm font-semibold text-teal-700">Saldo Simpanan</CardTitle>
-              <div className="rounded-full bg-gradient-to-br from-teal-500 to-cyan-500 p-2">
+              <div className="rounded-full bg-linear-to-br from-teal-500 to-cyan-500 p-2">
                 <DollarSign className="h-5 w-5 text-white" />
               </div>
             </CardHeader>
@@ -293,7 +297,7 @@ export default function MembersPage() {
 
                   <CardContent className="p-6">
                     {/* Balance Section */}
-                    <div className="mb-6 rounded-xl border-2 border-teal-200 bg-gradient-to-br from-teal-50 to-cyan-50 p-4">
+                    <div className="mb-6 rounded-xl border-2 border-teal-200 bg-linear-to-br from-teal-50 to-cyan-50 p-4">
                       <div className="mb-2 flex items-center gap-2">
                         <Wallet className="h-5 w-5 text-teal-600" />
                         <span className="text-sm font-semibold text-teal-700">Saldo Simpanan</span>
@@ -303,7 +307,7 @@ export default function MembersPage() {
                       </div>
                       <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-teal-200">
                         <div
-                          className="h-full bg-gradient-to-r from-teal-500 to-cyan-500 transition-all"
+                          className="h-full bg-linear-to-r from-teal-500 to-cyan-500 transition-all"
                           style={{
                             width: `${Math.min((member.balance / (stats?.balance || 1)) * 100, 100)}%`,
                           }}
