@@ -1,140 +1,247 @@
 'use client'
 
 import { useState } from 'react'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { trpc } from '@/lib/trpc'
-import { Loader2, LogIn, ShieldCheck } from 'lucide-react'
 import { useRouter } from 'next/navigation'
+import { Eye, EyeOff, Lock, User, ShoppingBag } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { LoadingSpinner } from '@/components/ui/loading-spinner'
 
 export default function LoginPage() {
   const router = useRouter()
+  const [isLoading, setIsLoading] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
+  const [error, setError] = useState('')
+
+  // Form state
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
-  const loginMutation = trpc.auth.login.useMutation({
-    onSuccess: (data) => {
-      // Save user data to localStorage
-      localStorage.setItem('userId', data.user.id)
-      localStorage.setItem('username', data.user.username)
-      localStorage.setItem('userName', data.user.full_name)
-      localStorage.setItem('userRole', data.user.role)
-      localStorage.setItem('userEmail', data.user.email || '')
-      localStorage.setItem('loginTime', Date.now().toString())
+  // Floating label state
+  const [usernameFocused, setUsernameFocused] = useState(false)
+  const [passwordFocused, setPasswordFocused] = useState(false)
 
-      alert(`✅ ${data.message}\nSelamat datang, ${data.user.full_name}!`)
-      router.push('/koperasi')
-      router.refresh()
-    },
-    onError: (error) => {
-      alert(`❌ Error: ${error.message}`)
-    },
-  })
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    loginMutation.mutate({ username, password })
+    setError('')
+    setIsLoading(true)
+
+    try {
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Login failed')
+      }
+
+      // Redirect to dashboard on success
+      router.push('/dashboard')
+      router.refresh()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Something went wrong')
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-linear-to-br from-blue-50 to-purple-50 p-4">
-      <Card className="w-full max-w-md border-2 border-blue-200">
-        <CardHeader className="space-y-1 text-center">
-          <div className="mb-4 flex justify-center">
-            <div className="rounded-2xl bg-blue-600 p-4">
-              <ShieldCheck className="h-10 w-10 text-white" />
-            </div>
+    <div className="flex min-h-screen">
+      {/* Left Panel - Branding */}
+      <div className="bg-gradient-primary relative hidden overflow-hidden lg:flex lg:w-2/5">
+        {/* Decorative elements */}
+        <div className="bg-grid-pattern absolute inset-0 opacity-10" />
+        <div className="absolute top-0 right-0 h-64 w-64 rounded-full bg-white/10 blur-3xl" />
+        <div className="absolute bottom-0 left-0 h-96 w-96 rounded-full bg-white/5 blur-3xl" />
+
+        {/* Content */}
+        <div className="relative z-10 flex flex-col justify-center px-12 text-white">
+          <div className="mb-8">
+            <ShoppingBag className="mb-4 h-16 w-16" />
+            <h1 className="mb-2 text-4xl font-bold">Web Koperasi</h1>
+            <p className="text-xl text-white/90">Universitas Muhammadiyah Bandung</p>
           </div>
-          <CardTitle className="text-3xl font-bold">Login</CardTitle>
-          <CardDescription>Web Koperasi UM Bandung</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Username */}
-            <div className="space-y-2">
-              <label htmlFor="username" className="text-sm font-medium text-gray-700">
-                Username
-              </label>
-              <input
-                id="username"
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                placeholder="Masukkan username"
-                required
-                disabled={loginMutation.isPending}
-              />
+
+          <div className="space-y-6">
+            <div className="flex items-start space-x-4">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-white/20">
+                <span className="text-lg font-bold">✓</span>
+              </div>
+              <div>
+                <h3 className="mb-1 font-semibold">Manajemen Koperasi Modern</h3>
+                <p className="text-sm text-white/80">
+                  Kelola seluruh operasional koperasi dalam satu platform terpadu
+                </p>
+              </div>
             </div>
 
-            {/* Password */}
-            <div className="space-y-2">
-              <label htmlFor="password" className="text-sm font-medium text-gray-700">
-                Password
-              </label>
+            <div className="flex items-start space-x-4">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-white/20">
+                <span className="text-lg font-bold">✓</span>
+              </div>
+              <div>
+                <h3 className="mb-1 font-semibold">Real-time Reporting</h3>
+                <p className="text-sm text-white/80">
+                  Dapatkan laporan dan analitik secara real-time untuk keputusan yang lebih baik
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-start space-x-4">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-white/20">
+                <span className="text-lg font-bold">✓</span>
+              </div>
+              <div>
+                <h3 className="mb-1 font-semibold">Keamanan Terjamin</h3>
+                <p className="text-sm text-white/80">
+                  Data Anda aman dengan enkripsi dan sistem keamanan berlapis
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Right Panel - Login Form */}
+      <div className="bg-background flex flex-1 items-center justify-center p-8">
+        <div className="w-full max-w-md">
+          {/* Mobile Logo */}
+          <div className="mb-8 text-center lg:hidden">
+            <ShoppingBag className="text-primary mx-auto mb-3 h-12 w-12" />
+            <h1 className="text-2xl font-bold">Web Koperasi UMB</h1>
+            <p className="text-muted-foreground text-sm">Universitas Muhammadiyah Bandung</p>
+          </div>
+
+          {/* Form Header */}
+          <div className="mb-8">
+            <h2 className="mb-2 text-3xl font-bold">Welcome Back</h2>
+            <p className="text-muted-foreground">Sign in to access your cooperative dashboard</p>
+          </div>
+
+          {/* Error Alert */}
+          {error && (
+            <div className="bg-destructive/10 border-destructive/20 mb-6 rounded-lg border p-4">
+              <p className="text-destructive text-sm">{error}</p>
+            </div>
+          )}
+
+          {/* Login Form */}
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Username Field with Floating Label */}
+            <div className="relative">
+              <div className="text-muted-foreground absolute top-1/2 left-3 -translate-y-1/2">
+                <User className="h-5 w-5" />
+              </div>
               <input
+                type="text"
+                id="username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                onFocus={() => setUsernameFocused(true)}
+                onBlur={() => setUsernameFocused(false)}
+                className={`bg-background border-input focus:ring-ring w-full rounded-lg border pt-6 pr-4 pb-2 pl-11 transition-all duration-200 focus:ring-2 focus:outline-none`}
+                required
+                disabled={isLoading}
+              />
+              <label
+                htmlFor="username"
+                className={`pointer-events-none absolute left-11 transition-all duration-200 ${
+                  usernameFocused || username
+                    ? 'text-muted-foreground top-2 text-xs'
+                    : 'text-muted-foreground top-1/2 -translate-y-1/2 text-sm'
+                } `}
+              >
+                Username
+              </label>
+            </div>
+
+            {/* Password Field with Floating Label */}
+            <div className="relative">
+              <div className="text-muted-foreground absolute top-1/2 left-3 -translate-y-1/2">
+                <Lock className="h-5 w-5" />
+              </div>
+              <input
+                type={showPassword ? 'text' : 'password'}
                 id="password"
-                type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                placeholder="Masukkan password"
+                onFocus={() => setPasswordFocused(true)}
+                onBlur={() => setPasswordFocused(false)}
+                className={`bg-background border-input focus:ring-ring w-full rounded-lg border pt-6 pr-12 pb-2 pl-11 transition-all duration-200 focus:ring-2 focus:outline-none`}
                 required
-                disabled={loginMutation.isPending}
+                disabled={isLoading}
               />
+              <label
+                htmlFor="password"
+                className={`pointer-events-none absolute left-11 transition-all duration-200 ${
+                  passwordFocused || password
+                    ? 'text-muted-foreground top-2 text-xs'
+                    : 'text-muted-foreground top-1/2 -translate-y-1/2 text-sm'
+                } `}
+              >
+                Password
+              </label>
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="text-muted-foreground hover:text-foreground absolute top-1/2 right-3 -translate-y-1/2 transition-colors"
+                disabled={isLoading}
+              >
+                {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+              </button>
+            </div>
+
+            {/* Remember Me & Forgot Password */}
+            <div className="flex items-center justify-between">
+              <label className="flex cursor-pointer items-center space-x-2">
+                <input
+                  type="checkbox"
+                  className="border-input text-primary focus:ring-ring h-4 w-4 rounded focus:ring-2"
+                  disabled={isLoading}
+                />
+                <span className="text-muted-foreground text-sm">Remember me</span>
+              </label>
+              <button type="button" className="text-primary text-sm hover:underline" disabled>
+                Forgot password?
+              </button>
             </div>
 
             {/* Submit Button */}
             <Button
               type="submit"
-              className="w-full bg-blue-600 hover:bg-blue-700"
-              disabled={loginMutation.isPending}
+              className="h-12 w-full text-base font-semibold"
+              disabled={isLoading}
             >
-              {loginMutation.isPending ? (
+              {isLoading ? (
                 <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Loading...
+                  <LoadingSpinner size="sm" className="mr-2" />
+                  Signing in...
                 </>
               ) : (
-                <>
-                  <LogIn className="mr-2 h-4 w-4" />
-                  Login
-                </>
+                'Sign In'
               )}
             </Button>
           </form>
 
-          {/* Demo Credentials */}
-          <div className="mt-6 rounded-lg border border-gray-200 bg-gray-50 p-4">
-            <p className="mb-2 text-xs font-semibold text-gray-700">🔑 Demo Credentials:</p>
-            <div className="space-y-1 text-xs text-gray-600">
-              <p>
-                <strong>Developer:</strong> developer / password123
-              </p>
-              <p>
-                <strong>Super Admin:</strong> superadmin / password123
-              </p>
-              <p>
-                <strong>Admin:</strong> admin / password123
-              </p>
-              <p>
-                <strong>Kasir:</strong> kasir / password123
-              </p>
+          {/* Test Credentials */}
+          <div className="bg-muted/50 mt-8 rounded-lg p-4">
+            <p className="text-muted-foreground mb-2 text-xs font-semibold">Test Credentials:</p>
+            <div className="text-muted-foreground space-y-1 font-mono text-xs">
+              <p>developer / password123</p>
+              <p>admin / password123</p>
+              <p>kasir / password123</p>
             </div>
           </div>
 
-          {/* Back to Home */}
-          <div className="mt-4 text-center">
-            <Button
-              variant="link"
-              onClick={() => router.push('/')}
-              className="text-sm text-blue-600"
-            >
-              ← Kembali ke Homepage
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+          {/* Footer */}
+          <p className="text-muted-foreground mt-8 text-center text-xs">
+            © 2025 Web Koperasi UM Bandung. All rights reserved.
+          </p>
+        </div>
+      </div>
     </div>
   )
 }

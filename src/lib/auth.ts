@@ -1,5 +1,6 @@
 import { SignJWT, jwtVerify } from 'jose'
 import { cookies } from 'next/headers'
+import type { NextRequest } from 'next/server'
 
 const JWT_SECRET = new TextEncoder().encode(
   process.env.JWT_SECRET || 'dev-secret-please-change-in-production'
@@ -8,7 +9,10 @@ const JWT_SECRET = new TextEncoder().encode(
 export interface SessionPayload {
   userId: string
   username: string
+  email: string | null
+  fullName: string
   role: string
+  isActive: boolean
   expiresAt: Date
 }
 
@@ -32,9 +36,24 @@ export async function decrypt(token: string): Promise<SessionPayload | null> {
   }
 }
 
-export async function createSession(userId: string, username: string, role: string) {
+export async function createSession(
+  userId: string,
+  username: string,
+  email: string | null,
+  fullName: string,
+  role: string,
+  isActive: boolean = true
+) {
   const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 days
-  const session = await encrypt({ userId, username, role, expiresAt })
+  const session = await encrypt({
+    userId,
+    username,
+    email,
+    fullName,
+    role,
+    isActive,
+    expiresAt,
+  })
 
   const cookieStore = await cookies()
   cookieStore.set('session', session, {
@@ -80,4 +99,15 @@ export async function updateSession() {
   })
 
   return session
+}
+
+/**
+ * Get session from request (for middleware)
+ */
+export async function getSessionFromRequest(request: NextRequest): Promise<SessionPayload | null> {
+  const token = request.cookies.get('session')?.value
+
+  if (!token) return null
+
+  return decrypt(token)
 }
