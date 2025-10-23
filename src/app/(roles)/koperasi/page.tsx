@@ -5,7 +5,6 @@ import { PageContainer } from '@/components/shared/PageContainer'
 import { PageHeader } from '@/components/shared/PageHeader'
 import { StatsCard } from '@/components/shared/StatsCard'
 import { SkeletonLoader } from '@/components/shared/SkeletonLoader'
-import { useToast } from '@/components/shared/ToastContext'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import {
@@ -18,7 +17,6 @@ import {
   ShoppingCart,
   ArrowRight,
   Clock,
-  Bell,
 } from 'lucide-react'
 import { trpc } from '@/lib/trpc'
 import { useRouter } from 'next/navigation'
@@ -37,7 +35,6 @@ import {
 
 export default function KoperasiDashboard() {
   const router = useRouter()
-  const toast = useToast()
 
   // Fetch dashboard stats
   const { data: supplierStats, isLoading: loadingSuppliers } =
@@ -523,59 +520,6 @@ export default function KoperasiDashboard() {
             </CardContent>
           </Card>
         </div>
-
-        {/* Toast Demo Section */}
-        <Card className="border-2 border-indigo-200 bg-linear-to-br from-indigo-50 to-purple-50">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-indigo-900">
-              <Bell className="h-5 w-5" />
-              Toast Notification Demo
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="mb-4 text-sm text-gray-600">
-              Test the global toast notification system dengan berbagai tipe:
-            </p>
-            <div className="flex flex-wrap gap-3">
-              <Button
-                onClick={() => toast.success('Berhasil!', 'Data berhasil disimpan ke database')}
-                className="bg-green-600 hover:bg-green-700"
-              >
-                ✓ Success Toast
-              </Button>
-              <Button
-                onClick={() => toast.error('Error!', 'Terjadi kesalahan saat menyimpan data')}
-                className="bg-red-600 hover:bg-red-700"
-              >
-                ✕ Error Toast
-              </Button>
-              <Button
-                onClick={() => toast.warning('Peringatan!', 'Stok barang hampir habis')}
-                className="bg-orange-600 hover:bg-orange-700"
-              >
-                ⚠ Warning Toast
-              </Button>
-              <Button
-                onClick={() => toast.info('Informasi', 'Ada pembaruan sistem tersedia')}
-                className="bg-blue-600 hover:bg-blue-700"
-              >
-                ℹ Info Toast
-              </Button>
-              <Button
-                onClick={() => {
-                  toast.success('Toast 1', 'Ini toast pertama')
-                  setTimeout(() => toast.error('Toast 2', 'Ini toast kedua'), 500)
-                  setTimeout(() => toast.warning('Toast 3', 'Ini toast ketiga'), 1000)
-                  setTimeout(() => toast.info('Toast 4', 'Ini toast keempat'), 1500)
-                }}
-                variant="outline"
-                className="border-2 border-indigo-300 text-indigo-700 hover:bg-indigo-50"
-              >
-                🎯 Multiple Toasts
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
       </PageContainer>
     </ResponsiveLayout>
   )
