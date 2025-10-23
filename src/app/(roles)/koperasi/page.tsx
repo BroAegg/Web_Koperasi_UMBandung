@@ -26,6 +26,9 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
+  BarChart,
+  Bar,
+  Cell,
 } from 'recharts'
 
 export default function KoperasiDashboard() {
@@ -57,6 +60,12 @@ export default function KoperasiDashboard() {
     trpc.activity.getActivityTrends.useQuery({
       days: 7,
     })
+
+  // Fetch best selling products
+  const { data: bestSellers, isLoading: loadingBestSellers } = trpc.pos.getBestSellers.useQuery({
+    days: 30,
+    limit: 10,
+  })
 
   const isLoading =
     loadingSuppliers ||
@@ -346,68 +355,166 @@ export default function KoperasiDashboard() {
         </Card>
       </div>
 
-      {/* Activity Trends Chart */}
-      <Card className="mt-6">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <TrendingUp className="h-5 w-5 text-blue-500" />
-            Activity Trends
-            {activityTrends && activityTrends.length > 0 && (
-              <span className="text-sm font-normal text-gray-500">
-                (Last {activityTrends.length} days)
-              </span>
+      {/* Charts Section - Side by Side */}
+      <div className="mt-6 grid gap-6 lg:grid-cols-2">
+        {/* Activity Trends Chart */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <TrendingUp className="h-5 w-5 text-purple-500" />
+              Activity Trends
+              {activityTrends && activityTrends.length > 0 && (
+                <span className="text-sm font-normal text-gray-500">
+                  (Last {activityTrends.length} days)
+                </span>
+              )}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {loadingTrends ? (
+              <div className="flex h-[300px] items-center justify-center">
+                <div className="text-center">
+                  <div className="mx-auto h-8 w-8 animate-spin rounded-full border-4 border-purple-500 border-t-transparent"></div>
+                  <p className="mt-2 text-sm text-gray-500">Loading chart data...</p>
+                </div>
+              </div>
+            ) : chartData.length > 0 ? (
+              <div className="h-[300px] w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={chartData}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                    <XAxis
+                      dataKey="date"
+                      stroke="#6b7280"
+                      fontSize={12}
+                      tickLine={false}
+                      axisLine={false}
+                    />
+                    <YAxis stroke="#6b7280" fontSize={12} tickLine={false} axisLine={false} />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: 'white',
+                        border: '1px solid #e5e7eb',
+                        borderRadius: '8px',
+                      }}
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="activities"
+                      stroke="#8b5cf6"
+                      strokeWidth={2}
+                      dot={{ fill: '#8b5cf6', r: 4 }}
+                      activeDot={{ r: 6 }}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            ) : (
+              <div className="flex h-[300px] items-center justify-center">
+                <div className="text-center text-gray-500">
+                  <TrendingUp className="mx-auto h-12 w-12 text-gray-300" />
+                  <p className="mt-2 text-sm">No activity data available</p>
+                </div>
+              </div>
             )}
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          {loadingTrends ? (
-            <div className="flex h-[300px] items-center justify-center">
-              <div className="text-center">
-                <div className="mx-auto h-8 w-8 animate-spin rounded-full border-4 border-purple-500 border-t-transparent"></div>
-                <p className="mt-2 text-sm text-gray-500">Loading chart data...</p>
+          </CardContent>
+        </Card>
+
+        {/* Best Sellers Chart */}
+        <Card>
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <CardTitle className="flex items-center gap-2">
+                <ShoppingCart className="h-5 w-5 text-pink-500" />
+                Best Sellers
+                <span className="text-sm font-normal text-gray-500">(Last 30 days)</span>
+              </CardTitle>
+              <button
+                onClick={() => router.push('/koperasi/inventory')}
+                className="text-sm text-blue-600 hover:text-blue-700"
+              >
+                View All
+              </button>
+            </div>
+          </CardHeader>
+          <CardContent>
+            {loadingBestSellers ? (
+              <div className="flex h-[300px] items-center justify-center">
+                <div className="text-center">
+                  <div className="mx-auto h-8 w-8 animate-spin rounded-full border-4 border-pink-500 border-t-transparent"></div>
+                  <p className="mt-2 text-sm text-gray-500">Loading best sellers...</p>
+                </div>
               </div>
-            </div>
-          ) : chartData.length > 0 ? (
-            <div className="h-[300px] w-full">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={chartData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                  <XAxis
-                    dataKey="date"
-                    stroke="#6b7280"
-                    fontSize={12}
-                    tickLine={false}
-                    axisLine={false}
-                  />
-                  <YAxis stroke="#6b7280" fontSize={12} tickLine={false} axisLine={false} />
-                  <Tooltip
-                    contentStyle={{
-                      backgroundColor: 'white',
-                      border: '1px solid #e5e7eb',
-                      borderRadius: '8px',
-                    }}
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="activities"
-                    stroke="#8b5cf6"
-                    strokeWidth={2}
-                    dot={{ fill: '#8b5cf6', r: 4 }}
-                    activeDot={{ r: 6 }}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
-          ) : (
-            <div className="flex h-[300px] items-center justify-center">
-              <div className="text-center text-gray-500">
-                <TrendingUp className="mx-auto h-12 w-12 text-gray-300" />
-                <p className="mt-2 text-sm">No activity data available</p>
+            ) : bestSellers && bestSellers.length > 0 ? (
+              <div className="h-[300px] w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart
+                    data={bestSellers}
+                    layout="vertical"
+                    margin={{ top: 5, right: 20, left: 80, bottom: 5 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                    <XAxis type="number" stroke="#6b7280" fontSize={12} />
+                    <YAxis
+                      type="category"
+                      dataKey="product_name"
+                      stroke="#6b7280"
+                      fontSize={11}
+                      width={75}
+                      tickFormatter={(value) =>
+                        value.length > 12 ? value.substring(0, 12) + '...' : value
+                      }
+                    />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: 'white',
+                        border: '1px solid #e5e7eb',
+                        borderRadius: '8px',
+                      }}
+                      formatter={(value: number, name: string) => {
+                        if (name === 'total_quantity') {
+                          return [value + ' items', 'Sold']
+                        }
+                        return [formatCurrency(value), 'Revenue']
+                      }}
+                      labelFormatter={(label) => `Product: ${label}`}
+                    />
+                    <Bar dataKey="total_quantity" radius={[0, 8, 8, 0]}>
+                      {bestSellers.map((entry, index) => (
+                        <Cell
+                          key={`cell-${index}`}
+                          fill={
+                            [
+                              '#ec4899',
+                              '#f472b6',
+                              '#fb7185',
+                              '#fda4af',
+                              '#fecdd3',
+                              '#fecaca',
+                              '#fed7aa',
+                              '#fdba74',
+                              '#fb923c',
+                              '#f97316',
+                            ][index] || '#e5e7eb'
+                          }
+                        />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
               </div>
-            </div>
-          )}
-        </CardContent>
-      </Card>
+            ) : (
+              <div className="flex h-[300px] items-center justify-center">
+                <div className="text-center text-gray-500">
+                  <ShoppingCart className="mx-auto h-12 w-12 text-gray-300" />
+                  <p className="mt-2 text-sm">No sales data available</p>
+                  <p className="text-xs">Start selling to see best sellers!</p>
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
     </PageContainer>
   )
 }

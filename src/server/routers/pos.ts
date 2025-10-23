@@ -422,7 +422,7 @@ export const posRouter = router({
       })
 
       // Get top products with details
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+       
       const topProductsWithDetails = await Promise.all(
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         topProducts.map(async (item: any) => {
@@ -525,5 +525,78 @@ export const posRouter = router({
       })
 
       return { success: true }
+    }),
+
+  // Get best selling products
+  getBestSellers: protectedProcedure
+    .input(
+      z.object({
+        days: z.number().min(1).max(365).default(30),
+        limit: z.number().min(1).max(50).default(10),
+      })
+    )
+    .query(async ({ input }) => {
+      const { days, limit } = input
+
+      // Calculate start date
+      const startDate = new Date()
+      startDate.setDate(startDate.getDate() - days)
+      startDate.setHours(0, 0, 0, 0)
+
+      // Get order items with product info
+      const orderItems = await prisma.orderItem.findMany({
+        where: {
+          order: {
+            status: 'COMPLETED',
+            created_at: {
+              gte: startDate,
+            },
+          },
+        },
+        include: {
+          product: {
+            select: {
+              id: true,
+              name: true,
+              sku: true,
+              selling_price: true,
+              category: {
+                select: {
+                  name: true,
+                },
+              },
+            },
+          },
+        },
+      })
+
+      // Aggregate sales by product
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const productSales = new Map<string, any>()
+
+      orderItems.forEach((item) => {
+        const productId = item.product_id
+        if (!productSales.has(productId)) {
+          productSales.set(productId, {
+            product_id: productId,
+            product_name: item.product.name,
+            product_sku: item.product.sku,
+            category_name: item.product.category?.name || 'Uncategorized',
+            total_quantity: 0,
+            total_revenue: 0,
+          })
+        }
+
+        const current = productSales.get(productId)
+        current.total_quantity += item.quantity
+        current.total_revenue += Number(item.subtotal)
+      })
+
+      // Sort by total quantity and get top N
+      const bestSellers = Array.from(productSales.values())
+        .sort((a, b) => b.total_quantity - a.total_quantity)
+        .slice(0, limit)
+
+      return bestSellers
     }),
 })
