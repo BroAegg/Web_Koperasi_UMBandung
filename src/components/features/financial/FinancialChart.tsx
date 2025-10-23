@@ -36,15 +36,20 @@ function CustomTooltip({ active, payload, label }: any) {
   const balance = payload.find((p: any) => p.dataKey === 'Saldo')?.value || 0
   const netFlow = cashIn - cashOut
 
+  // Get fullDate from payload
+  const fullDate = payload[0]?.payload?.fullDate
+
   return (
     <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-lg">
       <p className="mb-3 text-sm font-semibold text-gray-700">
-        {new Date(label as string).toLocaleDateString('id-ID', {
-          weekday: 'short',
-          day: 'numeric',
-          month: 'short',
-          year: 'numeric',
-        })}
+        {fullDate
+          ? new Date(fullDate).toLocaleDateString('id-ID', {
+              weekday: 'short',
+              day: 'numeric',
+              month: 'short',
+              year: 'numeric',
+            })
+          : label}
       </p>
       <div className="space-y-2">
         {/* Cash In */}
