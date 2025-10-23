@@ -144,6 +144,8 @@ model Product {
   stock           Int      @default(0)
   min_stock       Int      @default(5)
   
+  image           String?  // Base64 string or URL (flexible for future cloud storage)
+  
   is_active       Boolean  @default(true)
   
   created_at      DateTime @default(now())

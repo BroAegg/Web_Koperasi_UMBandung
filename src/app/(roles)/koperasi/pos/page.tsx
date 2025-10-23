@@ -235,9 +235,9 @@ export default function POSPage() {
                         <CardContent className="p-0">
                           {/* Product Image */}
                           <div className="relative flex h-40 items-center justify-center overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100">
-                            {product.image_url ? (
+                            {product.image ? (
                               <Image
-                                src={product.image_url}
+                                src={product.image}
                                 alt={product.name}
                                 fill
                                 className="object-cover"

@@ -25,6 +25,7 @@ const createProductSchema = z.object({
   selling_price: z.number().positive(),
   stock: z.number().min(0).default(0),
   min_stock: z.number().min(0).default(0),
+  image: z.string().optional(), // Base64 string or URL
   is_active: z.boolean().default(true),
 })
 
@@ -39,6 +40,7 @@ const updateProductSchema = z.object({
   selling_price: z.number().positive().optional(),
   stock: z.number().min(0).optional(),
   min_stock: z.number().min(0).optional(),
+  image: z.string().optional(), // Base64 string or URL
   is_active: z.boolean().optional(),
 })
 

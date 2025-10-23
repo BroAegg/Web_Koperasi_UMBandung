@@ -14,6 +14,9 @@ export default function LoginPage() {
 
   const loginMutation = trpc.auth.login.useMutation({
     onSuccess: (data) => {
+      // Save user data to localStorage
+      localStorage.setItem('user', JSON.stringify(data.user))
+      
       alert(`✅ ${data.message}\nSelamat datang, ${data.user.full_name}!`)
       router.push('/')
       router.refresh()

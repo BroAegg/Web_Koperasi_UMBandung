@@ -1,7 +1,8 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "./globals.css";
-import { TRPCProvider } from "@/components/providers/trpc-provider";
+import type { Metadata } from 'next'
+import { Inter } from 'next/font/google'
+import './globals.css'
+import { TRPCProvider } from '@/components/providers/trpc-provider'
+import { ToastProvider } from '@/components/shared/ToastContext'
 
 const inter = Inter({
   subsets: ["latin"],
@@ -21,7 +22,11 @@ export default function RootLayout({
   return (
     <html lang="id">
       <body className={`${inter.variable} font-sans antialiased`}>
-        <TRPCProvider>{children}</TRPCProvider>
+        <TRPCProvider>
+          <ToastProvider>
+            {children}
+          </ToastProvider>
+        </TRPCProvider>
       </body>
     </html>
   );

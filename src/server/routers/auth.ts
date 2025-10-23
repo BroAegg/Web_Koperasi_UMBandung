@@ -72,14 +72,37 @@ export const authRouter = router({
     }),
 
   // Logout
-  logout: publicProcedure.mutation(async ({ ctx }) => {
-    await deleteSession()
+  logout: publicProcedure
+    .input(
+      z
+        .object({
+          user_id: z.string(),
+          username: z.string(),
+          role: z.enum(['ADMIN', 'KASIR', 'STAFF', 'SUPPLIER']),
+        })
+        .optional()
+    )
+    .mutation(async ({ ctx, input }) => {
+      // Log activity if user info provided
+      if (input) {
+        await ctx.prisma.activityLog.create({
+          data: {
+            user_id: input.user_id,
+            role: input.role,
+            action: 'LOGOUT',
+            module: 'AUTH',
+            description: `User ${input.username} logged out`,
+          },
+        })
+      }
 
-    return {
-      success: true,
-      message: 'Logout berhasil',
-    }
-  }),
+      await deleteSession()
+
+      return {
+        success: true,
+        message: 'Logout berhasil',
+      }
+    }),
 
   // Get current user
   me: publicProcedure.query(async () => {
