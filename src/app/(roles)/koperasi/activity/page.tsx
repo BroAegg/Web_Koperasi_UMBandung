@@ -3,6 +3,7 @@
 import { useState, useMemo } from 'react'
 import { trpc } from '@/lib/trpc'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { ResponsiveLayout } from '@/components/layout'
 import {
   Activity,
   Filter,
@@ -172,209 +173,215 @@ export default function ActivityPage() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold">Log Aktivitas</h1>
-          <p className="mt-1 text-sm text-gray-600">Timeline aktivitas sistem dan pengguna</p>
+    <ResponsiveLayout>
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold">Log Aktivitas</h1>
+            <p className="mt-1 text-sm text-gray-600">Timeline aktivitas sistem dan pengguna</p>
+          </div>
         </div>
-      </div>
 
-      {/* Statistics */}
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
-        <Card className="border-2 border-indigo-200 bg-gradient-to-br from-indigo-50 to-purple-50">
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-semibold text-indigo-700">Total Aktivitas</CardTitle>
-            <div className="rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 p-2">
-              <Activity className="h-5 w-5 text-white" />
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold text-indigo-700">{stats?.totalLogs || 0}</div>
-            <p className="mt-1 text-xs font-medium text-indigo-600">Total Log Tercatat</p>
-          </CardContent>
-        </Card>
+        {/* Statistics */}
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+          <Card className="border-2 border-indigo-200 bg-gradient-to-br from-indigo-50 to-purple-50">
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-sm font-semibold text-indigo-700">
+                Total Aktivitas
+              </CardTitle>
+              <div className="rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 p-2">
+                <Activity className="h-5 w-5 text-white" />
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold text-indigo-700">{stats?.totalLogs || 0}</div>
+              <p className="mt-1 text-xs font-medium text-indigo-600">Total Log Tercatat</p>
+            </CardContent>
+          </Card>
 
-        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-        {stats?.moduleStats.slice(0, 3).map((stat: any) => {
-          const ModuleIcon = getModuleIcon(stat.module)
-          return (
-            <Card
-              key={stat.module}
-              className="border-l-4 shadow-sm transition-shadow hover:shadow-md"
-              style={{
-                borderLeftColor: getModuleColor(stat.module).includes('purple')
-                  ? '#9333ea'
-                  : getModuleColor(stat.module).includes('green')
-                    ? '#16a34a'
-                    : getModuleColor(stat.module).includes('blue')
-                      ? '#2563eb'
-                      : '#6b7280',
-              }}
+          {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+          {stats?.moduleStats.slice(0, 3).map((stat: any) => {
+            const ModuleIcon = getModuleIcon(stat.module)
+            return (
+              <Card
+                key={stat.module}
+                className="border-l-4 shadow-sm transition-shadow hover:shadow-md"
+                style={{
+                  borderLeftColor: getModuleColor(stat.module).includes('purple')
+                    ? '#9333ea'
+                    : getModuleColor(stat.module).includes('green')
+                      ? '#16a34a'
+                      : getModuleColor(stat.module).includes('blue')
+                        ? '#2563eb'
+                        : '#6b7280',
+                }}
+              >
+                <CardHeader className="flex flex-row items-center justify-between pb-2">
+                  <CardTitle className="text-sm font-semibold text-gray-700">
+                    {stat.module}
+                  </CardTitle>
+                  <div className={`rounded-full p-2 ${getModuleColor(stat.module).split(' ')[0]}`}>
+                    <ModuleIcon className="h-5 w-5" />
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold text-gray-900">{stat.count}</div>
+                  <p className="mt-1 text-xs font-medium text-gray-600">Log Aktivitas</p>
+                </CardContent>
+              </Card>
+            )
+          })}
+        </div>
+
+        {/* Filters */}
+        <div className="flex flex-col gap-4 sm:flex-row">
+          <div className="flex flex-1 items-center gap-2">
+            <Filter className="h-5 w-5 text-gray-400" />
+            <select
+              value={moduleFilter}
+              onChange={(e) => setModuleFilter(e.target.value)}
+              className="flex-1 rounded-lg border-2 px-4 py-2.5 font-medium focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
             >
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-semibold text-gray-700">{stat.module}</CardTitle>
-                <div className={`rounded-full p-2 ${getModuleColor(stat.module).split(' ')[0]}`}>
-                  <ModuleIcon className="h-5 w-5" />
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-gray-900">{stat.count}</div>
-                <p className="mt-1 text-xs font-medium text-gray-600">Log Aktivitas</p>
-              </CardContent>
-            </Card>
-          )
-        })}
-      </div>
+              <option value="">📋 Semua Modul</option>
+              <option value="AUTH">🔐 AUTH</option>
+              <option value="FINANCIAL">💰 FINANCIAL</option>
+              <option value="POS">🛒 POS</option>
+              <option value="INVENTORY">📦 INVENTORY</option>
+              <option value="SUPPLIER">🚚 SUPPLIER</option>
+              <option value="MEMBER">👥 MEMBER</option>
+            </select>
+          </div>
 
-      {/* Filters */}
-      <div className="flex flex-col gap-4 sm:flex-row">
-        <div className="flex flex-1 items-center gap-2">
-          <Filter className="h-5 w-5 text-gray-400" />
           <select
-            value={moduleFilter}
-            onChange={(e) => setModuleFilter(e.target.value)}
-            className="flex-1 rounded-lg border-2 px-4 py-2.5 font-medium focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+            value={actionFilter}
+            onChange={(e) => setActionFilter(e.target.value)}
+            className="rounded-lg border-2 px-4 py-2.5 font-medium focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
           >
-            <option value="">📋 Semua Modul</option>
-            <option value="AUTH">🔐 AUTH</option>
-            <option value="FINANCIAL">💰 FINANCIAL</option>
-            <option value="POS">🛒 POS</option>
-            <option value="INVENTORY">📦 INVENTORY</option>
-            <option value="SUPPLIER">🚚 SUPPLIER</option>
-            <option value="MEMBER">👥 MEMBER</option>
+            <option value="">⚡ Semua Aksi</option>
+            <option value="CREATE">➕ CREATE</option>
+            <option value="UPDATE">✏️ UPDATE</option>
+            <option value="DELETE">🗑️ DELETE</option>
+            <option value="LOGIN">🔓 LOGIN</option>
+            <option value="LOGOUT">🔒 LOGOUT</option>
           </select>
         </div>
 
-        <select
-          value={actionFilter}
-          onChange={(e) => setActionFilter(e.target.value)}
-          className="rounded-lg border-2 px-4 py-2.5 font-medium focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-        >
-          <option value="">⚡ Semua Aksi</option>
-          <option value="CREATE">➕ CREATE</option>
-          <option value="UPDATE">✏️ UPDATE</option>
-          <option value="DELETE">🗑️ DELETE</option>
-          <option value="LOGIN">🔓 LOGIN</option>
-          <option value="LOGOUT">🔒 LOGOUT</option>
-        </select>
-      </div>
+        {/* Activity Timeline */}
+        <div className="space-y-8">
+          {Object.entries(groupedLogs).map(([period, logs]) => {
+            if (logs.length === 0) return null
 
-      {/* Activity Timeline */}
-      <div className="space-y-8">
-        {Object.entries(groupedLogs).map(([period, logs]) => {
-          if (logs.length === 0) return null
-
-          return (
-            <div key={period}>
-              {/* Period Header */}
-              <div className="mb-4 flex items-center gap-3">
-                <div className="rounded-lg bg-indigo-100 p-2">
-                  <Calendar className="h-5 w-5 text-indigo-600" />
+            return (
+              <div key={period}>
+                {/* Period Header */}
+                <div className="mb-4 flex items-center gap-3">
+                  <div className="rounded-lg bg-indigo-100 p-2">
+                    <Calendar className="h-5 w-5 text-indigo-600" />
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-bold text-gray-900">{period}</h2>
+                    <p className="text-sm text-gray-600">{logs.length} aktivitas</p>
+                  </div>
                 </div>
-                <div>
-                  <h2 className="text-xl font-bold text-gray-900">{period}</h2>
-                  <p className="text-sm text-gray-600">{logs.length} aktivitas</p>
-                </div>
-              </div>
 
-              {/* Timeline */}
-              <div className="relative ml-6 space-y-6 border-l-2 border-gray-200 pl-8">
-                {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-                {logs.map((log: any) => {
-                  const ActionIcon = getActionIcon(log.action)
-                  const actionColors = getActionColor(log.action)
-                  const ModuleIcon = getModuleIcon(log.module)
+                {/* Timeline */}
+                <div className="relative ml-6 space-y-6 border-l-2 border-gray-200 pl-8">
+                  {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                  {logs.map((log: any) => {
+                    const ActionIcon = getActionIcon(log.action)
+                    const actionColors = getActionColor(log.action)
+                    const ModuleIcon = getModuleIcon(log.module)
 
-                  return (
-                    <div key={log.id} className="group relative">
-                      {/* Timeline Dot */}
-                      <div
-                        className={`absolute -left-[2.4rem] flex h-12 w-12 items-center justify-center rounded-full ${actionColors.bg} ring-4 ${actionColors.ring} transition-all group-hover:scale-110`}
-                      >
-                        <ActionIcon className="h-6 w-6 text-white" />
-                      </div>
+                    return (
+                      <div key={log.id} className="group relative">
+                        {/* Timeline Dot */}
+                        <div
+                          className={`absolute -left-[2.4rem] flex h-12 w-12 items-center justify-center rounded-full ${actionColors.bg} ring-4 ${actionColors.ring} transition-all group-hover:scale-110`}
+                        >
+                          <ActionIcon className="h-6 w-6 text-white" />
+                        </div>
 
-                      {/* Activity Card */}
-                      <Card className="transition-all hover:scale-[1.01] hover:shadow-lg">
-                        <CardContent className="p-5">
-                          <div className="flex items-start justify-between gap-4">
-                            {/* Left Side: User & Action Info */}
-                            <div className="flex flex-1 gap-4">
-                              {/* User Avatar */}
+                        {/* Activity Card */}
+                        <Card className="transition-all hover:scale-[1.01] hover:shadow-lg">
+                          <CardContent className="p-5">
+                            <div className="flex items-start justify-between gap-4">
+                              {/* Left Side: User & Action Info */}
+                              <div className="flex flex-1 gap-4">
+                                {/* User Avatar */}
+                                <div className="flex-shrink-0">
+                                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 text-sm font-bold text-white ring-2 ring-indigo-200">
+                                    {getUserInitials(log.user.full_name)}
+                                  </div>
+                                </div>
+
+                                {/* Activity Details */}
+                                <div className="min-w-0 flex-1">
+                                  <div className="mb-2 flex flex-wrap items-center gap-2">
+                                    <span className="font-bold text-gray-900">
+                                      {log.user.full_name}
+                                    </span>
+                                    <span className="text-sm text-gray-500">
+                                      @{log.user.username}
+                                    </span>
+                                    <span
+                                      className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-xs font-semibold ${getModuleColor(log.module)}`}
+                                    >
+                                      <ModuleIcon className="h-3 w-3" />
+                                      {log.module}
+                                    </span>
+                                  </div>
+
+                                  <p className="mb-2 text-sm text-gray-700">{log.description}</p>
+
+                                  <div className="flex items-center gap-2 text-xs text-gray-500">
+                                    <Clock className="h-3 w-3" />
+                                    {new Date(log.created_at).toLocaleString('id-ID', {
+                                      day: '2-digit',
+                                      month: 'short',
+                                      year: 'numeric',
+                                      hour: '2-digit',
+                                      minute: '2-digit',
+                                    })}
+                                  </div>
+                                </div>
+                              </div>
+
+                              {/* Right Side: Action Badge */}
                               <div className="flex-shrink-0">
-                                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 text-sm font-bold text-white ring-2 ring-indigo-200">
-                                  {getUserInitials(log.user.full_name)}
-                                </div>
-                              </div>
-
-                              {/* Activity Details */}
-                              <div className="min-w-0 flex-1">
-                                <div className="mb-2 flex flex-wrap items-center gap-2">
-                                  <span className="font-bold text-gray-900">
-                                    {log.user.full_name}
-                                  </span>
-                                  <span className="text-sm text-gray-500">
-                                    @{log.user.username}
-                                  </span>
-                                  <span
-                                    className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-xs font-semibold ${getModuleColor(log.module)}`}
-                                  >
-                                    <ModuleIcon className="h-3 w-3" />
-                                    {log.module}
-                                  </span>
-                                </div>
-
-                                <p className="mb-2 text-sm text-gray-700">{log.description}</p>
-
-                                <div className="flex items-center gap-2 text-xs text-gray-500">
-                                  <Clock className="h-3 w-3" />
-                                  {new Date(log.created_at).toLocaleString('id-ID', {
-                                    day: '2-digit',
-                                    month: 'short',
-                                    year: 'numeric',
-                                    hour: '2-digit',
-                                    minute: '2-digit',
-                                  })}
+                                <div
+                                  className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-semibold ${actionColors.light} ${actionColors.text}`}
+                                >
+                                  <ActionIcon className="h-4 w-4" />
+                                  {log.action}
                                 </div>
                               </div>
                             </div>
-
-                            {/* Right Side: Action Badge */}
-                            <div className="flex-shrink-0">
-                              <div
-                                className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-semibold ${actionColors.light} ${actionColors.text}`}
-                              >
-                                <ActionIcon className="h-4 w-4" />
-                                {log.action}
-                              </div>
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    </div>
-                  )
-                })}
+                          </CardContent>
+                        </Card>
+                      </div>
+                    )
+                  })}
+                </div>
               </div>
-            </div>
-          )
-        })}
+            )
+          })}
 
-        {/* Empty State */}
-        {logsData?.logs.length === 0 && (
-          <Card className="py-16">
-            <CardContent className="text-center">
-              <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-gray-100">
-                <Activity className="h-10 w-10 text-gray-400" />
-              </div>
-              <h3 className="mb-2 text-lg font-semibold text-gray-900">Belum Ada Aktivitas</h3>
-              <p className="text-sm text-gray-600">
-                Log aktivitas akan muncul di sini ketika ada aktivitas sistem
-              </p>
-            </CardContent>
-          </Card>
-        )}
+          {/* Empty State */}
+          {logsData?.logs.length === 0 && (
+            <Card className="py-16">
+              <CardContent className="text-center">
+                <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-gray-100">
+                  <Activity className="h-10 w-10 text-gray-400" />
+                </div>
+                <h3 className="mb-2 text-lg font-semibold text-gray-900">Belum Ada Aktivitas</h3>
+                <p className="text-sm text-gray-600">
+                  Log aktivitas akan muncul di sini ketika ada aktivitas sistem
+                </p>
+              </CardContent>
+            </Card>
+          )}
+        </div>
       </div>
-    </div>
+    </ResponsiveLayout>
   )
 }
