@@ -87,7 +87,7 @@ export default function InventoryPage() {
   const { data: suppliers } = trpc.inventory.getSuppliers.useQuery()
   const { data: lowStockAlerts } = trpc.inventory.getLowStockAlerts.useQuery()
   const { data: stats } = trpc.inventory.getInventoryStats.useQuery()
-  
+
   // Stock movements for selected product
   const { data: stockMovementsData } = trpc.inventory.getStockMovements.useQuery(
     {
@@ -257,7 +257,7 @@ export default function InventoryPage() {
             <div className="flex items-center justify-between">
               <CardTitle className="flex items-center gap-2 text-lg text-orange-700">
                 <div className="rounded-full bg-orange-600 p-2">
-                  <AlertTriangle className="h-5 w-5 text-white animate-pulse" />
+                  <AlertTriangle className="h-5 w-5 animate-pulse text-white" />
                 </div>
                 Peringatan Stok Menipis
                 <span className="rounded-full bg-orange-600 px-3 py-1 text-sm font-bold text-white">
@@ -283,54 +283,58 @@ export default function InventoryPage() {
                 return (
                   <Card
                     key={product.id}
-                    className="border-2 border-orange-200 bg-white transition-all hover:shadow-xl hover:border-orange-400"
+                    className="border-2 border-orange-200 bg-white transition-all hover:border-orange-400 hover:shadow-xl"
                   >
                     <CardContent className="p-4">
                       {/* Product Info */}
                       <div className="mb-3">
-                        <h3 className="font-bold text-gray-900 line-clamp-2 mb-1">
+                        <h3 className="mb-1 line-clamp-2 font-bold text-gray-900">
                           {product.name}
                         </h3>
-                        <p className="text-xs text-gray-500 font-mono bg-gray-100 px-2 py-1 rounded w-fit">
+                        <p className="w-fit rounded bg-gray-100 px-2 py-1 font-mono text-xs text-gray-500">
                           {product.sku}
                         </p>
                       </div>
 
                       {/* Stock Level Indicator */}
                       <div className="mb-3">
-                        <div className="flex items-center justify-between mb-1">
+                        <div className="mb-1 flex items-center justify-between">
                           <span className="text-xs font-medium text-gray-600">Stock Level</span>
-                          <span className={`text-xs font-bold ${
-                            stockPercentage < 50 ? 'text-red-600' :
-                            stockPercentage < 75 ? 'text-orange-600' :
-                            'text-yellow-600'
-                          }`}>
+                          <span
+                            className={`text-xs font-bold ${
+                              stockPercentage < 50
+                                ? 'text-red-600'
+                                : stockPercentage < 75
+                                  ? 'text-orange-600'
+                                  : 'text-yellow-600'
+                            }`}
+                          >
                             {stockPercentage.toFixed(0)}%
                           </span>
                         </div>
-                        <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+                        <div className="h-2 overflow-hidden rounded-full bg-gray-200">
                           <div
                             className={`h-full transition-all ${
-                              stockPercentage < 50 ? 'bg-red-500' :
-                              stockPercentage < 75 ? 'bg-orange-500' :
-                              'bg-yellow-500'
+                              stockPercentage < 50
+                                ? 'bg-red-500'
+                                : stockPercentage < 75
+                                  ? 'bg-orange-500'
+                                  : 'bg-yellow-500'
                             }`}
                             style={{ width: `${Math.min(stockPercentage, 100)}%` }}
                           />
                         </div>
-                        <div className="flex items-center justify-between mt-1">
+                        <div className="mt-1 flex items-center justify-between">
                           <span className="text-sm font-bold text-orange-600">
                             {product.stock} unit
                           </span>
-                          <span className="text-xs text-gray-500">
-                            Min: {product.min_stock}
-                          </span>
+                          <span className="text-xs text-gray-500">Min: {product.min_stock}</span>
                         </div>
                       </div>
 
                       {/* Supplier Info */}
-                      <div className="mb-3 p-2 bg-blue-50 rounded-lg border border-blue-200">
-                        <div className="flex items-center gap-2 mb-1">
+                      <div className="mb-3 rounded-lg border border-blue-200 bg-blue-50 p-2">
+                        <div className="mb-1 flex items-center gap-2">
                           <Package className="h-3 w-3 text-blue-600" />
                           <span className="text-xs font-semibold text-blue-900">Supplier</span>
                         </div>
@@ -338,22 +342,18 @@ export default function InventoryPage() {
                           {product.supplier?.business_name || 'N/A'}
                         </p>
                         {product.supplier?.phone && (
-                          <p className="text-xs text-blue-600">
-                            📞 {product.supplier.phone}
-                          </p>
+                          <p className="text-xs text-blue-600">📞 {product.supplier.phone}</p>
                         )}
                       </div>
 
                       {/* Reorder Suggestion */}
-                      <div className="p-2 bg-green-50 rounded-lg border border-green-200 mb-3">
+                      <div className="mb-3 rounded-lg border border-green-200 bg-green-50 p-2">
                         <div className="flex items-center justify-between">
                           <div>
                             <p className="text-xs font-semibold text-green-900">
                               Reorder Suggestion
                             </p>
-                            <p className="text-lg font-bold text-green-600">
-                              +{reorderQty} unit
-                            </p>
+                            <p className="text-lg font-bold text-green-600">+{reorderQty} unit</p>
                           </div>
                           <TrendingDown className="h-6 w-6 text-green-600" />
                         </div>
@@ -363,7 +363,7 @@ export default function InventoryPage() {
                       <div className="flex gap-2">
                         <Button
                           size="sm"
-                          className="flex-1 bg-green-600 hover:bg-green-700 text-xs"
+                          className="flex-1 bg-green-600 text-xs hover:bg-green-700"
                           onClick={() => {
                             setSelectedProduct(product.id)
                             setStockMovement({
@@ -396,7 +396,10 @@ export default function InventoryPage() {
             {/* Show More if there are more alerts */}
             {lowStockAlerts.length > 6 && (
               <div className="mt-4 text-center">
-                <Button variant="outline" className="border-orange-600 text-orange-600 hover:bg-orange-50">
+                <Button
+                  variant="outline"
+                  className="border-orange-600 text-orange-600 hover:bg-orange-50"
+                >
                   Show {lowStockAlerts.length - 6} More Alerts
                 </Button>
               </div>
@@ -742,8 +745,8 @@ export default function InventoryPage() {
 
       {/* Product Form Modal - Enhanced */}
       {showForm && (
-        <div className="bg-black/50 backdrop-blur-sm fixed inset-0 z-50 flex items-center justify-center overflow-y-auto p-4 animate-in fade-in duration-200">
-          <Card className="my-8 w-full max-w-3xl shadow-2xl animate-in zoom-in duration-200">
+        <div className="animate-in fade-in fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/50 p-4 backdrop-blur-sm duration-200">
+          <Card className="animate-in zoom-in my-8 w-full max-w-3xl shadow-2xl duration-200">
             <CardHeader className="bg-gradient-to-r from-green-600 to-emerald-600 text-white">
               <div className="flex items-center justify-between">
                 <CardTitle className="flex items-center gap-2 text-xl">
@@ -762,8 +765,8 @@ export default function InventoryPage() {
             <CardContent className="p-6">
               <form onSubmit={handleSubmit} className="space-y-6">
                 {/* Basic Information Section */}
-                <div className="rounded-lg border-2 border-gray-200 p-4 bg-gray-50">
-                  <h3 className="text-sm font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <div className="rounded-lg border-2 border-gray-200 bg-gray-50 p-4">
+                  <h3 className="mb-4 flex items-center gap-2 text-sm font-bold text-gray-900">
                     <Package className="h-4 w-4 text-green-600" />
                     Informasi Dasar
                   </h3>
@@ -779,7 +782,7 @@ export default function InventoryPage() {
                           value={formData.sku}
                           onChange={(e) => setFormData({ ...formData, sku: e.target.value })}
                           placeholder="contoh: PRD-001"
-                          className="w-full rounded-lg border-2 px-4 py-2.5 font-mono focus:ring-2 focus:ring-green-500 focus:border-green-500 focus:outline-none transition-all"
+                          className="w-full rounded-lg border-2 px-4 py-2.5 font-mono transition-all focus:border-green-500 focus:ring-2 focus:ring-green-500 focus:outline-none"
                         />
                       </div>
                       <div>
@@ -792,7 +795,7 @@ export default function InventoryPage() {
                           value={formData.name}
                           onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                           placeholder="Nama lengkap produk"
-                          className="w-full rounded-lg border-2 px-4 py-2.5 focus:ring-2 focus:ring-green-500 focus:border-green-500 focus:outline-none transition-all"
+                          className="w-full rounded-lg border-2 px-4 py-2.5 transition-all focus:border-green-500 focus:ring-2 focus:ring-green-500 focus:outline-none"
                         />
                       </div>
                     </div>
@@ -806,15 +809,15 @@ export default function InventoryPage() {
                         onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                         rows={3}
                         placeholder="Deskripsi detail tentang produk ini..."
-                        className="w-full rounded-lg border-2 px-4 py-2.5 focus:ring-2 focus:ring-green-500 focus:border-green-500 focus:outline-none transition-all resize-none"
+                        className="w-full resize-none rounded-lg border-2 px-4 py-2.5 transition-all focus:border-green-500 focus:ring-2 focus:ring-green-500 focus:outline-none"
                       />
                     </div>
                   </div>
                 </div>
 
                 {/* Category & Supplier Section */}
-                <div className="rounded-lg border-2 border-gray-200 p-4 bg-blue-50">
-                  <h3 className="text-sm font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <div className="rounded-lg border-2 border-gray-200 bg-blue-50 p-4">
+                  <h3 className="mb-4 flex items-center gap-2 text-sm font-bold text-gray-900">
                     <Box className="h-4 w-4 text-blue-600" />
                     Kategori & Supplier
                   </h3>
@@ -827,7 +830,7 @@ export default function InventoryPage() {
                         required
                         value={formData.category_id}
                         onChange={(e) => setFormData({ ...formData, category_id: e.target.value })}
-                        className="w-full rounded-lg border-2 px-4 py-2.5 font-medium focus:ring-2 focus:ring-green-500 focus:border-green-500 focus:outline-none transition-all bg-white"
+                        className="w-full rounded-lg border-2 bg-white px-4 py-2.5 font-medium transition-all focus:border-green-500 focus:ring-2 focus:ring-green-500 focus:outline-none"
                       >
                         <option value="">-- Pilih Kategori --</option>
                         {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
@@ -846,7 +849,7 @@ export default function InventoryPage() {
                         required
                         value={formData.supplier_id}
                         onChange={(e) => setFormData({ ...formData, supplier_id: e.target.value })}
-                        className="w-full rounded-lg border-2 px-4 py-2.5 font-medium focus:ring-2 focus:ring-green-500 focus:border-green-500 focus:outline-none transition-all bg-white"
+                        className="w-full rounded-lg border-2 bg-white px-4 py-2.5 font-medium transition-all focus:border-green-500 focus:ring-2 focus:ring-green-500 focus:outline-none"
                       >
                         <option value="">-- Pilih Supplier --</option>
                         {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
@@ -861,8 +864,8 @@ export default function InventoryPage() {
                 </div>
 
                 {/* Pricing Section */}
-                <div className="rounded-lg border-2 border-gray-200 p-4 bg-green-50">
-                  <h3 className="text-sm font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <div className="rounded-lg border-2 border-gray-200 bg-green-50 p-4">
+                  <h3 className="mb-4 flex items-center gap-2 text-sm font-bold text-gray-900">
                     <DollarSign className="h-4 w-4 text-green-600" />
                     Harga & Margin Keuntungan
                   </h3>
@@ -882,7 +885,7 @@ export default function InventoryPage() {
                             setFormData({ ...formData, purchase_price: Number(e.target.value) })
                           }
                           placeholder="0"
-                          className="w-full rounded-lg border-2 px-4 py-2.5 text-lg font-bold focus:ring-2 focus:ring-green-500 focus:border-green-500 focus:outline-none transition-all"
+                          className="w-full rounded-lg border-2 px-4 py-2.5 text-lg font-bold transition-all focus:border-green-500 focus:ring-2 focus:ring-green-500 focus:outline-none"
                         />
                       </div>
                       <div>
@@ -899,25 +902,33 @@ export default function InventoryPage() {
                             setFormData({ ...formData, selling_price: Number(e.target.value) })
                           }
                           placeholder="0"
-                          className="w-full rounded-lg border-2 px-4 py-2.5 text-lg font-bold focus:ring-2 focus:ring-green-500 focus:border-green-500 focus:outline-none transition-all"
+                          className="w-full rounded-lg border-2 px-4 py-2.5 text-lg font-bold transition-all focus:border-green-500 focus:ring-2 focus:ring-green-500 focus:outline-none"
                         />
                       </div>
                     </div>
 
                     {/* Profit Margin Calculator */}
                     {formData.purchase_price > 0 && formData.selling_price > 0 && (
-                      <div className="rounded-lg bg-white p-3 border-2 border-green-200">
+                      <div className="rounded-lg border-2 border-green-200 bg-white p-3">
                         <div className="flex items-center justify-between">
                           <div>
                             <p className="text-xs font-medium text-gray-600">Profit Margin</p>
                             <p className="text-2xl font-bold text-green-600">
-                              {(((formData.selling_price - formData.purchase_price) / formData.purchase_price) * 100).toFixed(1)}%
+                              {(
+                                ((formData.selling_price - formData.purchase_price) /
+                                  formData.purchase_price) *
+                                100
+                              ).toFixed(1)}
+                              %
                             </p>
                           </div>
                           <div className="text-right">
                             <p className="text-xs font-medium text-gray-600">Profit Per Unit</p>
                             <p className="text-lg font-bold text-green-600">
-                              Rp {(formData.selling_price - formData.purchase_price).toLocaleString('id-ID')}
+                              Rp{' '}
+                              {(formData.selling_price - formData.purchase_price).toLocaleString(
+                                'id-ID'
+                              )}
                             </p>
                           </div>
                         </div>
@@ -927,8 +938,8 @@ export default function InventoryPage() {
                 </div>
 
                 {/* Stock Management Section */}
-                <div className="rounded-lg border-2 border-gray-200 p-4 bg-purple-50">
-                  <h3 className="text-sm font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <div className="rounded-lg border-2 border-gray-200 bg-purple-50 p-4">
+                  <h3 className="mb-4 flex items-center gap-2 text-sm font-bold text-gray-900">
                     <TrendingUp className="h-4 w-4 text-purple-600" />
                     Manajemen Stok
                   </h3>
@@ -936,27 +947,34 @@ export default function InventoryPage() {
                     <div className="grid grid-cols-2 gap-4">
                       <div>
                         <label className="mb-2 block text-sm font-semibold text-gray-700">
-                          Stok Awal * {formData.id && <span className="text-xs text-orange-600">(Tidak bisa diubah)</span>}
+                          Stok Awal *{' '}
+                          {formData.id && (
+                            <span className="text-xs text-orange-600">(Tidak bisa diubah)</span>
+                          )}
                         </label>
                         <input
                           type="number"
                           required
                           min="0"
                           value={formData.stock || ''}
-                          onChange={(e) => setFormData({ ...formData, stock: Number(e.target.value) })}
+                          onChange={(e) =>
+                            setFormData({ ...formData, stock: Number(e.target.value) })
+                          }
                           placeholder="0"
                           disabled={!!formData.id}
-                          className="w-full rounded-lg border-2 px-4 py-2.5 text-lg font-bold focus:ring-2 focus:ring-green-500 focus:border-green-500 focus:outline-none transition-all disabled:bg-gray-200 disabled:cursor-not-allowed"
+                          className="w-full rounded-lg border-2 px-4 py-2.5 text-lg font-bold transition-all focus:border-green-500 focus:ring-2 focus:ring-green-500 focus:outline-none disabled:cursor-not-allowed disabled:bg-gray-200"
                         />
                         {formData.id && (
                           <p className="mt-1 text-xs text-gray-600">
-                            💡 Gunakan <span className="font-bold">&quot;Kelola Stok&quot;</span> untuk update stok
+                            💡 Gunakan <span className="font-bold">&quot;Kelola Stok&quot;</span>{' '}
+                            untuk update stok
                           </p>
                         )}
                       </div>
                       <div>
                         <label className="mb-2 block text-sm font-semibold text-gray-700">
-                          Stok Minimum * <span className="text-xs text-gray-500">(Alert threshold)</span>
+                          Stok Minimum *{' '}
+                          <span className="text-xs text-gray-500">(Alert threshold)</span>
                         </label>
                         <input
                           type="number"
@@ -967,36 +985,42 @@ export default function InventoryPage() {
                             setFormData({ ...formData, min_stock: Number(e.target.value) })
                           }
                           placeholder="0"
-                          className="w-full rounded-lg border-2 px-4 py-2.5 text-lg font-bold focus:ring-2 focus:ring-green-500 focus:border-green-500 focus:outline-none transition-all"
+                          className="w-full rounded-lg border-2 px-4 py-2.5 text-lg font-bold transition-all focus:border-green-500 focus:ring-2 focus:ring-green-500 focus:outline-none"
                         />
                       </div>
                     </div>
 
                     {/* Stock Alert Preview */}
-                    {formData.stock !== undefined && formData.min_stock !== undefined && formData.stock <= formData.min_stock && (
-                      <div className="rounded-lg bg-orange-100 border-2 border-orange-300 p-3 flex items-center gap-3">
-                        <AlertTriangle className="h-5 w-5 text-orange-600 flex-shrink-0" />
-                        <div>
-                          <p className="text-sm font-bold text-orange-800">Peringatan Stok Rendah!</p>
-                          <p className="text-xs text-orange-700">
-                            Stok saat ini ({formData.stock}) berada di atau di bawah minimum ({formData.min_stock})
-                          </p>
+                    {formData.stock !== undefined &&
+                      formData.min_stock !== undefined &&
+                      formData.stock <= formData.min_stock && (
+                        <div className="flex items-center gap-3 rounded-lg border-2 border-orange-300 bg-orange-100 p-3">
+                          <AlertTriangle className="h-5 w-5 flex-shrink-0 text-orange-600" />
+                          <div>
+                            <p className="text-sm font-bold text-orange-800">
+                              Peringatan Stok Rendah!
+                            </p>
+                            <p className="text-xs text-orange-700">
+                              Stok saat ini ({formData.stock}) berada di atau di bawah minimum (
+                              {formData.min_stock})
+                            </p>
+                          </div>
                         </div>
-                      </div>
-                    )}
+                      )}
                   </div>
                 </div>
 
                 {/* Image Upload Section */}
-                <div className="rounded-lg border-2 border-gray-200 p-4 bg-indigo-50">
-                  <h3 className="text-sm font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <div className="rounded-lg border-2 border-gray-200 bg-indigo-50 p-4">
+                  <h3 className="mb-4 flex items-center gap-2 text-sm font-bold text-gray-900">
                     <ImageIcon className="h-4 w-4 text-indigo-600" />
-                    Gambar Produk <span className="text-xs text-gray-500 font-normal">(Opsional)</span>
+                    Gambar Produk{' '}
+                    <span className="text-xs font-normal text-gray-500">(Opsional)</span>
                   </h3>
                   <div className="space-y-4">
                     {/* Image Preview */}
                     {formData.image && (
-                      <div className="relative group w-full aspect-square max-w-xs mx-auto rounded-lg overflow-hidden border-2 border-indigo-200">
+                      <div className="group relative mx-auto aspect-square w-full max-w-xs overflow-hidden rounded-lg border-2 border-indigo-200">
                         <Image
                           src={formData.image}
                           alt="Product preview"
@@ -1006,7 +1030,7 @@ export default function InventoryPage() {
                         <button
                           type="button"
                           onClick={() => setFormData({ ...formData, image: undefined })}
-                          className="absolute top-2 right-2 p-2 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600"
+                          className="absolute top-2 right-2 rounded-full bg-red-500 p-2 text-white opacity-0 transition-opacity group-hover:opacity-100 hover:bg-red-600"
                         >
                           <X className="h-4 w-4" />
                         </button>
@@ -1014,12 +1038,13 @@ export default function InventoryPage() {
                     )}
 
                     {/* Upload Button */}
-                    <div className="flex items-center justify-center w-full">
-                      <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-indigo-300 border-dashed rounded-lg cursor-pointer bg-white hover:bg-indigo-100 transition-colors">
+                    <div className="flex w-full items-center justify-center">
+                      <label className="flex h-32 w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-indigo-300 bg-white transition-colors hover:bg-indigo-100">
                         <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                          <Upload className="h-8 w-8 text-indigo-600 mb-2" />
+                          <Upload className="mb-2 h-8 w-8 text-indigo-600" />
                           <p className="mb-2 text-sm font-semibold text-gray-700">
-                            <span className="text-indigo-600">Click to upload</span> or drag and drop
+                            <span className="text-indigo-600">Click to upload</span> or drag and
+                            drop
                           </p>
                           <p className="text-xs text-gray-500">PNG, JPG, JPEG (MAX. 2MB)</p>
                         </div>
@@ -1049,37 +1074,40 @@ export default function InventoryPage() {
                     </div>
 
                     {/* Future-proof note */}
-                    <p className="text-xs text-gray-500 italic text-center">
-                      💡 <span className="font-semibold">Production:</span> Gambar akan di-upload ke cloud storage untuk performa optimal
+                    <p className="text-center text-xs text-gray-500 italic">
+                      💡 <span className="font-semibold">Production:</span> Gambar akan di-upload ke
+                      cloud storage untuk performa optimal
                     </p>
                   </div>
                 </div>
 
                 {/* Status & Settings Section */}
-                <div className="rounded-lg border-2 border-gray-200 p-4 bg-gray-50">
-                  <h3 className="text-sm font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <div className="rounded-lg border-2 border-gray-200 bg-gray-50 p-4">
+                  <h3 className="mb-4 flex items-center gap-2 text-sm font-bold text-gray-900">
                     <Settings className="h-4 w-4 text-gray-600" />
                     Status & Pengaturan
                   </h3>
                   <div className="space-y-3">
-                    <label className="flex items-center gap-3 cursor-pointer group">
+                    <label className="group flex cursor-pointer items-center gap-3">
                       <div className="relative">
                         <input
                           type="checkbox"
                           checked={formData.is_active}
-                          onChange={(e) => setFormData({ ...formData, is_active: e.target.checked })}
-                          className="sr-only peer"
+                          onChange={(e) =>
+                            setFormData({ ...formData, is_active: e.target.checked })
+                          }
+                          className="peer sr-only"
                         />
-                        <div className="w-11 h-6 bg-gray-300 rounded-full peer peer-checked:bg-green-500 transition-colors"></div>
-                        <div className="absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform peer-checked:translate-x-5"></div>
+                        <div className="peer h-6 w-11 rounded-full bg-gray-300 transition-colors peer-checked:bg-green-500"></div>
+                        <div className="absolute top-1 left-1 h-4 w-4 rounded-full bg-white transition-transform peer-checked:translate-x-5"></div>
                       </div>
                       <div>
-                        <span className="text-sm font-bold text-gray-900 group-hover:text-green-600 transition-colors">
+                        <span className="text-sm font-bold text-gray-900 transition-colors group-hover:text-green-600">
                           {formData.is_active ? '✅ Produk Aktif' : '❌ Produk Non-aktif'}
                         </span>
                         <p className="text-xs text-gray-600">
-                          {formData.is_active 
-                            ? 'Produk dapat dijual dan muncul di POS' 
+                          {formData.is_active
+                            ? 'Produk dapat dijual dan muncul di POS'
                             : 'Produk disembunyikan dari POS'}
                         </p>
                       </div>
@@ -1087,15 +1115,15 @@ export default function InventoryPage() {
 
                     {/* Quick Stock Action for Edit Mode */}
                     {formData.id && (
-                      <div className="mt-4 p-3 bg-blue-50 border-2 border-blue-200 rounded-lg">
-                        <p className="text-xs font-semibold text-blue-900 mb-2">⚡ Aksi Cepat</p>
+                      <div className="mt-4 rounded-lg border-2 border-blue-200 bg-blue-50 p-3">
+                        <p className="mb-2 text-xs font-semibold text-blue-900">⚡ Aksi Cepat</p>
                         <button
                           type="button"
                           onClick={() => {
                             setShowForm(false)
                             setShowStockModal(true)
                           }}
-                          className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg font-bold hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
+                          className="flex w-full items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2 font-bold text-white transition-colors hover:bg-blue-700"
                         >
                           <TrendingUp className="h-4 w-4" />
                           Kelola Stok Sekarang
@@ -1132,8 +1160,8 @@ export default function InventoryPage() {
 
       {/* Stock Movement Modal with Timeline History */}
       {showStockModal && (
-        <div className="bg-black/50 backdrop-blur-sm fixed inset-0 z-50 flex items-center justify-center p-4 animate-in fade-in">
-          <Card className="w-full max-w-4xl max-h-[90vh] overflow-hidden animate-in zoom-in">
+        <div className="animate-in fade-in fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
+          <Card className="animate-in zoom-in max-h-[90vh] w-full max-w-4xl overflow-hidden">
             <CardHeader className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white">
               <div className="flex items-center justify-between">
                 <div>
@@ -1142,7 +1170,7 @@ export default function InventoryPage() {
                     Mutasi Stok
                   </CardTitle>
                   {selectedProduct && (
-                    <p className="text-sm text-purple-100 mt-1">
+                    <p className="mt-1 text-sm text-purple-100">
                       {
                         productsData?.products.find(
                           // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -1161,15 +1189,15 @@ export default function InventoryPage() {
                 </Button>
               </div>
             </CardHeader>
-            <CardContent className="p-6 overflow-y-auto max-h-[calc(90vh-80px)]">
-              <div className="grid md:grid-cols-2 gap-6">
+            <CardContent className="max-h-[calc(90vh-80px)] overflow-y-auto p-6">
+              <div className="grid gap-6 md:grid-cols-2">
                 {/* Left: Stock Movement Form */}
                 <div className="space-y-4">
-                  <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+                  <h3 className="flex items-center gap-2 text-lg font-bold text-gray-900">
                     <TrendingUp className="h-5 w-5 text-purple-600" />
                     Tambah Mutasi Baru
                   </h3>
-                  <div className="space-y-4 p-4 bg-purple-50 rounded-lg border-2 border-purple-200">
+                  <div className="space-y-4 rounded-lg border-2 border-purple-200 bg-purple-50 p-4">
                     <div>
                       <label className="mb-2 block text-sm font-semibold text-gray-700">
                         Jenis Mutasi *
@@ -1180,7 +1208,7 @@ export default function InventoryPage() {
                           // eslint-disable-next-line @typescript-eslint/no-explicit-any
                           setStockMovement({ ...stockMovement, type: e.target.value as any })
                         }
-                        className="w-full rounded-lg border-2 px-4 py-2.5 font-medium focus:ring-2 focus:ring-purple-500 focus:border-purple-500 focus:outline-none transition-all"
+                        className="w-full rounded-lg border-2 px-4 py-2.5 font-medium transition-all focus:border-purple-500 focus:ring-2 focus:ring-purple-500 focus:outline-none"
                       >
                         <option value="IN">📥 Stok Masuk (IN)</option>
                         <option value="OUT">📤 Stok Keluar (OUT)</option>
@@ -1200,7 +1228,7 @@ export default function InventoryPage() {
                           setStockMovement({ ...stockMovement, quantity: Number(e.target.value) })
                         }
                         placeholder="0"
-                        className="w-full rounded-lg border-2 px-4 py-2.5 text-lg font-bold focus:ring-2 focus:ring-purple-500 focus:border-purple-500 focus:outline-none transition-all"
+                        className="w-full rounded-lg border-2 px-4 py-2.5 text-lg font-bold transition-all focus:border-purple-500 focus:ring-2 focus:ring-purple-500 focus:outline-none"
                       />
                     </div>
 
@@ -1214,7 +1242,7 @@ export default function InventoryPage() {
                           setStockMovement({ ...stockMovement, notes: e.target.value })
                         }
                         rows={3}
-                        className="w-full rounded-lg border-2 px-4 py-2.5 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 focus:outline-none transition-all resize-none"
+                        className="w-full resize-none rounded-lg border-2 px-4 py-2.5 transition-all focus:border-purple-500 focus:ring-2 focus:ring-purple-500 focus:outline-none"
                         placeholder="Tambahkan catatan untuk mutasi ini..."
                       />
                     </div>
@@ -1240,7 +1268,7 @@ export default function InventoryPage() {
 
                 {/* Right: Stock Movement History Timeline */}
                 <div className="space-y-4">
-                  <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+                  <h3 className="flex items-center gap-2 text-lg font-bold text-gray-900">
                     <Clock className="h-5 w-5 text-indigo-600" />
                     Riwayat Mutasi Stok
                   </h3>
@@ -1252,8 +1280,9 @@ export default function InventoryPage() {
                         {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                         {stockMovementsData.movements.map((movement: any, index: number) => {
                           const isLast = index === stockMovementsData.movements.length - 1
-                          
-                          const typeConfigs = {
+
+                          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                          const typeConfigs: Record<string, any> = {
                             IN: {
                               icon: ArrowUp,
                               color: 'text-green-600',
@@ -1279,9 +1308,10 @@ export default function InventoryPage() {
                               sign: '±',
                             },
                           }
-                          
-                          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                          const typeConfig = (typeConfigs as any)[movement.type] || typeConfigs.ADJUSTMENT
+
+                          const typeConfig =
+                            typeConfigs[movement.type as keyof typeof typeConfigs] ||
+                            typeConfigs.ADJUSTMENT
 
                           const Icon = typeConfig.icon
                           const date = new Date(movement.created_at)
@@ -1299,7 +1329,7 @@ export default function InventoryPage() {
                             <div key={movement.id} className="relative flex gap-4">
                               {/* Timeline Line */}
                               {!isLast && (
-                                <div className="absolute left-[18px] top-10 bottom-0 w-0.5 bg-gray-300" />
+                                <div className="absolute top-10 bottom-0 left-[18px] w-0.5 bg-gray-300" />
                               )}
 
                               {/* Icon Circle */}
@@ -1311,35 +1341,31 @@ export default function InventoryPage() {
 
                               {/* Content Card */}
                               <div className="flex-1 pb-6">
-                                <div className="rounded-lg border-2 border-gray-200 bg-white p-3 shadow-sm hover:shadow-md transition-shadow">
-                                  <div className="flex items-start justify-between mb-2">
+                                <div className="rounded-lg border-2 border-gray-200 bg-white p-3 shadow-sm transition-shadow hover:shadow-md">
+                                  <div className="mb-2 flex items-start justify-between">
                                     <div>
-                                      <span
-                                        className={`text-sm font-bold ${typeConfig.color}`}
-                                      >
+                                      <span className={`text-sm font-bold ${typeConfig.color}`}>
                                         {typeConfig.label}
                                       </span>
-                                      <div className="text-xs text-gray-500 mt-0.5 flex items-center gap-1">
+                                      <div className="mt-0.5 flex items-center gap-1 text-xs text-gray-500">
                                         <Clock className="h-3 w-3" />
                                         {formattedDate} • {formattedTime}
                                       </div>
                                     </div>
-                                    <span
-                                      className={`text-lg font-bold ${typeConfig.color}`}
-                                    >
+                                    <span className={`text-lg font-bold ${typeConfig.color}`}>
                                       {typeConfig.sign}
                                       {movement.quantity}
                                     </span>
                                   </div>
 
                                   {movement.notes && (
-                                    <p className="text-sm text-gray-700 bg-gray-50 p-2 rounded border border-gray-200 mt-2">
+                                    <p className="mt-2 rounded border border-gray-200 bg-gray-50 p-2 text-sm text-gray-700">
                                       💬 {movement.notes}
                                     </p>
                                   )}
 
                                   {movement.created_by && (
-                                    <div className="flex items-center gap-1 mt-2 text-xs text-gray-500">
+                                    <div className="mt-2 flex items-center gap-1 text-xs text-gray-500">
                                       <User className="h-3 w-3" />
                                       <span>oleh: {movement.created_by}</span>
                                     </div>
@@ -1352,8 +1378,8 @@ export default function InventoryPage() {
                       </div>
                     ) : (
                       <div className="flex flex-col items-center justify-center py-12 text-center">
-                        <Clock className="h-16 w-16 text-gray-300 mb-4" />
-                        <p className="text-sm font-semibold text-gray-600 mb-1">
+                        <Clock className="mb-4 h-16 w-16 text-gray-300" />
+                        <p className="mb-1 text-sm font-semibold text-gray-600">
                           Belum Ada Riwayat Mutasi
                         </p>
                         <p className="text-xs text-gray-500">

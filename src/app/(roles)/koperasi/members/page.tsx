@@ -4,7 +4,19 @@ import { useState, useMemo } from 'react'
 import { trpc } from '@/lib/trpc'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Plus, Users, TrendingUp, TrendingDown, DollarSign, X, Search, Wallet, History, ArrowUpCircle, ArrowDownCircle } from 'lucide-react'
+import {
+  Plus,
+  Users,
+  TrendingUp,
+  TrendingDown,
+  DollarSign,
+  X,
+  Search,
+  Wallet,
+  History,
+  ArrowUpCircle,
+  ArrowDownCircle,
+} from 'lucide-react'
 
 type TransactionType = 'MEMBER_DEPOSIT' | 'MEMBER_WITHDRAWAL'
 type ViewMode = 'members' | 'transactions'
@@ -135,7 +147,10 @@ export default function MembersPage() {
             Kelola simpanan dan transaksi anggota koperasi
           </p>
         </div>
-        <Button onClick={() => setShowForm(true)} className="bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700">
+        <Button
+          onClick={() => setShowForm(true)}
+          className="bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700"
+        >
           <Plus className="mr-2 h-4 w-4" />
           Transaksi Baru
         </Button>
@@ -158,7 +173,7 @@ export default function MembersPage() {
           </CardContent>
         </Card>
 
-        <Card className="border-l-4 border-l-green-500 shadow-sm hover:shadow-md transition-shadow">
+        <Card className="border-l-4 border-l-green-500 shadow-sm transition-shadow hover:shadow-md">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-semibold text-gray-700">Total Setoran</CardTitle>
             <div className="rounded-full bg-green-100 p-2">
@@ -175,7 +190,7 @@ export default function MembersPage() {
           </CardContent>
         </Card>
 
-        <Card className="border-l-4 border-l-red-500 shadow-sm hover:shadow-md transition-shadow">
+        <Card className="border-l-4 border-l-red-500 shadow-sm transition-shadow hover:shadow-md">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-semibold text-gray-700">Total Penarikan</CardTitle>
             <div className="rounded-full bg-red-100 p-2">
@@ -192,7 +207,7 @@ export default function MembersPage() {
           </CardContent>
         </Card>
 
-        <Card className="border-l-4 border-l-blue-500 shadow-sm hover:shadow-md transition-shadow">
+        <Card className="border-l-4 border-l-blue-500 shadow-sm transition-shadow hover:shadow-md">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-semibold text-gray-700">Total Anggota</CardTitle>
             <div className="rounded-full bg-blue-100 p-2">
@@ -200,12 +215,8 @@ export default function MembersPage() {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-gray-900">
-              {memberBalances.length}
-            </div>
-            <p className="mt-1 text-xs font-medium text-gray-600">
-              Anggota Aktif
-            </p>
+            <div className="text-2xl font-bold text-gray-900">{memberBalances.length}</div>
+            <p className="mt-1 text-xs font-medium text-gray-600">Anggota Aktif</p>
           </CardContent>
         </Card>
       </div>
@@ -238,7 +249,7 @@ export default function MembersPage() {
             placeholder="Cari nama anggota..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full rounded-lg border-2 py-2.5 pr-4 pl-10 font-medium focus:ring-2 focus:ring-teal-500 focus:border-teal-500 focus:outline-none"
+            className="w-full rounded-lg border-2 py-2.5 pr-4 pl-10 font-medium focus:border-teal-500 focus:ring-2 focus:ring-teal-500 focus:outline-none"
           />
         </div>
 
@@ -246,7 +257,7 @@ export default function MembersPage() {
           <select
             value={filterType}
             onChange={(e) => setFilterType(e.target.value as TransactionType | '')}
-            className="rounded-lg border-2 px-4 py-2.5 font-medium focus:ring-2 focus:ring-teal-500 focus:border-teal-500 focus:outline-none"
+            className="rounded-lg border-2 px-4 py-2.5 font-medium focus:border-teal-500 focus:ring-2 focus:ring-teal-500 focus:outline-none"
           >
             <option value="">Semua Jenis</option>
             <option value="MEMBER_DEPOSIT">Setoran</option>
@@ -259,13 +270,11 @@ export default function MembersPage() {
       {viewMode === 'members' && (
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           {memberBalances
-            .filter((member) =>
-              member.name.toLowerCase().includes(searchQuery.toLowerCase())
-            )
+            .filter((member) => member.name.toLowerCase().includes(searchQuery.toLowerCase()))
             .map((member, index) => (
               <Card
                 key={member.name}
-                className="group overflow-hidden border-2 transition-all hover:shadow-lg hover:scale-[1.02]"
+                className="group overflow-hidden border-2 transition-all hover:scale-[1.02] hover:shadow-lg"
               >
                 {/* Header with Gradient */}
                 <div className="bg-linear-to-r from-teal-600 to-cyan-600 px-6 py-4 text-white">
@@ -282,12 +291,10 @@ export default function MembersPage() {
 
                 <CardContent className="p-6">
                   {/* Balance Section */}
-                  <div className="mb-6 rounded-xl bg-gradient-to-br from-teal-50 to-cyan-50 p-4 border-2 border-teal-200">
+                  <div className="mb-6 rounded-xl border-2 border-teal-200 bg-gradient-to-br from-teal-50 to-cyan-50 p-4">
                     <div className="mb-2 flex items-center gap-2">
                       <Wallet className="h-5 w-5 text-teal-600" />
-                      <span className="text-sm font-semibold text-teal-700">
-                        Saldo Simpanan
-                      </span>
+                      <span className="text-sm font-semibold text-teal-700">Saldo Simpanan</span>
                     </div>
                     <div className="text-3xl font-bold text-teal-700">
                       Rp {member.balance.toLocaleString('id-ID')}
@@ -308,7 +315,7 @@ export default function MembersPage() {
 
                   {/* Transaction Stats */}
                   <div className="mb-6 grid grid-cols-2 gap-3">
-                    <div className="rounded-lg bg-green-50 p-3 border border-green-200">
+                    <div className="rounded-lg border border-green-200 bg-green-50 p-3">
                       <div className="mb-1 flex items-center gap-1">
                         <ArrowUpCircle className="h-4 w-4 text-green-600" />
                         <span className="text-xs font-semibold text-green-700">Setoran</span>
@@ -319,7 +326,7 @@ export default function MembersPage() {
                       <p className="text-xs text-green-600">{member.depositCount}x transaksi</p>
                     </div>
 
-                    <div className="rounded-lg bg-red-50 p-3 border border-red-200">
+                    <div className="rounded-lg border border-red-200 bg-red-50 p-3">
                       <div className="mb-1 flex items-center gap-1">
                         <ArrowDownCircle className="h-4 w-4 text-red-600" />
                         <span className="text-xs font-semibold text-red-700">Penarikan</span>
@@ -338,6 +345,7 @@ export default function MembersPage() {
                       <h4 className="text-sm font-bold text-gray-700">Transaksi Terakhir</h4>
                     </div>
                     <div className="space-y-2">
+                      {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                       {member.transactions.slice(0, 3).map((trans: any, idx: number) => (
                         <div
                           key={idx}
@@ -360,8 +368,7 @@ export default function MembersPage() {
                           <span
                             className={`font-bold ${trans.isDeposit ? 'text-green-600' : 'text-red-600'}`}
                           >
-                            {trans.isDeposit ? '+' : '-'}Rp{' '}
-                            {trans.amount.toLocaleString('id-ID')}
+                            {trans.isDeposit ? '+' : '-'}Rp {trans.amount.toLocaleString('id-ID')}
                           </span>
                         </div>
                       ))}
@@ -505,7 +512,7 @@ export default function MembersPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
           <Card className="w-full max-w-md shadow-2xl">
             {/* Modal Header with Gradient */}
-            <div className="bg-linear-to-r from-teal-600 to-cyan-600 px-6 py-4 text-white rounded-t-lg">
+            <div className="rounded-t-lg bg-linear-to-r from-teal-600 to-cyan-600 px-6 py-4 text-white">
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className="text-xl font-bold">Transaksi Simpanan</h3>
@@ -518,7 +525,7 @@ export default function MembersPage() {
                     setShowForm(false)
                     resetForm()
                   }}
-                  className="hover:bg-white/20 text-white"
+                  className="text-white hover:bg-white/20"
                 >
                   <X className="h-5 w-5" />
                 </Button>
@@ -534,7 +541,7 @@ export default function MembersPage() {
                   <select
                     value={transactionType}
                     onChange={(e) => setTransactionType(e.target.value as TransactionType)}
-                    className="w-full rounded-lg border-2 px-4 py-2.5 font-medium focus:ring-2 focus:ring-teal-500 focus:border-teal-500 focus:outline-none"
+                    className="w-full rounded-lg border-2 px-4 py-2.5 font-medium focus:border-teal-500 focus:ring-2 focus:ring-teal-500 focus:outline-none"
                   >
                     <option value="MEMBER_DEPOSIT">💰 Setoran</option>
                     <option value="MEMBER_WITHDRAWAL">📤 Penarikan</option>
@@ -550,7 +557,7 @@ export default function MembersPage() {
                     required
                     value={memberName}
                     onChange={(e) => setMemberName(e.target.value)}
-                    className="w-full rounded-lg border-2 px-4 py-2.5 font-medium focus:ring-2 focus:ring-teal-500 focus:border-teal-500 focus:outline-none"
+                    className="w-full rounded-lg border-2 px-4 py-2.5 font-medium focus:border-teal-500 focus:ring-2 focus:ring-teal-500 focus:outline-none"
                     placeholder="Nama lengkap anggota"
                   />
                 </div>
@@ -565,7 +572,7 @@ export default function MembersPage() {
                     min="1"
                     value={amount || ''}
                     onChange={(e) => setAmount(Number(e.target.value))}
-                    className="w-full rounded-lg border-2 px-4 py-2.5 font-medium focus:ring-2 focus:ring-teal-500 focus:border-teal-500 focus:outline-none"
+                    className="w-full rounded-lg border-2 px-4 py-2.5 font-medium focus:border-teal-500 focus:ring-2 focus:ring-teal-500 focus:outline-none"
                     placeholder="Masukkan nominal"
                   />
                 </div>
@@ -577,7 +584,7 @@ export default function MembersPage() {
                   <select
                     value={paymentMethod}
                     onChange={(e) => setPaymentMethod(e.target.value as typeof paymentMethod)}
-                    className="w-full rounded-lg border-2 px-4 py-2.5 font-medium focus:ring-2 focus:ring-teal-500 focus:border-teal-500 focus:outline-none"
+                    className="w-full rounded-lg border-2 px-4 py-2.5 font-medium focus:border-teal-500 focus:ring-2 focus:ring-teal-500 focus:outline-none"
                   >
                     <option value="CASH">💵 Tunai</option>
                     <option value="BANK_TRANSFER">🏦 Transfer Bank</option>
@@ -587,14 +594,12 @@ export default function MembersPage() {
                 </div>
 
                 <div>
-                  <label className="mb-2 block text-sm font-semibold text-gray-700">
-                    Catatan
-                  </label>
+                  <label className="mb-2 block text-sm font-semibold text-gray-700">Catatan</label>
                   <textarea
                     value={notes}
                     onChange={(e) => setNotes(e.target.value)}
                     rows={3}
-                    className="w-full rounded-lg border-2 px-4 py-2.5 font-medium focus:ring-2 focus:ring-teal-500 focus:border-teal-500 focus:outline-none"
+                    className="w-full rounded-lg border-2 px-4 py-2.5 font-medium focus:border-teal-500 focus:ring-2 focus:ring-teal-500 focus:outline-none"
                     placeholder="Catatan tambahan (opsional)"
                   />
                 </div>

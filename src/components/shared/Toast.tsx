@@ -18,11 +18,18 @@ export function Toast({ id, type, title, message, duration = 5000, onClose }: To
   const [isExiting, setIsExiting] = useState(false)
   const [progress, setProgress] = useState(100)
 
+  const handleClose = () => {
+    setIsExiting(true)
+    setTimeout(() => {
+      onClose(id)
+    }, 300) // Match animation duration
+  }
+
   useEffect(() => {
     if (duration > 0) {
       const interval = setInterval(() => {
         setProgress((prev) => {
-          const newProgress = prev - (100 / (duration / 100))
+          const newProgress = prev - 100 / (duration / 100)
           if (newProgress <= 0) {
             clearInterval(interval)
             return 0
@@ -40,14 +47,8 @@ export function Toast({ id, type, title, message, duration = 5000, onClose }: To
         clearInterval(interval)
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [duration])
-
-  const handleClose = () => {
-    setIsExiting(true)
-    setTimeout(() => {
-      onClose(id)
-    }, 300) // Match animation duration
-  }
 
   const getToastConfig = () => {
     switch (type) {
@@ -104,7 +105,7 @@ export function Toast({ id, type, title, message, duration = 5000, onClose }: To
       } ${config.borderColor} ${
         isExiting
           ? 'translate-x-full opacity-0'
-          : 'translate-x-0 opacity-100 animate-in slide-in-from-right'
+          : 'animate-in slide-in-from-right translate-x-0 opacity-100'
       }`}
     >
       <div className="p-4">
@@ -115,11 +116,9 @@ export function Toast({ id, type, title, message, duration = 5000, onClose }: To
           </div>
 
           {/* Content */}
-          <div className="flex-1 min-w-0">
-            <h4 className={`font-bold text-sm ${config.titleColor}`}>{title}</h4>
-            {message && (
-              <p className={`mt-1 text-sm ${config.messageColor}`}>{message}</p>
-            )}
+          <div className="min-w-0 flex-1">
+            <h4 className={`text-sm font-bold ${config.titleColor}`}>{title}</h4>
+            {message && <p className={`mt-1 text-sm ${config.messageColor}`}>{message}</p>}
           </div>
 
           {/* Close Button */}

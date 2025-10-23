@@ -21,14 +21,7 @@ const maxWidthClasses = {
 
 export function PageContainer({ children, className, maxWidth = 'default' }: PageContainerProps) {
   return (
-    <div
-      className={cn(
-        'min-h-screen bg-neutral-50 p-4 sm:p-6 lg:p-8',
-        maxWidthClasses[maxWidth],
-        'animate-fade-in',
-        className
-      )}
-    >
+    <div className={cn('w-full', maxWidthClasses[maxWidth], 'animate-fade-in', className)}>
       {children}
     </div>
   )
