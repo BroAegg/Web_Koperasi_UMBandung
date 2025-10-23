@@ -3,6 +3,8 @@
 import { PageContainer } from '@/components/shared/PageContainer'
 import { PageHeader } from '@/components/shared/PageHeader'
 import { StatsCard } from '@/components/shared/StatsCard'
+import { SkeletonLoader } from '@/components/shared/SkeletonLoader'
+import { ErrorDisplay } from '@/components/shared/ErrorBoundary'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import {
   Users,
@@ -14,18 +16,39 @@ import {
   TrendingUp,
   ShoppingCart,
 } from 'lucide-react'
+import { trpc } from '@/lib/trpc'
 
 export default function KoperasiDashboard() {
-  // TODO: Replace with real data from tRPC
-  const stats = {
-    suppliers: 25,
-    products: 456,
-    users: 12,
-    revenue: 15000000,
-    inventory: 234,
-    orders: 89,
-    activeMembers: 45,
-    activities: 1245,
+  // Fetch dashboard stats
+  const { data: supplierStats, isLoading: loadingSuppliers } =
+    trpc.supplier.getSupplierStats.useQuery()
+  const { data: productStats, isLoading: loadingProducts } = trpc.product.getStats.useQuery()
+  const { data: inventoryStats, isLoading: loadingInventory } =
+    trpc.inventory.getInventoryStats.useQuery()
+  const { data: memberStats, isLoading: loadingMembers } = trpc.member.getMemberStats.useQuery()
+  const { data: activityStats, isLoading: loadingActivity } =
+    trpc.activity.getActivityStats.useQuery()
+  const { data: salesStats, isLoading: loadingSales } = trpc.pos.getSalesStats.useQuery({
+    startDate: new Date(new Date().setHours(0, 0, 0, 0)),
+    endDate: new Date(new Date().setHours(23, 59, 59, 999)),
+  })
+
+  const isLoading =
+    loadingSuppliers ||
+    loadingProducts ||
+    loadingInventory ||
+    loadingMembers ||
+    loadingActivity ||
+    loadingSales
+
+  // Format currency
+  const formatCurrency = (amount: number) => {
+    if (amount >= 1000000) {
+      return `Rp ${(amount / 1000000).toFixed(1)}M`
+    } else if (amount >= 1000) {
+      return `Rp ${(amount / 1000).toFixed(1)}K`
+    }
+    return `Rp ${amount.toLocaleString('id-ID')}`
   }
 
   return (
@@ -35,80 +58,91 @@ export default function KoperasiDashboard() {
         subtitle="Kelola dan monitor seluruh sistem koperasi"
       />
 
+      {/* Loading State */}
+      {isLoading && <SkeletonLoader variant="stats" count={8} />}
+
       {/* Stats Grid - Module Cards */}
-      <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        <StatsCard
-          title="Total Suppliers"
-          value={stats.suppliers}
-          subtitle="Supplier aktif"
-          icon={Users}
-          gradient="blue"
-          trend={{ value: '+12% dari bulan lalu', isPositive: true }}
-        />
+      {!isLoading && (
+        <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <StatsCard
+            title="Total Suppliers"
+            value={supplierStats?.totalSuppliers || 0}
+            subtitle="Supplier aktif"
+            icon={Users}
+            gradient="blue"
+            trend={{ value: '+12% dari bulan lalu', isPositive: true }}
+          />
 
-        <StatsCard
-          title="Total Products"
-          value={stats.products}
-          subtitle="Produk tersedia"
-          icon={Package}
-          gradient="green"
-          trend={{ value: '+8% dari bulan lalu', isPositive: true }}
-        />
+          <StatsCard
+            title="Total Products"
+            value={productStats?.total || 0}
+            subtitle="Produk tersedia"
+            icon={Package}
+            gradient="green"
+            trend={{
+              value: `${productStats?.active || 0} produk aktif`,
+              isPositive: true,
+            }}
+          />
 
-        <StatsCard
-          title="Total Users"
-          value={stats.users}
-          subtitle="Pengguna sistem"
-          icon={UserCog}
-          gradient="purple"
-          trend={{ value: '+2 user baru', isPositive: true }}
-        />
+          <StatsCard
+            title="Inventory Value"
+            value={formatCurrency(inventoryStats?.inventoryValue || 0)}
+            subtitle="Nilai stok saat ini"
+            icon={DollarSign}
+            gradient="emerald"
+            trend={{
+              value: `${inventoryStats?.lowStockProducts || 0} low stock`,
+              isPositive: (inventoryStats?.lowStockProducts || 0) === 0,
+            }}
+          />
 
-        <StatsCard
-          title="Revenue"
-          value={`Rp ${(stats.revenue / 1000000).toFixed(1)}M`}
-          subtitle="Total pendapatan"
-          icon={DollarSign}
-          gradient="emerald"
-          trend={{ value: '+15% dari bulan lalu', isPositive: true }}
-        />
+          <StatsCard
+            title="Inventory"
+            value={inventoryStats?.totalProducts || 0}
+            subtitle="Total items"
+            icon={Box}
+            gradient="orange"
+            trend={{
+              value: `${inventoryStats?.lowStockProducts || 0} low stock alerts`,
+              isPositive: (inventoryStats?.lowStockProducts || 0) === 0,
+            }}
+          />
 
-        <StatsCard
-          title="Inventory"
-          value={stats.inventory}
-          subtitle="Total items"
-          icon={Box}
-          gradient="orange"
-          trend={{ value: '12 low stock alerts', isPositive: false }}
-        />
+          <StatsCard
+            title="Orders Today"
+            value={salesStats?.totalOrders || 0}
+            subtitle="Transaksi hari ini"
+            icon={ShoppingCart}
+            gradient="pink"
+            trend={{
+              value: formatCurrency(salesStats?.totalRevenue || 0),
+              isPositive: true,
+            }}
+          />
 
-        <StatsCard
-          title="Orders"
-          value={stats.orders}
-          subtitle="Transaksi hari ini"
-          icon={ShoppingCart}
-          gradient="pink"
-          trend={{ value: '+5 dari kemarin', isPositive: true }}
-        />
+          <StatsCard
+            title="Members"
+            value={(memberStats?.totalDeposits || 0) + (memberStats?.totalWithdrawals || 0)}
+            subtitle="Total transaksi"
+            icon={Users}
+            gradient="blue"
+            trend={{
+              value: formatCurrency(memberStats?.balance || 0) + ' balance',
+              isPositive: (memberStats?.balance || 0) >= 0,
+            }}
+          />
 
-        <StatsCard
-          title="Members"
-          value={stats.activeMembers}
-          subtitle="Anggota aktif"
-          icon={Users}
-          gradient="blue"
-          trend={{ value: '+3 member baru', isPositive: true }}
-        />
-
-        <StatsCard
-          title="Activity Logs"
-          value={stats.activities}
-          subtitle="Total log aktivitas"
-          icon={Activity}
-          gradient="purple"
-          trend={{ value: 'Last 30 days', isPositive: true }}
-        />
-      </div>
+          <StatsCard
+            title="Activity Logs"
+            value={activityStats?.totalLogs || 0}
+            subtitle="Total log aktivitas"
+            icon={Activity}
+            gradient="purple"
+            trend={{ value: 'Last 30 days', isPositive: true }}
+          />
+        </div>
+      )}
 
       {/* Quick Actions & Recent Activity */}
       <div className="grid gap-6 lg:grid-cols-2">
