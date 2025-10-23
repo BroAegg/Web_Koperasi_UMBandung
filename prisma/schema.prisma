@@ -9,7 +9,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -85,6 +85,10 @@ model User {
   activity_logs ActivityLog[]
   transactions  Transaction[]
   
+  @@index([username])
+  @@index([email])
+  @@index([role])
+  @@index([is_active])
   @@map("users")
 }
 
@@ -109,6 +113,8 @@ model Supplier {
   products        Product[]
   transactions    Transaction[]
   
+  @@index([business_name])
+  @@index([is_active])
   @@map("suppliers")
 }
 
@@ -128,6 +134,7 @@ model Category {
   // Relations
   products    Product[]
   
+  @@index([name])
   @@map("categories")
 }
 
@@ -139,8 +146,8 @@ model Product {
   category_id     String
   supplier_id     String
   
-  purchase_price  Decimal
-  selling_price   Decimal
+  purchase_price  Decimal  @db.Decimal(15, 2)
+  selling_price   Decimal  @db.Decimal(15, 2)
   stock           Int      @default(0)
   min_stock       Int      @default(5)
   
@@ -158,6 +165,12 @@ model Product {
   stock_movements StockMovement[]
   order_items     OrderItem[]
   
+  @@index([sku])
+  @@index([name])
+  @@index([category_id])
+  @@index([supplier_id])
+  @@index([is_active])
+  @@index([stock])
   @@map("products")
 }
 
@@ -174,6 +187,9 @@ model StockMovement {
   // Relations
   product         Product           @relation(fields: [product_id], references: [id])
   
+  @@index([product_id])
+  @@index([type])
+  @@index([created_at])
   @@map("stock_movements")
 }
 
@@ -185,7 +201,7 @@ model Transaction {
   id              String              @id @default(cuid())
   type            TransactionType
   category        TransactionCategory
-  amount          Decimal
+  amount          Decimal             @db.Decimal(15, 2)
   payment_method  PaymentMethod       @default(CASH)
   
   description     String
@@ -203,6 +219,11 @@ model Transaction {
   supplier        Supplier?           @relation(fields: [supplier_id], references: [id])
   createdBy       User                @relation(fields: [created_by_id], references: [id])
   
+  @@index([type])
+  @@index([category])
+  @@index([created_at])
+  @@index([created_by_id])
+  @@index([supplier_id])
   @@map("transactions")
 }
 
@@ -215,14 +236,14 @@ model Order {
   order_number    String      @unique
   customer_name   String?
   
-  subtotal        Decimal
-  discount        Decimal     @default(0)
-  tax             Decimal     @default(0)
-  total           Decimal
+  subtotal        Decimal     @db.Decimal(15, 2)
+  discount        Decimal     @default(0) @db.Decimal(15, 2)
+  tax             Decimal     @default(0) @db.Decimal(15, 2)
+  total           Decimal     @db.Decimal(15, 2)
   
   payment_method  PaymentMethod
-  payment_amount  Decimal
-  change_amount   Decimal     @default(0)
+  payment_amount  Decimal     @db.Decimal(15, 2)
+  change_amount   Decimal     @default(0) @db.Decimal(15, 2)
   
   status          OrderStatus @default(PENDING)
   
@@ -232,6 +253,10 @@ model Order {
   // Relations
   items           OrderItem[]
   
+  @@index([order_number])
+  @@index([status])
+  @@index([created_at])
+  @@index([created_by])
   @@map("orders")
 }
 
@@ -241,13 +266,15 @@ model OrderItem {
   product_id      String
   
   quantity        Int
-  price           Decimal
-  subtotal        Decimal
+  price           Decimal  @db.Decimal(15, 2)
+  subtotal        Decimal  @db.Decimal(15, 2)
   
   // Relations
   order           Order    @relation(fields: [order_id], references: [id], onDelete: Cascade)
   product         Product  @relation(fields: [product_id], references: [id])
   
+  @@index([order_id])
+  @@index([product_id])
   @@map("order_items")
 }
 
