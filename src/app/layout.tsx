@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
 import { TRPCProvider } from '@/components/providers/trpc-provider'
+import { ThemeProvider } from '@/components/providers/theme-provider'
 import { ToastProvider } from '@/components/shared/ToastContext'
 
 const inter = Inter({
@@ -20,11 +21,18 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="id">
+    <html lang="id" suppressHydrationWarning>
       <body className={`${inter.variable} font-sans antialiased`}>
-        <TRPCProvider>
-          <ToastProvider>{children}</ToastProvider>
-        </TRPCProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <TRPCProvider>
+            <ToastProvider>{children}</ToastProvider>
+          </TRPCProvider>
+        </ThemeProvider>
       </body>
     </html>
   )
