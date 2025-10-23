@@ -68,8 +68,7 @@ export default function POSPage() {
       setDiscount(0)
       setShowPayment(false)
       setShowReceipt(true)
-      // Switch to history tab and refetch
-      setActiveTab('riwayat')
+      // Stay on kasir tab for quick next transaction
       refetchOrders()
     },
   })
