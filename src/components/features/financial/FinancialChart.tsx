@@ -4,8 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { formatCurrency } from '@/lib/financial-utils'
 import type { ChartData } from '@/types/financial'
 import {
-  LineChart,
-  Line,
+  AreaChart,
+  Area,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -13,6 +13,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from 'recharts'
+import { TrendingUp, TrendingDown } from 'lucide-react'
 
 interface FinancialChartProps {
   data: ChartData
@@ -27,28 +28,66 @@ function CustomTooltip({ active, payload, label }: any) {
     return null
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const cashIn = payload.find((p: any) => p.dataKey === 'Pemasukan')?.value || 0
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const cashOut = payload.find((p: any) => p.dataKey === 'Pengeluaran')?.value || 0
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const balance = payload.find((p: any) => p.dataKey === 'Saldo')?.value || 0
+  const netFlow = cashIn - cashOut
+
   return (
-    <div className="rounded-lg border bg-white p-3 shadow-lg">
-      <p className="mb-2 text-sm font-semibold text-gray-700">
+    <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-lg">
+      <p className="mb-3 text-sm font-semibold text-gray-700">
         {new Date(label as string).toLocaleDateString('id-ID', {
+          weekday: 'short',
           day: 'numeric',
           month: 'short',
           year: 'numeric',
         })}
       </p>
-      <div className="space-y-1">
-        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-        {payload.map((entry: any, index: number) => (
-          <div key={index} className="flex items-center justify-between gap-4 text-sm">
-            <div className="flex items-center gap-2">
-              <div className="h-3 w-3 rounded-full" style={{ backgroundColor: entry.color }} />
-              <span className="text-gray-600">{entry.name}:</span>
-            </div>
-            <span className="font-semibold" style={{ color: entry.color }}>
-              {formatCurrency(entry.value as number)}
-            </span>
+      <div className="space-y-2">
+        {/* Cash In */}
+        <div className="flex items-center justify-between gap-6">
+          <div className="flex items-center gap-2">
+            <div className="h-3 w-3 rounded-full bg-emerald-500" />
+            <span className="text-xs text-gray-600">Pemasukan:</span>
           </div>
-        ))}
+          <span className="text-sm font-bold text-emerald-600">{formatCurrency(cashIn)}</span>
+        </div>
+        {/* Cash Out */}
+        <div className="flex items-center justify-between gap-6">
+          <div className="flex items-center gap-2">
+            <div className="h-3 w-3 rounded-full bg-rose-500" />
+            <span className="text-xs text-gray-600">Pengeluaran:</span>
+          </div>
+          <span className="text-sm font-bold text-rose-600">{formatCurrency(cashOut)}</span>
+        </div>
+        {/* Net Flow */}
+        <div className="flex items-center justify-between gap-6 border-t border-gray-200 pt-2">
+          <div className="flex items-center gap-2">
+            {netFlow >= 0 ? (
+              <TrendingUp className="h-3 w-3 text-emerald-500" />
+            ) : (
+              <TrendingDown className="h-3 w-3 text-rose-500" />
+            )}
+            <span className="text-xs font-medium text-gray-700">Net Flow:</span>
+          </div>
+          <span
+            className={`text-sm font-bold ${netFlow >= 0 ? 'text-emerald-600' : 'text-rose-600'}`}
+          >
+            {netFlow >= 0 ? '+' : ''}
+            {formatCurrency(netFlow)}
+          </span>
+        </div>
+        {/* Balance */}
+        <div className="flex items-center justify-between gap-6 border-t border-gray-200 pt-2">
+          <div className="flex items-center gap-2">
+            <div className="h-3 w-3 rounded-full bg-blue-500" />
+            <span className="text-xs font-medium text-gray-700">Saldo:</span>
+          </div>
+          <span className="text-sm font-bold text-blue-600">{formatCurrency(balance)}</span>
+        </div>
       </div>
     </div>
   )
@@ -95,24 +134,42 @@ export function FinancialChart({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{title}</CardTitle>
+        <CardTitle className="flex items-center gap-2">
+          <TrendingUp className="h-5 w-5 text-emerald-500" />
+          {title}
+        </CardTitle>
       </CardHeader>
       <CardContent>
         <ResponsiveContainer width="100%" height={height}>
-          <LineChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+          <AreaChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+            <defs>
+              <linearGradient id="colorCashIn" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="#10b981" stopOpacity={0.3} />
+                <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
+              </linearGradient>
+              <linearGradient id="colorCashOut" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="#ef4444" stopOpacity={0.3} />
+                <stop offset="95%" stopColor="#ef4444" stopOpacity={0} />
+              </linearGradient>
+              <linearGradient id="colorBalance" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3} />
+                <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
+              </linearGradient>
+            </defs>
+            <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
             <XAxis
               dataKey="date"
               tick={{ fontSize: 12 }}
-              tickLine={{ stroke: '#e0e0e0' }}
-              stroke="#9ca3af"
+              tickLine={false}
+              axisLine={false}
+              stroke="#6b7280"
             />
             <YAxis
               tick={{ fontSize: 12 }}
-              tickLine={{ stroke: '#e0e0e0' }}
-              stroke="#9ca3af"
+              tickLine={false}
+              axisLine={false}
+              stroke="#6b7280"
               tickFormatter={(value) => {
-                // Format large numbers: 1000000 -> 1M
                 if (value >= 1000000) {
                   return `${(value / 1000000).toFixed(1)}M`
                 } else if (value >= 1000) {
@@ -128,34 +185,31 @@ export function FinancialChart({
                 fontSize: '14px',
               }}
             />
-            <Line
+            <Area
               type="monotone"
               dataKey="Pemasukan"
               stroke="#10b981"
               strokeWidth={2}
-              dot={{ fill: '#10b981', r: 4 }}
-              activeDot={{ r: 6 }}
+              fill="url(#colorCashIn)"
               name="Pemasukan"
             />
-            <Line
+            <Area
               type="monotone"
               dataKey="Pengeluaran"
               stroke="#ef4444"
               strokeWidth={2}
-              dot={{ fill: '#ef4444', r: 4 }}
-              activeDot={{ r: 6 }}
+              fill="url(#colorCashOut)"
               name="Pengeluaran"
             />
-            <Line
+            <Area
               type="monotone"
               dataKey="Saldo"
               stroke="#3b82f6"
               strokeWidth={2}
-              dot={{ fill: '#3b82f6', r: 4 }}
-              activeDot={{ r: 6 }}
+              fill="url(#colorBalance)"
               name="Saldo"
             />
-          </LineChart>
+          </AreaChart>
         </ResponsiveContainer>
       </CardContent>
     </Card>
