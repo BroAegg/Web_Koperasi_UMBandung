@@ -23,7 +23,7 @@ export default function LoginPage() {
       localStorage.setItem('loginTime', Date.now().toString())
 
       alert(`✅ ${data.message}\nSelamat datang, ${data.user.full_name}!`)
-      router.push('/')
+      router.push('/koperasi')
       router.refresh()
     },
     onError: (error) => {
