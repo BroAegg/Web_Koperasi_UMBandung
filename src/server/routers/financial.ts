@@ -52,6 +52,61 @@ const transactionFilterSchema = z
   .merge(periodFilterSchema)
 
 export const financialRouter = router({
+  // Get Total Balance (All Time)
+  getTotalBalance: protectedProcedure.query(async () => {
+    // Get ALL transactions (no date filter)
+    const allTransactions = await prisma.transaction.findMany({
+      where: {
+        deleted_at: null,
+      },
+      orderBy: {
+        created_at: 'asc',
+      },
+    })
+
+    // Calculate totals
+    let totalCashIn = 0
+    let totalCashOut = 0
+    let tokoBalance = 0
+    let titipanBalance = 0
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    allTransactions.forEach((tx: any) => {
+      const amount = Number(tx.amount)
+
+      if (tx.type === 'CASH_IN') {
+        totalCashIn += amount
+      } else if (tx.type === 'CASH_OUT') {
+        totalCashOut += amount
+      }
+
+      // Calculate balance by category
+      if (tx.category === 'SALES' || tx.category === 'MEMBER_DEPOSIT') {
+        tokoBalance += tx.type === 'CASH_IN' ? amount : -amount
+      } else if (
+        tx.category === 'PURCHASE' ||
+        tx.category === 'OPERATIONAL' ||
+        tx.category === 'MEMBER_WITHDRAWAL'
+      ) {
+        titipanBalance += tx.type === 'CASH_IN' ? amount : -amount
+      } else if (tx.category === 'OTHER') {
+        tokoBalance += tx.type === 'CASH_IN' ? amount : -amount
+      }
+    })
+
+    const totalBalance = tokoBalance + titipanBalance
+    const totalTransactions = allTransactions.length
+
+    return {
+      totalBalance,
+      tokoBalance,
+      titipanBalance,
+      totalCashIn,
+      totalCashOut,
+      totalTransactions,
+    }
+  }),
+
   // Get Daily Summary
   getDailySummary: protectedProcedure.input(periodFilterSchema).query(async ({ input }) => {
     const { period, startDate, endDate } = input

@@ -22,6 +22,7 @@ export default function FinancialPage() {
   const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null)
 
   // Queries
+  const totalBalanceQuery = trpc.financial.getTotalBalance.useQuery()
   const summaryQuery = trpc.financial.getDailySummary.useQuery({ period })
   const transactionsQuery = trpc.financial.getTransactions.useQuery({
     period,
@@ -34,6 +35,7 @@ export default function FinancialPage() {
   // Mutations
   const createMutation = trpc.financial.createTransaction.useMutation({
     onSuccess: () => {
+      totalBalanceQuery.refetch()
       summaryQuery.refetch()
       transactionsQuery.refetch()
       chartQuery.refetch()
@@ -44,6 +46,7 @@ export default function FinancialPage() {
 
   const updateMutation = trpc.financial.updateTransaction.useMutation({
     onSuccess: () => {
+      totalBalanceQuery.refetch()
       summaryQuery.refetch()
       transactionsQuery.refetch()
       chartQuery.refetch()
@@ -54,12 +57,14 @@ export default function FinancialPage() {
 
   const deleteMutation = trpc.financial.deleteTransaction.useMutation({
     onSuccess: () => {
+      totalBalanceQuery.refetch()
       summaryQuery.refetch()
       transactionsQuery.refetch()
       chartQuery.refetch()
     },
   })
 
+  const totalBalance = totalBalanceQuery.data
   const summary = summaryQuery.data
   const transactions = transactionsQuery.data?.transactions || []
   const pagination = transactionsQuery.data?.pagination || {
@@ -129,7 +134,7 @@ export default function FinancialPage() {
         </Button>
       </div>
 
-      {/* Saldo Tersedia Card (Preserve Design from UI-DESIGN-REFERENCE.md) */}
+      {/* Saldo Tersedia Card (Total Balance - All Time) */}
       <div className="mb-6 flex justify-center">
         <Card className="w-full max-w-md border-2 border-green-300 bg-gradient-to-br from-green-50 to-green-100">
           <CardContent className="pt-6 pb-4">
@@ -142,16 +147,33 @@ export default function FinancialPage() {
 
             {/* Title */}
             <div className="mb-2 text-center">
-              <h3 className="text-sm font-medium text-green-800">SALDO TERSEDIA</h3>
+              <h3 className="text-sm font-medium text-green-800">TOTAL SALDO KESELURUHAN</h3>
               <p className="text-xs text-green-600">
-                {summary?.transactionCount || 0} transaksi periode ini
+                {totalBalance?.totalTransactions || 0} transaksi sejak awal
               </p>
             </div>
 
-            {/* Amount (Large, Centered) */}
-            <div className="mb-3 text-center">
+            {/* Amount (Large, Centered) - TOTAL BALANCE */}
+            <div className="mb-1 text-center">
               <p className="text-4xl font-bold text-green-900">
-                {summaryQuery.isLoading ? 'Loading...' : formatCurrency(summary?.totalBalance || 0)}
+                {totalBalanceQuery.isLoading
+                  ? 'Loading...'
+                  : formatCurrency(totalBalance?.totalBalance || 0)}
+              </p>
+            </div>
+
+            {/* Period Change Indicator */}
+            <div className="mb-4 text-center">
+              <p className="text-xs text-green-700">
+                Perubahan {getPeriodLabel(period).toLowerCase()}:{' '}
+                <span
+                  className={`font-semibold ${
+                    (summary?.netCashFlow || 0) >= 0 ? 'text-green-600' : 'text-red-600'
+                  }`}
+                >
+                  {(summary?.netCashFlow || 0) >= 0 ? '+' : ''}
+                  {formatCurrency(summary?.netCashFlow || 0)}
+                </span>
               </p>
             </div>
 
@@ -159,17 +181,17 @@ export default function FinancialPage() {
             <div className="mb-4 flex justify-center">
               <span
                 className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-semibold ${
-                  (summary?.status || 'surplus') === 'surplus'
+                  (totalBalance?.totalBalance || 0) >= 0
                     ? 'bg-green-500 text-white'
                     : 'bg-red-500 text-white'
                 }`}
               >
                 <TrendingUp className="h-3 w-3" />
-                {(summary?.status || 'surplus') === 'surplus' ? 'Surplus' : 'Deficit'}
+                {(totalBalance?.totalBalance || 0) >= 0 ? 'Surplus' : 'Deficit'}
               </span>
             </div>
 
-            {/* Breakdown Cards */}
+            {/* Breakdown Cards - TOTAL BALANCE */}
             <div className="mb-4 space-y-2">
               {/* Toko */}
               <div className="rounded-lg border border-green-200 bg-white/60 p-3 backdrop-blur-sm">
@@ -179,7 +201,7 @@ export default function FinancialPage() {
                     <span className="text-sm font-medium text-gray-700">Toko</span>
                   </div>
                   <span className="text-sm font-bold text-gray-900">
-                    {formatCurrency(summary?.tokoBalance || 0)}
+                    {formatCurrency(totalBalance?.tokoBalance || 0)}
                   </span>
                 </div>
               </div>
@@ -192,7 +214,7 @@ export default function FinancialPage() {
                     <span className="text-sm font-medium text-gray-700">Titipan</span>
                   </div>
                   <span className="text-sm font-bold text-gray-900">
-                    {formatCurrency(summary?.titipanBalance || 0)}
+                    {formatCurrency(totalBalance?.titipanBalance || 0)}
                   </span>
                 </div>
               </div>
@@ -201,7 +223,7 @@ export default function FinancialPage() {
             {/* Footer */}
             <div className="border-t border-green-200 pt-3 text-center">
               <p className="text-xs text-green-700">
-                Data periode: <span className="font-semibold">{getPeriodLabel(period)}</span>
+                Periode tampilan: <span className="font-semibold">{getPeriodLabel(period)}</span>
               </p>
             </div>
           </CardContent>
