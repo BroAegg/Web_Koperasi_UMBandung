@@ -111,4 +111,75 @@ export const activityRouter = router({
       recentUsers: recentUsers.map((log: any) => log.user),
     }
   }),
+
+  // Get activity trends (daily count for chart)
+  getActivityTrends: protectedProcedure
+    .input(
+      z.object({
+        days: z.number().min(1).max(30).default(7),
+      })
+    )
+    .query(async ({ input }) => {
+      const { days } = input
+
+      // Get the oldest activity log to determine start date
+      const oldestLog = await prisma.activityLog.findFirst({
+        orderBy: {
+          created_at: 'asc',
+        },
+        select: {
+          created_at: true,
+        },
+      })
+
+      // If no logs exist, return empty array
+      if (!oldestLog) {
+        return []
+      }
+
+      // Calculate date range
+      const endDate = new Date()
+      endDate.setHours(23, 59, 59, 999)
+
+      const startDate = new Date(oldestLog.created_at)
+      startDate.setHours(0, 0, 0, 0)
+
+      // Calculate actual days based on oldest log or requested days
+      const daysDiff = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24))
+      const actualDays = Math.min(daysDiff + 1, days)
+
+      // Generate date array starting from oldest log date
+      const dates = Array.from({ length: actualDays }, (_, i) => {
+        const date = new Date(startDate)
+        date.setDate(date.getDate() + i)
+        return date
+      })
+
+      // Fetch activity count per day
+      const trends = await Promise.all(
+        dates.map(async (date) => {
+          const dayStart = new Date(date)
+          dayStart.setHours(0, 0, 0, 0)
+
+          const dayEnd = new Date(date)
+          dayEnd.setHours(23, 59, 59, 999)
+
+          const count = await prisma.activityLog.count({
+            where: {
+              created_at: {
+                gte: dayStart,
+                lte: dayEnd,
+              },
+            },
+          })
+
+          return {
+            date: date.toISOString(),
+            activities: count,
+          }
+        })
+      )
+
+      return trends
+    }),
 })
