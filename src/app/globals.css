@@ -1,190 +1,266 @@
 @import "tailwindcss";
 
 /* ============================================
-   🎨 DESIGN TOKENS - Web Koperasi UM Bandung
-   Based on UI-DESIGN-REFERENCE.md
+   🎨 DESIGN SYSTEM - Web Koperasi UM Bandung
+   Phase 1.1: Foundation - Dark Mode Ready
+   WCAG AA Compliant Colors
    ============================================ */
 
 :root {
-  /* Base Colors */
-  --background: #ffffff;
-  --foreground: #171717;
+  /* ===== BASE COLORS ===== */
+  --background: 0 0% 100%;           /* #ffffff - Light mode background */
+  --foreground: 240 10% 3.9%;        /* #09090b - Light mode text */
+  
+  --card: 0 0% 100%;                 /* Card background */
+  --card-foreground: 240 10% 3.9%;  /* Card text */
+  
+  --popover: 0 0% 100%;              /* Popover background */
+  --popover-foreground: 240 10% 3.9%; /* Popover text */
 
-  /* Primary Colors */
-  --primary-50: #eff6ff;
-  --primary-100: #dbeafe;
-  --primary-200: #bfdbfe;
-  --primary-300: #93c5fd;
-  --primary-400: #60a5fa;
-  --primary-500: #3b82f6;
-  --primary-600: #2563eb;
-  --primary-700: #1d4ed8;
-  --primary-800: #1e40af;
-  --primary-900: #1e3a8a;
+  /* ===== PRIMARY (Blue) ===== */
+  --primary: 217.2 91.2% 59.8%;           /* #3b82f6 - Blue 500 */
+  --primary-foreground: 0 0% 98%;         /* White text on primary */
+  
+  /* ===== SECONDARY (Slate) ===== */
+  --secondary: 240 4.8% 95.9%;            /* #f8fafc - Slate 50 */
+  --secondary-foreground: 240 5.9% 10%;   /* Slate 900 text */
+  
+  /* ===== MUTED (Background variations) ===== */
+  --muted: 240 4.8% 95.9%;                /* #f8fafc - Subtle background */
+  --muted-foreground: 240 3.8% 46.1%;     /* #64748b - Muted text */
+  
+  /* ===== ACCENT (Highlight) ===== */
+  --accent: 240 4.8% 95.9%;               /* Accent background */
+  --accent-foreground: 240 5.9% 10%;      /* Accent text */
+  
+  /* ===== DESTRUCTIVE (Red) ===== */
+  --destructive: 0 84.2% 60.2%;           /* #ef4444 - Red 500 */
+  --destructive-foreground: 0 0% 98%;     /* White text on destructive */
+  
+  /* ===== SUCCESS (Green) ===== */
+  --success: 142.1 76.2% 36.3%;           /* #10b981 - Green 500 */
+  --success-foreground: 0 0% 98%;         /* White text on success */
+  
+  /* ===== WARNING (Amber) ===== */
+  --warning: 37.7 92.1% 50.2%;            /* #f59e0b - Amber 500 */
+  --warning-foreground: 26 83.3% 14.1%;   /* Amber 950 text */
+  
+  /* ===== INFO (Blue) ===== */
+  --info: 199 89% 48%;                    /* #06b6d4 - Cyan 500 */
+  --info-foreground: 0 0% 98%;            /* White text on info */
 
-  /* Success Colors (Green) */
-  --success-50: #f0fdf4;
-  --success-100: #dcfce7;
-  --success-200: #bbf7d0;
-  --success-300: #86efac;
-  --success-400: #4ade80;
-  --success-500: #22c55e;
-  --success-600: #16a34a;
-  --success-700: #15803d;
-  --success-800: #166534;
-  --success-900: #14532d;
+  /* ===== BORDERS & INPUTS ===== */
+  --border: 240 5.9% 90%;                 /* #e2e8f0 - Border color */
+  --input: 240 5.9% 90%;                  /* Input border */
+  --ring: 217.2 91.2% 59.8%;              /* Focus ring (primary) */
+  
+  /* ===== RADIUS ===== */
+  --radius: 0.5rem;                       /* Base border radius (8px) */
 
-  /* Warning Colors (Orange/Yellow) */
-  --warning-50: #fffbeb;
-  --warning-100: #fef3c7;
-  --warning-200: #fde68a;
-  --warning-300: #fcd34d;
-  --warning-400: #fbbf24;
-  --warning-500: #f59e0b;
-  --warning-600: #d97706;
-  --warning-700: #b45309;
-  --warning-800: #92400e;
-  --warning-900: #78350f;
-
-  /* Error Colors (Red) */
-  --error-50: #fef2f2;
-  --error-100: #fee2e2;
-  --error-200: #fecaca;
-  --error-300: #fca5a5;
-  --error-400: #f87171;
-  --error-500: #ef4444;
-  --error-600: #dc2626;
-  --error-700: #b91c1c;
-  --error-800: #991b1b;
-  --error-900: #7f1d1d;
-
-  /* Neutral Colors (Gray) */
-  --neutral-50: #f9fafb;
-  --neutral-100: #f3f4f6;
-  --neutral-200: #e5e7eb;
-  --neutral-300: #d1d5db;
-  --neutral-400: #9ca3af;
-  --neutral-500: #6b7280;
-  --neutral-600: #4b5563;
-  --neutral-700: #374151;
-  --neutral-800: #1f2937;
-  --neutral-900: #111827;
-
-  /* Gradient Colors */
-  --gradient-blue-start: #3b82f6;
-  --gradient-blue-end: #2563eb;
-  --gradient-green-start: #22c55e;
-  --gradient-green-end: #16a34a;
-  --gradient-purple-start: #a855f7;
-  --gradient-purple-end: #9333ea;
-  --gradient-emerald-start: #10b981;
-  --gradient-emerald-end: #059669;
-  --gradient-orange-start: #f97316;
-  --gradient-orange-end: #ea580c;
-  --gradient-pink-start: #ec4899;
-  --gradient-pink-end: #db2777;
-  --gradient-red-start: #ef4444;
-  --gradient-red-end: #dc2626;
-
-  /* Spacing Scale */
-  --spacing-xs: 0.25rem; /* 4px */
-  --spacing-sm: 0.5rem; /* 8px */
-  --spacing-md: 1rem; /* 16px */
-  --spacing-lg: 1.5rem; /* 24px */
-  --spacing-xl: 2rem; /* 32px */
-  --spacing-2xl: 3rem; /* 48px */
-  --spacing-3xl: 4rem; /* 64px */
-
-  /* Border Radius */
-  --radius-sm: 0.25rem; /* 4px */
-  --radius-md: 0.5rem; /* 8px */
-  --radius-lg: 0.75rem; /* 12px */
-  --radius-xl: 1rem; /* 16px */
-  --radius-2xl: 1.5rem; /* 24px */
-  --radius-full: 9999px;
-
-  /* Shadows */
+  /* ===== TRANSITIONS ===== */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* ===== SHADOWS ===== */
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
   --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
   --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
   --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
   --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
-
-  /* Typography */
-  --font-size-xs: 0.75rem; /* 12px */
-  --font-size-sm: 0.875rem; /* 14px */
-  --font-size-base: 1rem; /* 16px */
-  --font-size-lg: 1.125rem; /* 18px */
-  --font-size-xl: 1.25rem; /* 20px */
-  --font-size-2xl: 1.5rem; /* 24px */
-  --font-size-3xl: 1.875rem; /* 30px */
-  --font-size-4xl: 2.25rem; /* 36px */
-
-  --font-weight-normal: 400;
-  --font-weight-medium: 500;
-  --font-weight-semibold: 600;
-  --font-weight-bold: 700;
-
-  --line-height-tight: 1.25;
-  --line-height-normal: 1.5;
-  --line-height-relaxed: 1.75;
-
-  /* Transitions */
-  --transition-fast: 150ms;
-  --transition-normal: 200ms;
-  --transition-slow: 300ms;
+  --shadow-inner: inset 0 2px 4px 0 rgb(0 0 0 / 0.05);
 }
+
+/* ============================================
+   📐 TAILWIND THEME CONFIGURATION
+   ============================================ */
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+/* ============================================
+   🎨 DESIGN TOKENS FOR TAILWIND
+   ============================================ */
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+  
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  
+  --border-radius: var(--radius);
+  
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-
-  /* Map design tokens to Tailwind */
-  --color-primary-500: var(--primary-500);
-  --color-success-500: var(--success-500);
-  --color-warning-500: var(--warning-500);
-  --color-error-500: var(--error-500);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-/* Dark Mode Theme Variables */
-.dark {
-  --background: #0a0a0a;
-  --foreground: #ededed;
-  
-  /* Adjust shadows for dark mode */
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.3);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.3), 0 4px 6px -4px rgb(0 0 0 / 0.3);
-  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.3), 0 8px 10px -6px rgb(0 0 0 / 0.3);
-  --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.5);
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
-  transition: background-color 200ms ease, color 200ms ease;
 }
 
 /* ============================================
-   🎯 UTILITY CLASSES
+   🌙 DARK MODE THEME
    ============================================ */
 
-/* Smooth animations */
-.animate-fade-in {
-  animation: fadeIn var(--transition-slow) ease-in-out;
+.dark {
+  /* ===== BASE COLORS (Dark) ===== */
+  --background: 240 10% 3.9%;             /* #09090b - Dark background */
+  --foreground: 0 0% 98%;                 /* #fafafa - Light text */
+  
+  --card: 240 10% 7%;                     /* #18181b - Card background */
+  --card-foreground: 0 0% 98%;            /* Light text */
+  
+  --popover: 240 10% 7%;                  /* Popover background */
+  --popover-foreground: 0 0% 98%;         /* Popover text */
+  
+  /* ===== PRIMARY (Lighter for dark) ===== */
+  --primary: 217.2 91.2% 59.8%;           /* #3b82f6 - Blue stays same */
+  --primary-foreground: 0 0% 98%;         /* White text */
+  
+  /* ===== SECONDARY (Dark) ===== */
+  --secondary: 240 3.7% 15.9%;            /* #27272a - Zinc 800 */
+  --secondary-foreground: 0 0% 98%;       /* Light text */
+  
+  /* ===== MUTED (Dark) ===== */
+  --muted: 240 3.7% 15.9%;                /* Subtle dark background */
+  --muted-foreground: 240 5% 64.9%;       /* #a1a1aa - Muted text */
+  
+  /* ===== ACCENT (Dark) ===== */
+  --accent: 240 3.7% 15.9%;               /* Accent background */
+  --accent-foreground: 0 0% 98%;          /* Accent text */
+  
+  /* ===== DESTRUCTIVE (Lighter) ===== */
+  --destructive: 0 62.8% 30.6%;           /* #991b1b - Darker red */
+  --destructive-foreground: 0 0% 98%;     /* White text */
+  
+  /* ===== SUCCESS (Adjusted) ===== */
+  --success: 142.1 70.6% 45.3%;           /* #16a34a - Green 600 */
+  --success-foreground: 0 0% 98%;         /* White text */
+  
+  /* ===== WARNING (Adjusted) ===== */
+  --warning: 32.1 94.6% 43.7%;            /* #d97706 - Amber 600 */
+  --warning-foreground: 0 0% 98%;         /* White text */
+  
+  /* ===== INFO (Adjusted) ===== */
+  --info: 188.7 85.2% 39.2%;              /* #0891b2 - Cyan 600 */
+  --info-foreground: 0 0% 98%;            /* White text */
+  
+  /* ===== BORDERS & INPUTS (Dark) ===== */
+  --border: 240 3.7% 15.9%;               /* #27272a - Dark border */
+  --input: 240 3.7% 15.9%;                /* Dark input border */
+  --ring: 217.2 91.2% 59.8%;              /* Focus ring stays same */
+  
+  /* ===== SHADOWS (Enhanced for dark) ===== */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.3);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.4), 0 4px 6px -4px rgb(0 0 0 / 0.4);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.4), 0 8px 10px -6px rgb(0 0 0 / 0.4);
+  --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.6);
 }
 
-@keyframes fadeIn {
+/* ============================================
+   📏 SPACING SYSTEM (4px grid)
+   ============================================ */
+
+:root {
+  --spacing-0: 0;
+  --spacing-1: 0.25rem;    /* 4px */
+  --spacing-2: 0.5rem;     /* 8px */
+  --spacing-3: 0.75rem;    /* 12px */
+  --spacing-4: 1rem;       /* 16px */
+  --spacing-5: 1.25rem;    /* 20px */
+  --spacing-6: 1.5rem;     /* 24px */
+  --spacing-8: 2rem;       /* 32px */
+  --spacing-10: 2.5rem;    /* 40px */
+  --spacing-12: 3rem;      /* 48px */
+  --spacing-16: 4rem;      /* 64px */
+  --spacing-20: 5rem;      /* 80px */
+  --spacing-24: 6rem;      /* 96px */
+}
+
+/* ============================================
+   📝 TYPOGRAPHY SYSTEM
+   ============================================ */
+
+:root {
+  /* Font Sizes */
+  --text-xs: 0.75rem;      /* 12px */
+  --text-sm: 0.875rem;     /* 14px */
+  --text-base: 1rem;       /* 16px */
+  --text-lg: 1.125rem;     /* 18px */
+  --text-xl: 1.25rem;      /* 20px */
+  --text-2xl: 1.5rem;      /* 24px */
+  --text-3xl: 1.875rem;    /* 30px */
+  --text-4xl: 2.25rem;     /* 36px */
+  --text-5xl: 3rem;        /* 48px */
+  --text-6xl: 3.75rem;     /* 60px */
+  
+  /* Font Weights */
+  --font-normal: 400;
+  --font-medium: 500;
+  --font-semibold: 600;
+  --font-bold: 700;
+  --font-extrabold: 800;
+  
+  /* Line Heights */
+  --leading-none: 1;
+  --leading-tight: 1.25;
+  --leading-snug: 1.375;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.625;
+  --leading-loose: 2;
+  
+  /* Letter Spacing */
+  --tracking-tighter: -0.05em;
+  --tracking-tight: -0.025em;
+  --tracking-normal: 0em;
+  --tracking-wide: 0.025em;
+  --tracking-wider: 0.05em;
+  --tracking-widest: 0.1em;
+}
+
+/* ============================================
+   � ANIMATIONS & KEYFRAMES
+   ============================================ */
+
+@keyframes fade-in {
   from {
     opacity: 0;
   }
@@ -193,11 +269,16 @@ body {
   }
 }
 
-.animate-slide-up {
-  animation: slideUp var(--transition-slow) ease-out;
+@keyframes fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
 }
 
-@keyframes slideUp {
+@keyframes slide-up {
   from {
     transform: translateY(1rem);
     opacity: 0;
@@ -208,7 +289,50 @@ body {
   }
 }
 
-/* Shimmer animation for skeleton loaders */
+@keyframes slide-down {
+  from {
+    transform: translateY(-1rem);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slide-left {
+  from {
+    transform: translateX(1rem);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slide-right {
+  from {
+    transform: translateX(-1rem);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes scale-up {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
 @keyframes shimmer {
   0% {
     transform: translateX(-100%);
@@ -216,6 +340,83 @@ body {
   100% {
     transform: translateX(100%);
   }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(-25%);
+    animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+  }
+  50% {
+    transform: translateY(0);
+    animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  }
+}
+
+/* ============================================
+   🎯 UTILITY CLASSES
+   ============================================ */
+
+.animate-fade-in {
+  animation: fade-in var(--transition-slow) ease-in-out;
+}
+
+.animate-fade-out {
+  animation: fade-out var(--transition-slow) ease-in-out;
+}
+
+.animate-slide-up {
+  animation: slide-up var(--transition-slow) ease-out;
+}
+
+.animate-slide-down {
+  animation: slide-down var(--transition-slow) ease-out;
+}
+
+.animate-slide-left {
+  animation: slide-left var(--transition-slow) ease-out;
+}
+
+.animate-slide-right {
+  animation: slide-right var(--transition-slow) ease-out;
+}
+
+.animate-scale-up {
+  animation: scale-up var(--transition-normal) ease-out;
+}
+
+.animate-shimmer {
+  animation: shimmer 2s infinite;
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.animate-bounce {
+  animation: bounce 1s infinite;
 }
 
 /* ============================================
@@ -253,32 +454,58 @@ body {
   outline-offset: 2px;
 }
 
-/* Gradient backgrounds */
-.bg-gradient-blue {
-  background: linear-gradient(to bottom right, var(--gradient-blue-start), var(--gradient-blue-end));
+/* ============================================
+   🎨 GRADIENT UTILITIES
+   ============================================ */
+
+.bg-gradient-primary {
+  background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary) / 0.8) 100%);
 }
 
-.bg-gradient-green {
-  background: linear-gradient(to bottom right, var(--gradient-green-start), var(--gradient-green-end));
+.bg-gradient-success {
+  background: linear-gradient(135deg, hsl(var(--success)) 0%, hsl(var(--success) / 0.8) 100%);
 }
 
-.bg-gradient-purple {
-  background: linear-gradient(to bottom right, var(--gradient-purple-start), var(--gradient-purple-end));
+.bg-gradient-warning {
+  background: linear-gradient(135deg, hsl(var(--warning)) 0%, hsl(var(--warning) / 0.8) 100%);
 }
 
-.bg-gradient-emerald {
-  background: linear-gradient(to bottom right, var(--gradient-emerald-start), var(--gradient-emerald-end));
+.bg-gradient-destructive {
+  background: linear-gradient(135deg, hsl(var(--destructive)) 0%, hsl(var(--destructive) / 0.8) 100%);
 }
 
-.bg-gradient-orange {
-  background: linear-gradient(to bottom right, var(--gradient-orange-start), var(--gradient-orange-end));
+.bg-gradient-info {
+  background: linear-gradient(135deg, hsl(var(--info)) 0%, hsl(var(--info) / 0.8) 100%);
 }
 
-.bg-gradient-pink {
-  background: linear-gradient(to bottom right, var(--gradient-pink-start), var(--gradient-pink-end));
+.bg-gradient-dark {
+  background: linear-gradient(135deg, hsl(var(--background)) 0%, hsl(var(--muted)) 100%);
 }
 
-.bg-gradient-red {
-  background: linear-gradient(to bottom right, var(--gradient-red-start), var(--gradient-red-end));
+/* Gradient text */
+.text-gradient-primary {
+  background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--info)) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ============================================
+   🎭 GLASSMORPHISM UTILITIES
+   ============================================ */
+
+.glass {
+  background: hsl(var(--background) / 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid hsl(var(--border) / 0.5);
+}
+
+.glass-card {
+  background: hsl(var(--card) / 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid hsl(var(--border) / 0.3);
+  box-shadow: var(--shadow-lg);
 }
 
