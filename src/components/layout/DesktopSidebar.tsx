@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import {
@@ -14,6 +15,7 @@ import {
   LogOut,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { getCurrentUser, type UserData } from '@/lib/user-utils'
 
 const navigationItems = [
   { name: 'Dashboard', href: '/koperasi', icon: Home },
@@ -32,6 +34,8 @@ interface DesktopSidebarProps {
 
 export function DesktopSidebar({ onLogout }: DesktopSidebarProps) {
   const pathname = usePathname()
+  // Initialize with current user data
+  const [userData] = useState<UserData>(() => getCurrentUser())
 
   return (
     <aside className="hidden border-r border-gray-200 bg-white lg:fixed lg:inset-y-0 lg:left-0 lg:z-30 lg:flex lg:w-64 lg:flex-col">
@@ -84,11 +88,13 @@ export function DesktopSidebar({ onLogout }: DesktopSidebarProps) {
           <div className="mb-3 rounded-lg bg-gray-50 p-3">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-linear-to-br from-purple-500 to-pink-500 text-sm font-bold text-white">
-                A
+                {userData?.initials || 'U'}
               </div>
               <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-semibold text-gray-900">Admin Koperasi</p>
-                <p className="text-xs text-gray-500">admin@koperasi.com</p>
+                <p className="truncate text-sm font-semibold text-gray-900">
+                  {userData?.fullName || 'User'}
+                </p>
+                <p className="text-xs text-gray-500">{userData?.email || 'user@koperasi.com'}</p>
               </div>
             </div>
           </div>

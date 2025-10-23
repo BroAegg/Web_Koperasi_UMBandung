@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { LogOut, User, Clock, Shield, X } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
+import { getCurrentUser, getRoleDisplayName, clearUserData, type UserData } from '@/lib/user-utils'
 
 interface LogoutModalProps {
   isOpen: boolean
@@ -14,9 +15,11 @@ interface LogoutModalProps {
 export function LogoutModal({ isOpen, onClose }: LogoutModalProps) {
   const router = useRouter()
   const [isLoggingOut, setIsLoggingOut] = useState(false)
+  // Initialize with current user data
+  const [userData] = useState<UserData>(() => getCurrentUser())
 
   // Calculate session duration - computed on each render for accuracy
-   
+
   const getSessionDuration = () => {
     if (!isOpen) return 'Session aktif'
 
@@ -42,7 +45,8 @@ export function LogoutModal({ isOpen, onClose }: LogoutModalProps) {
 
     // Simulate logout process
     setTimeout(() => {
-      // Clear session data
+      // Clear session data using utility
+      clearUserData()
       localStorage.clear()
       sessionStorage.clear()
 
@@ -50,11 +54,6 @@ export function LogoutModal({ isOpen, onClose }: LogoutModalProps) {
       router.push('/login')
     }, 1000)
   }
-
-  // Get user data from localStorage (or use defaults)
-  const userName = localStorage.getItem('userName') || 'Admin Koperasi'
-  const userRole = localStorage.getItem('userRole') || 'ADMIN'
-  const username = localStorage.getItem('username') || 'admin'
 
   return (
     <div className="animate-in fade-in fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm duration-200">
@@ -96,18 +95,18 @@ export function LogoutModal({ isOpen, onClose }: LogoutModalProps) {
               <div className="flex items-start justify-between">
                 <div>
                   <p className="text-xs text-gray-500">Nama Pengguna</p>
-                  <p className="font-bold text-gray-900">{userName}</p>
+                  <p className="font-bold text-gray-900">{userData?.fullName || 'User'}</p>
                 </div>
                 <div
                   className={`rounded-lg px-3 py-1 text-xs font-semibold ${
-                    userRole === 'ADMIN'
+                    userData?.role === 'ADMIN' || userData?.role === 'SUPER_ADMIN'
                       ? 'border border-purple-200 bg-purple-100 text-purple-700'
                       : 'border border-blue-200 bg-blue-100 text-blue-700'
                   }`}
                 >
                   <div className="flex items-center gap-1">
                     <Shield className="h-3 w-3" />
-                    {userRole}
+                    {getRoleDisplayName(userData?.role || 'USER')}
                   </div>
                 </div>
               </div>
@@ -115,7 +114,7 @@ export function LogoutModal({ isOpen, onClose }: LogoutModalProps) {
               {/* Username */}
               <div>
                 <p className="text-xs text-gray-500">Username</p>
-                <p className="font-medium text-gray-700">@{username}</p>
+                <p className="font-medium text-gray-700">@{userData?.username || 'user'}</p>
               </div>
 
               {/* Session Info */}
