@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { router, publicProcedure } from '../trpc'
+import { router, publicProcedure, protectedProcedure } from '../trpc'
 import * as bcrypt from 'bcryptjs'
 import { createSession, deleteSession } from '@/lib/auth'
 import { TRPCError } from '@trpc/server'
@@ -44,8 +44,15 @@ export const authRouter = router({
         })
       }
 
-      // Create session
-      await createSession(user.id, user.username, user.role)
+      // Create session with all required fields
+      await createSession(
+        user.id,
+        user.username,
+        user.email,
+        user.full_name,
+        user.role,
+        user.is_active
+      )
 
       // Log activity
       await ctx.prisma.activityLog.create({
@@ -72,43 +79,19 @@ export const authRouter = router({
     }),
 
   // Logout
-  logout: publicProcedure
-    .input(
-      z
-        .object({
-          user_id: z.string(),
-          username: z.string(),
-          role: z.enum(['ADMIN', 'KASIR', 'STAFF', 'SUPPLIER']),
-        })
-        .optional()
-    )
-    .mutation(async ({ ctx, input }) => {
-      // Log activity if user info provided
-      if (input) {
-        await ctx.prisma.activityLog.create({
-          data: {
-            user_id: input.user_id,
-            role: input.role,
-            action: 'LOGOUT',
-            module: 'AUTH',
-            description: `User ${input.username} logged out`,
-          },
-        })
-      }
+  logout: publicProcedure.mutation(async ({ ctx }) => {
+    await deleteSession()
 
-      await deleteSession()
-
-      return {
-        success: true,
-        message: 'Logout berhasil',
-      }
-    }),
-
-  // Get current user
-  me: publicProcedure.query(async () => {
-    // This will be enhanced with middleware later
     return {
-      user: null,
+      success: true,
+      message: 'Logout berhasil',
+    }
+  }),
+
+  // Get current user (protected)
+  me: protectedProcedure.query(async ({ ctx }) => {
+    return {
+      user: ctx.user,
     }
   }),
 
