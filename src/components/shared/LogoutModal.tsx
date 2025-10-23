@@ -6,6 +6,7 @@ import { LogOut, User, Clock, Shield, X } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useState, useEffect } from 'react'
 import { getCurrentUser, getRoleDisplayName, clearUserData, type UserData } from '@/lib/user-utils'
+import { useFocusTrap, useKeyboardShortcut } from '@/hooks/useAccessibility'
 
 interface LogoutModalProps {
   isOpen: boolean
@@ -17,6 +18,12 @@ export function LogoutModal({ isOpen, onClose }: LogoutModalProps) {
   const [isLoggingOut, setIsLoggingOut] = useState(false)
   // Initialize with null, load on client side only
   const [userData, setUserData] = useState<UserData | null>(null)
+
+  // Focus trap for keyboard navigation
+  const modalRef = useFocusTrap<HTMLDivElement>(isOpen)
+
+  // ESC key to close modal
+  useKeyboardShortcut('Escape', onClose, [isOpen, isLoggingOut])
 
   useEffect(() => {
     // Load user data only on client side
@@ -64,18 +71,28 @@ export function LogoutModal({ isOpen, onClose }: LogoutModalProps) {
   }
 
   return (
-    <div className="animate-in fade-in fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm duration-200">
-      <Card className="animate-in zoom-in w-full max-w-md shadow-2xl duration-200">
+    <div
+      className="animate-in fade-in fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm duration-200"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="logout-modal-title"
+      aria-describedby="logout-modal-description"
+    >
+      <Card ref={modalRef} className="animate-in zoom-in w-full max-w-md shadow-2xl duration-200">
         {/* Header with Gradient */}
         <div className="rounded-t-lg bg-linear-to-r from-red-600 to-orange-600 px-6 py-4 text-white">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="rounded-full bg-white/20 p-2.5 backdrop-blur-sm">
-                <LogOut className="h-6 w-6" />
+                <LogOut className="h-6 w-6" aria-hidden="true" />
               </div>
               <div>
-                <h3 className="text-xl font-bold">Konfirmasi Logout</h3>
-                <p className="text-sm text-red-50">Anda yakin ingin keluar?</p>
+                <h3 id="logout-modal-title" className="text-xl font-bold">
+                  Konfirmasi Logout
+                </h3>
+                <p id="logout-modal-description" className="text-sm text-red-50">
+                  Anda yakin ingin keluar?
+                </p>
               </div>
             </div>
             <Button
@@ -84,8 +101,9 @@ export function LogoutModal({ isOpen, onClose }: LogoutModalProps) {
               onClick={onClose}
               disabled={isLoggingOut}
               className="text-white hover:bg-white/20"
+              aria-label="Tutup modal"
             >
-              <X className="h-5 w-5" />
+              <X className="h-5 w-5" aria-hidden="true" />
             </Button>
           </div>
         </div>
