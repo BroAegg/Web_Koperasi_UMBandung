@@ -18,12 +18,14 @@ Beautiful logout confirmation modal with real-time session data, user informatio
 ## 🎨 Design Highlights
 
 ### Color Scheme
+
 - **Header**: Red-to-orange gradient (`from-red-600 to-orange-600`)
 - **Role Badge**: Purple for ADMIN, Blue for other roles
 - **Warning Box**: Orange background with border
 - **Session Info**: Gray gradient background
 
 ### Layout
+
 - Modal overlay with backdrop blur
 - Max width: 28rem (448px)
 - Responsive padding and spacing
@@ -33,7 +35,7 @@ Beautiful logout confirmation modal with real-time session data, user informatio
 
 ```typescript
 interface LogoutModalProps {
-  isOpen: boolean     // Controls modal visibility
+  isOpen: boolean // Controls modal visibility
   onClose: () => void // Function to close modal
 }
 ```
@@ -41,6 +43,7 @@ interface LogoutModalProps {
 ## 🔄 Data Flow
 
 ### Session Data Source (localStorage)
+
 ```typescript
 const userName = localStorage.getItem('userName') || 'Admin Koperasi'
 const userRole = localStorage.getItem('userRole') || 'ADMIN'
@@ -49,11 +52,13 @@ const loginTime = localStorage.getItem('loginTime')
 ```
 
 ### Session Duration Calculation
+
 - Reads `loginTime` from localStorage
 - Calculates duration in hours and minutes
 - Updates when modal opens
 
 ### Logout Flow
+
 1. User clicks "Ya, Logout" button
 2. Loading state activates (1 second delay)
 3. Clear localStorage and sessionStorage
@@ -71,14 +76,9 @@ function Dashboard() {
 
   return (
     <>
-      <Button onClick={() => setShowLogoutModal(true)}>
-        Logout
-      </Button>
+      <Button onClick={() => setShowLogoutModal(true)}>Logout</Button>
 
-      <LogoutModal 
-        isOpen={showLogoutModal} 
-        onClose={() => setShowLogoutModal(false)} 
-      />
+      <LogoutModal isOpen={showLogoutModal} onClose={() => setShowLogoutModal(false)} />
     </>
   )
 }
@@ -87,12 +87,14 @@ function Dashboard() {
 ## 🎯 UI Sections
 
 ### 1. Header Section
+
 - Red/orange gradient background
 - LogOut icon in rounded badge
 - Title and subtitle
 - Close button (X icon)
 
 ### 2. Session Information Card
+
 - User name (bold, large text)
 - Role badge with Shield icon
 - Username with @ prefix
@@ -100,12 +102,14 @@ function Dashboard() {
 - Nested border design with gradients
 
 ### 3. Warning Message
+
 - Orange themed warning box
 - LogOut icon in badge
 - Bold title and descriptive text
 - Reminds user to save work
 
 ### 4. Action Buttons
+
 - **Cancel**: Outline button, closes modal
 - **Logout**: Red/orange gradient button
   - Shows spinner when loading
@@ -114,15 +118,18 @@ function Dashboard() {
 ## 🎭 States
 
 ### Default State
+
 - Modal closed (`isOpen = false`)
 - No loading spinner
 
 ### Open State
+
 - Modal visible with animations
 - Session duration calculated
 - User data displayed
 
 ### Loading State
+
 - Logout button shows spinner
 - Both buttons disabled
 - Text changes to "Logging out..."
@@ -130,15 +137,17 @@ function Dashboard() {
 ## 🎨 Visual Features
 
 ### Animations
+
 ```tsx
 // Modal overlay fade-in
-className="animate-in fade-in duration-200"
+className = 'animate-in fade-in duration-200'
 
 // Modal card zoom-in
-className="animate-in zoom-in duration-200"
+className = 'animate-in zoom-in duration-200'
 ```
 
 ### Gradients
+
 ```tsx
 // Header gradient
 from-red-600 to-orange-600
@@ -151,6 +160,7 @@ from-gray-50 to-slate-50
 ```
 
 ### Icons Used
+
 - **LogOut**: Main modal icon, warning icon
 - **User**: Session info icon
 - **Shield**: Role badge icon
@@ -167,27 +177,30 @@ from-gray-50 to-slate-50
 ## ⚠️ Important Notes
 
 ### No Activity Logging
+
 This version does NOT log logout events to the activity table. This is intentional because:
+
 - Authentication system is incomplete
 - Would cause 401 errors from tRPC
 - Simple redirect is sufficient for now
 
 ### Future Enhancements (when auth is complete)
+
 ```typescript
 // Add activity logging mutation
 const logoutMutation = trpc.auth.logout.useMutation()
 
 const handleLogout = async () => {
   setIsLoggingOut(true)
-  
+
   try {
     // Log logout activity
     await logoutMutation.mutateAsync()
-    
+
     // Clear session
     localStorage.clear()
     sessionStorage.clear()
-    
+
     // Redirect
     router.push('/login')
   } catch (error) {
@@ -199,17 +212,18 @@ const handleLogout = async () => {
 ## 🔧 Customization
 
 ### Change Colors
+
 ```tsx
 // Change gradient
-className="from-purple-600 to-pink-600"
+className = 'from-purple-600 to-pink-600'
 
 // Change role badge color
-const roleColor = userRole === 'ADMIN' 
-  ? 'bg-purple-100 text-purple-700' 
-  : 'bg-blue-100 text-blue-700'
+const roleColor =
+  userRole === 'ADMIN' ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'
 ```
 
 ### Adjust Timing
+
 ```tsx
 // Change logout delay
 setTimeout(() => {
@@ -218,6 +232,7 @@ setTimeout(() => {
 ```
 
 ### Modify Session Data
+
 ```tsx
 // Use different localStorage keys
 const userName = localStorage.getItem('user_name')
@@ -236,7 +251,7 @@ const toast = useToast()
 const handleLogout = () => {
   // Show success toast before redirect
   toast.success('Logout Berhasil', 'Sampai jumpa kembali!')
-  
+
   setTimeout(() => {
     localStorage.clear()
     router.push('/login')

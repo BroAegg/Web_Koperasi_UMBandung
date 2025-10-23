@@ -8,14 +8,14 @@
 
 ## 📊 ISSUE STATISTICS
 
-| Status | Count | Percentage |
-|--------|-------|------------|
-| 🔴 Open (Critical) | 0 | 0% |
-| ⚠️ Open (High) | 0 | 0% |
-| 🟡 Open (Medium) | 0 | 0% |
-| 🟢 Open (Low) | 0 | 0% |
-| ✅ Resolved | 0 | 0% |
-| ❌ Won't Fix | 0 | 0% |
+| Status             | Count | Percentage |
+| ------------------ | ----- | ---------- |
+| 🔴 Open (Critical) | 0     | 0%         |
+| ⚠️ Open (High)     | 0     | 0%         |
+| 🟡 Open (Medium)   | 0     | 0%         |
+| 🟢 Open (Low)      | 0     | 0%         |
+| ✅ Resolved        | 0     | 0%         |
+| ❌ Won't Fix       | 0     | 0%         |
 
 **Total Issues:** 0
 
@@ -32,44 +32,55 @@
 **Assigned To:** Aegner
 
 #### Problem Description
+
 This is a template issue. Delete this and create real issues below.
 
 #### Steps to Reproduce
+
 1. Open this file
 2. Read the template
 3. Delete this issue
 4. Create real issues
 
 #### Expected Behavior
+
 Real issues should be documented here.
 
 #### Actual Behavior
+
 Template is still here.
 
 #### Error Messages
+
 ```
 No error messages
 ```
 
 #### Screenshots
+
 No screenshots
 
 #### Environment
+
 - OS: Windows 11
 - Browser: Chrome 130
 - Node Version: 20.x.x
 - Database: PostgreSQL 16
 
 #### Possible Cause
+
 Template not deleted yet.
 
 #### Suggested Fix
+
 Delete this issue and create real ones.
 
 #### Related Files
+
 - `ISSUES-TRACKER.md`
 
 #### Resolution Notes
+
 (Will be filled when resolved)
 
 ---
@@ -86,12 +97,15 @@ Delete this issue and create real ones.
 **Resolution Date:** 2025-10-22
 
 #### Problem Description
+
 Example of how a resolved issue looks.
 
 #### Resolution
+
 Created this template file.
 
 #### Commit Hash
+
 N/A
 
 ---
@@ -107,6 +121,7 @@ N/A
 ### For Reyvan & Aegner:
 
 1. **When you find a bug:**
+
    ```bash
    # Open this file
    # Copy template above
@@ -147,18 +162,18 @@ N/A
 
 Track issues by category to identify patterns:
 
-| Category | Count |
-|----------|-------|
-| Database Schema | 0 |
-| API Routes | 0 |
-| Frontend Components | 0 |
-| Authentication | 0 |
-| Authorization | 0 |
-| Data Fetching | 0 |
-| UI/UX | 0 |
-| Performance | 0 |
-| Documentation | 0 |
-| DevOps | 0 |
+| Category            | Count |
+| ------------------- | ----- |
+| Database Schema     | 0     |
+| API Routes          | 0     |
+| Frontend Components | 0     |
+| Authentication      | 0     |
+| Authorization       | 0     |
+| Data Fetching       | 0     |
+| UI/UX               | 0     |
+| Performance         | 0     |
+| Documentation       | 0     |
+| DevOps              | 0     |
 
 ---
 
@@ -171,9 +186,11 @@ Track issues by category to identify patterns:
 **Issues Carry-over:** 0
 
 **Key Findings:**
+
 - (Will be filled during weekly review)
 
 **Action Items:**
+
 - (Will be filled during weekly review)
 
 ---
@@ -185,12 +202,14 @@ Track issues by category to identify patterns:
 **Issues Carry-over:** 4+
 
 **Key Findings:**
+
 - Database schema mismatch recurring issue
 - API field naming inconsistencies
 - Missing error handling in multiple routes
 - Documentation scattered across 92+ .md files
 
 **Action Items:**
+
 - ✅ Created PROJECT-REBUILD-ANALYSIS.md
 - ✅ Created ISSUES-TRACKER.md
 - [ ] Team decision on rebuild vs refactor
@@ -214,6 +233,7 @@ Use Ctrl+F (Cmd+F on Mac) to search this file:
 ## 📞 ESCALATION PROCESS
 
 If an issue is:
+
 - 🔴 Critical → Notify both Aegner & Reyvan immediately (WhatsApp/Discord)
 - ⚠️ High → Report in daily standup
 - 🟡 Medium → Add to weekly review

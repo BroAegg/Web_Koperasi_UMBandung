@@ -11,6 +11,7 @@
 Project Web Koperasi UMB telah menghadapi berbagai masalah teknis yang berulang. Dokumen ini menganalisis **root causes**, mengevaluasi **tech stack**, dan memberikan **rekomendasi rebuilding** untuk sistem yang lebih robust, maintainable, dan scalable.
 
 ### Key Findings:
+
 - ✅ **Konsep & Fitur**: Solid dan lengkap
 - ⚠️ **Arsitektur**: Modular tapi kurang konsisten
 - 🔴 **Database Schema**: Berantakan, sering mismatch
@@ -31,6 +32,7 @@ Project Web Koperasi UMB telah menghadapi berbagai masalah teknis yang berulang.
 ### Real-World Bugs Encountered Today:
 
 #### Bug #1: Supplier Name Mapping Error
+
 ```
 ❌ ERROR: Cannot read property 'name' of undefined
 🔍 ROOT CAUSE: API returns `businessName`, frontend expects `name`
@@ -39,7 +41,8 @@ Project Web Koperasi UMB telah menghadapi berbagai masalah teknis yang berulang.
 ⏱️ TIME WASTED: 30 minutes debugging
 ```
 
-#### Bug #2: Stock Validation Error  
+#### Bug #2: Stock Validation Error
+
 ```
 ❌ ERROR: PrismaClientValidationError - Invalid value for field `stock`
 🔍 ROOT CAUSE: Form sends empty string "", parseInt("") = NaN
@@ -49,6 +52,7 @@ Project Web Koperasi UMB telah menghadapi berbagai masalah teknis yang berulang.
 ```
 
 #### Bug #3: Duplicate Activity Logging
+
 ```
 ❌ ERROR: ReferenceError: logFromRequest is not defined
 🔍 ROOT CAUSE: Route using withActivityLog wrapper but has manual logging inside
@@ -58,12 +62,14 @@ Project Web Koperasi UMB telah menghadapi berbagai masalah teknis yang berulang.
 ```
 
 ### Pattern Gw Notice:
+
 - 🔴 **Every bug is a SYMPTOM of architectural issues**
 - 🔴 **Fixing one bug doesn't prevent similar bugs elsewhere**
 - 🔴 **No type safety = bugs discovered at RUNTIME, not compile-time**
 - 🔴 **No automated tests = manual testing every single time**
 
 ### Gw Setuju 100% dengan Full Rebuild karena:
+
 1. ✅ Sudah experience semua pain points yang Aegner mention
 2. ✅ Current approach = whack-a-mole (fix bug → bug muncul lagi)
 3. ✅ Better invest 4 weeks now than 6 months debugging terus
@@ -77,6 +83,7 @@ Project Web Koperasi UMB telah menghadapi berbagai masalah teknis yang berulang.
 ### 1. **Database Schema Issues** 🔴 CRITICAL
 
 #### Masalah Berulang:
+
 ```
 ❌ Field mismatch: `name` vs `businessName` di suppliers
 ❌ Column doesn't exist: `suppliers.status`, `suppliers.paymentStatus`
@@ -86,12 +93,14 @@ Project Web Koperasi UMB telah menghadapi berbagai masalah teknis yang berulang.
 ```
 
 #### Root Causes:
+
 - **Tidak pakai migrations**: `prisma db push` (destructive) instead of `prisma migrate dev`
 - **Naming convention tidak konsisten**: camelCase vs snake_case campur-campur
 - **Schema changes tidak documented**: Reyvan & Aegner edit schema secara parallel
 - **No schema validation**: Deploy tanpa verify schema compatibility
 
 #### Impact:
+
 - 500 Internal Server Error berulang kali
 - API crashes dengan PrismaClientValidationError
 - Dev time wasted untuk debugging field names
@@ -102,6 +111,7 @@ Project Web Koperasi UMB telah menghadapi berbagai masalah teknis yang berulang.
 ### 2. **API Layer Chaos** 🔴 CRITICAL
 
 #### Masalah Berulang:
+
 ```
 ❌ 403 Forbidden pada POS payment (role check salah)
 ❌ 500 Error karena field name salah
@@ -111,6 +121,7 @@ Project Web Koperasi UMB telah menghadapi berbagai masalah teknis yang berulang.
 ```
 
 #### Root Causes:
+
 - **No API contracts**: Setiap dev bikin API dengan struktur sendiri
 - **Weak error handling**: Generic try-catch tanpa proper error types
 - **Auth middleware tidak centralized**: Copy-paste code di tiap route
@@ -118,6 +129,7 @@ Project Web Koperasi UMB telah menghadapi berbagai masalah teknis yang berulang.
 - **@ts-nocheck dipakai**: TypeScript compiler di-bypass
 
 #### Impact:
+
 - Frontend tidak bisa rely on API response structure
 - Error messages tidak helpful untuk debugging
 - Security risks (auth checks tidak konsisten)
@@ -128,6 +140,7 @@ Project Web Koperasi UMB telah menghadapi berbagai masalah teknis yang berulang.
 ### 3. **Frontend State Management** ⚠️ MODERATE
 
 #### Masalah:
+
 ```
 ⚠️ Multiple Context providers: DeveloperContext, NotificationContext, etc.
 ⚠️ State redundancy: Data di-fetch ulang di multiple components
@@ -137,12 +150,14 @@ Project Web Koperasi UMB telah menghadapi berbagai masalah teknis yang berulang.
 ```
 
 #### Root Causes:
+
 - **No state management library**: Pure React Context (not scalable)
 - **Each developer bikin custom hooks**: useFinancialData, useInventoryData, etc.
 - **No data normalization**: Same data structure ditulis ulang
 - **No cache strategy**: Network call berlebihan
 
 #### Impact:
+
 - Performance issues (too many re-renders)
 - UX issues (loading states tidak smooth)
 - Maintainability issues (state logic scattered)
@@ -153,6 +168,7 @@ Project Web Koperasi UMB telah menghadapi berbagai masalah teknis yang berulang.
 ### 4. **Code Architecture** ⚠️ MODERATE
 
 #### Masalah:
+
 ```
 ⚠️ Duplicate pages: supplier pages ada 2 struktur
 ⚠️ Helper functions scattered: financial-helpers.tsx, inventory-helpers.tsx
@@ -162,12 +178,14 @@ Project Web Koperasi UMB telah menghadapi berbagai masalah teknis yang berulang.
 ```
 
 #### Root Causes:
+
 - **No coding standards document**: Setiap dev pakai style sendiri
 - **No code review process**: Merge tanpa review proper
 - **No folder structure guidelines**: Bebas taruh file dimana aja
 - **No component library**: Copy-paste component code
 
 #### Impact:
+
 - Hard to navigate codebase
 - Code duplication everywhere
 - Refactoring nightmare
@@ -178,6 +196,7 @@ Project Web Koperasi UMB telah menghadapi berbagai masalah teknis yang berulang.
 ### 5. **Development Workflow** ⚠️ MODERATE
 
 #### Masalah:
+
 ```
 ⚠️ No automated testing: Manual testing every time
 ⚠️ No CI/CD: Manual deployment
@@ -187,12 +206,14 @@ Project Web Koperasi UMB telah menghadapi berbagai masalah teknis yang berulang.
 ```
 
 #### Root Causes:
+
 - **No DevOps setup**: Manual everything
 - **No testing culture**: "Test di browser" mentality
 - **Docs overload**: Setiap issue bikin .md file baru
 - **No project management**: Trello/Linear/GitHub Projects tidak dipakai
 
 #### Impact:
+
 - Bugs discovered in production
 - Deploy anxiety (always risky)
 - Knowledge silos (info scattered di 92 files)
@@ -204,19 +225,19 @@ Project Web Koperasi UMB telah menghadapi berbagai masalah teknis yang berulang.
 
 ### Current Stack:
 
-| Layer | Technology | Status | Issue | Recommendation |
-|-------|-----------|--------|-------|----------------|
-| **Frontend** | Next.js 15.5.4 | ✅ GOOD | None | Keep |
-| **UI Library** | React 19.2.0 | ✅ GOOD | None | Keep |
-| **Styling** | Tailwind CSS 4.1.14 | ✅ GOOD | None | Keep |
-| **Backend** | Next.js API Routes | ⚠️ OK | No validation, weak error handling | Add tRPC or NestJS layer |
-| **ORM** | Prisma 6.17.1 | ⚠️ OK | Schema sync issues | Keep but add proper migrations |
-| **Database** | PostgreSQL | ✅ GOOD | None | Keep |
-| **Auth** | JWT (manual) | ⚠️ OK | Weak, not production-ready | Migrate to NextAuth.js |
-| **State Mgmt** | React Context | 🔴 BAD | Not scalable | Migrate to Zustand or TanStack Query |
-| **Validation** | None | 🔴 CRITICAL | No input validation | Add Zod |
-| **Testing** | None | 🔴 CRITICAL | No automated tests | Add Vitest + Playwright |
-| **API Docs** | None | 🔴 BAD | No API documentation | Add OpenAPI/Swagger |
+| Layer          | Technology          | Status      | Issue                              | Recommendation                       |
+| -------------- | ------------------- | ----------- | ---------------------------------- | ------------------------------------ |
+| **Frontend**   | Next.js 15.5.4      | ✅ GOOD     | None                               | Keep                                 |
+| **UI Library** | React 19.2.0        | ✅ GOOD     | None                               | Keep                                 |
+| **Styling**    | Tailwind CSS 4.1.14 | ✅ GOOD     | None                               | Keep                                 |
+| **Backend**    | Next.js API Routes  | ⚠️ OK       | No validation, weak error handling | Add tRPC or NestJS layer             |
+| **ORM**        | Prisma 6.17.1       | ⚠️ OK       | Schema sync issues                 | Keep but add proper migrations       |
+| **Database**   | PostgreSQL          | ✅ GOOD     | None                               | Keep                                 |
+| **Auth**       | JWT (manual)        | ⚠️ OK       | Weak, not production-ready         | Migrate to NextAuth.js               |
+| **State Mgmt** | React Context       | 🔴 BAD      | Not scalable                       | Migrate to Zustand or TanStack Query |
+| **Validation** | None                | 🔴 CRITICAL | No input validation                | Add Zod                              |
+| **Testing**    | None                | 🔴 CRITICAL | No automated tests                 | Add Vitest + Playwright              |
+| **API Docs**   | None                | 🔴 BAD      | No API documentation               | Add OpenAPI/Swagger                  |
 
 ---
 
@@ -229,6 +250,7 @@ Project Web Koperasi UMB telah menghadapi berbagai masalah teknis yang berulang.
 **Benefit:** Modern, scalable, maintainable
 
 #### New Tech Stack:
+
 ```typescript
 // Frontend
 - Next.js 15 (App Router) ✅ Keep
@@ -259,6 +281,7 @@ Project Web Koperasi UMB telah menghadapi berbagai masalah teknis yang berulang.
 ```
 
 #### Architecture:
+
 ```
 web-koperasi-umb/
 ├── src/
@@ -317,6 +340,7 @@ web-koperasi-umb/
 **Benefit:** No disruption, gradual improvement
 
 #### Phase 1: Database & API (Week 1-2)
+
 - ✅ Fix Prisma schema with proper migrations
 - ✅ Add Zod validation to all API routes
 - ✅ Centralize auth middleware
@@ -324,18 +348,21 @@ web-koperasi-umb/
 - ✅ Add API documentation
 
 #### Phase 2: Frontend State (Week 3-4)
+
 - ✅ Migrate to TanStack Query for data fetching
 - ✅ Remove redundant Context providers
 - ✅ Add global state with Zustand
 - ✅ Optimize re-renders
 
 #### Phase 3: Component Library (Week 5-6)
+
 - ✅ Add shadcn/ui components
 - ✅ Refactor duplicate components
 - ✅ Create component documentation
 - ✅ Implement design system
 
 #### Phase 4: Testing & DevOps (Week 7-8)
+
 - ✅ Add unit tests for critical functions
 - ✅ Add E2E tests for main flows
 - ✅ Setup GitHub Actions CI/CD
@@ -358,6 +385,7 @@ DEVELOPER (dev mode only)
 ```
 
 #### Shared Layout Pattern:
+
 ```typescript
 // src/app/(roles)/_layout.tsx
 // Base layout untuk semua roles
@@ -373,6 +401,7 @@ DEVELOPER (dev mode only)
 ```
 
 #### Permission System:
+
 ```typescript
 // src/lib/permissions.ts
 export const permissions = {
@@ -392,7 +421,7 @@ export const permissions = {
     delete: ['SUPER_ADMIN'],
   },
   // ... dst
-};
+}
 
 // Usage di API routes
 export async function requirePermission(
@@ -400,14 +429,14 @@ export async function requirePermission(
   module: keyof typeof permissions,
   action: string
 ) {
-  const user = await getCurrentUser(req);
-  const allowed = permissions[module][action];
-  
+  const user = await getCurrentUser(req)
+  const allowed = permissions[module][action]
+
   if (!allowed.includes(user.role)) {
-    throw new ForbiddenError(`${user.role} tidak punya akses untuk ${action} ${module}`);
+    throw new ForbiddenError(`${user.role} tidak punya akses untuk ${action} ${module}`)
   }
-  
-  return user;
+
+  return user
 }
 ```
 
@@ -416,6 +445,7 @@ export async function requirePermission(
 ### 2. **Database Schema Design**
 
 #### Principles:
+
 - ✅ Konsisten pakai `snake_case` untuk table/column names
 - ✅ `camelCase` untuk relasi dan Prisma client
 - ✅ Semua ID pakai `@id @default(cuid())`
@@ -424,6 +454,7 @@ export async function requirePermission(
 - ✅ Enum definitions di schema (tidak di code)
 
 #### Contoh Schema Bersih:
+
 ```prisma
 // prisma/schema.prisma
 
@@ -459,7 +490,7 @@ model users {
   // Relations
   activityLogs  activity_logs[]
   transactions  transactions[]  @relation("CreatedByUser")
-  
+
   @@index([email])
   @@index([role, is_active])
   @@map("users")
@@ -478,11 +509,11 @@ model suppliers {
   created_at      DateTime       @default(now())
   updated_at      DateTime       @updatedAt
   deleted_at      DateTime?
-  
+
   // Relations
   products        products[]
   payments        supplier_payments[]
-  
+
   @@index([email])
   @@index([status])
   @@map("suppliers")
@@ -499,10 +530,10 @@ model transactions {
   reference_type  String?         // 'pos', 'supplier_payment', etc
   created_by_id   String
   created_at      DateTime        @default(now())
-  
+
   // Relations
   createdBy       users           @relation("CreatedByUser", fields: [created_by_id], references: [id])
-  
+
   @@index([type, created_at])
   @@index([reference_type, reference_id])
   @@map("transactions")
@@ -521,10 +552,10 @@ model activity_logs {
   user_agent    String?
   is_production Boolean  @default(true)
   created_at    DateTime @default(now())
-  
+
   // Relations
   user          users    @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  
+
   @@index([user_id])
   @@index([user_role, module])
   @@index([created_at])
@@ -533,6 +564,7 @@ model activity_logs {
 ```
 
 #### Migration Strategy:
+
 ```bash
 # Generate migration (PROPER WAY)
 npx prisma migrate dev --name descriptive_migration_name
@@ -549,6 +581,7 @@ npx prisma migrate deploy
 ### 3. **API Layer dengan tRPC**
 
 #### Why tRPC?
+
 - ✅ **End-to-end type safety**: Frontend & backend share types automatically
 - ✅ **No code generation**: TypeScript compiler does it
 - ✅ **Better DX**: Autocomplete + inline errors in VSCode
@@ -556,24 +589,27 @@ npx prisma migrate deploy
 - ✅ **Better error handling**: Typed errors
 
 #### Example tRPC Router:
+
 ```typescript
 // src/server/routers/financial.ts
-import { z } from 'zod';
-import { router, protectedProcedure } from '../trpc';
-import { TRPCError } from '@trpc/server';
+import { z } from 'zod'
+import { router, protectedProcedure } from '../trpc'
+import { TRPCError } from '@trpc/server'
 
 export const financialRouter = router({
   // Get daily summary
   getDailySummary: protectedProcedure
-    .input(z.object({
-      date: z.date().optional(),
-    }))
+    .input(
+      z.object({
+        date: z.date().optional(),
+      })
+    )
     .query(async ({ ctx, input }) => {
       // ctx.user available (from middleware)
       // ctx.db = Prisma client
-      
-      const targetDate = input.date || new Date();
-      
+
+      const targetDate = input.date || new Date()
+
       const summary = await ctx.db.transactions.aggregate({
         where: {
           created_at: {
@@ -585,42 +621,44 @@ export const financialRouter = router({
           amount: true,
         },
         _count: true,
-      });
-      
+      })
+
       return {
         date: targetDate,
         totalAmount: summary._sum.amount || 0,
         transactionCount: summary._count,
-      };
+      }
     }),
 
   // Create transaction
   createTransaction: protectedProcedure
-    .input(z.object({
-      type: z.enum(['CASH_IN', 'CASH_OUT', 'TRANSFER']),
-      amount: z.number().positive(),
-      description: z.string().min(3).max(255),
-      category: z.string(),
-      referenceId: z.string().optional(),
-      referenceType: z.string().optional(),
-    }))
+    .input(
+      z.object({
+        type: z.enum(['CASH_IN', 'CASH_OUT', 'TRANSFER']),
+        amount: z.number().positive(),
+        description: z.string().min(3).max(255),
+        category: z.string(),
+        referenceId: z.string().optional(),
+        referenceType: z.string().optional(),
+      })
+    )
     .mutation(async ({ ctx, input }) => {
       // Permission check
       if (!['SUPER_ADMIN', 'ADMIN'].includes(ctx.user.role)) {
         throw new TRPCError({
           code: 'FORBIDDEN',
           message: 'Only admins can create transactions',
-        });
+        })
       }
-      
+
       // Create transaction
       const transaction = await ctx.db.transactions.create({
         data: {
           ...input,
           created_by_id: ctx.user.id,
         },
-      });
-      
+      })
+
       // Log activity
       await logActivity({
         userId: ctx.user.id,
@@ -629,14 +667,15 @@ export const financialRouter = router({
         module: 'FINANCIAL',
         description: `Created transaction: ${input.description}`,
         metadata: { transactionId: transaction.id },
-      });
-      
-      return transaction;
+      })
+
+      return transaction
     }),
-});
+})
 ```
 
 #### Frontend Usage:
+
 ```typescript
 // src/app/koperasi/financial/page.tsx
 'use client';
@@ -648,7 +687,7 @@ export default function FinancialPage() {
   const { data: summary, isLoading, error } = trpc.financial.getDailySummary.useQuery({
     date: new Date(),
   });
-  
+
   // Auto-typed mutation
   const createTransaction = trpc.financial.createTransaction.useMutation({
     onSuccess: () => {
@@ -656,16 +695,16 @@ export default function FinancialPage() {
       trpc.useContext().financial.getDailySummary.invalidate();
     },
   });
-  
+
   if (isLoading) return <SkeletonLoader />;
   if (error) return <ErrorCard error={error} />;
-  
+
   return (
     <div>
       <h1>Daily Summary</h1>
       <p>Total: {formatCurrency(summary.totalAmount)}</p>
       <p>Transactions: {summary.transactionCount}</p>
-      
+
       <button onClick={() => createTransaction.mutate({
         type: 'CASH_IN',
         amount: 50000,
@@ -684,24 +723,25 @@ export default function FinancialPage() {
 ### 4. **State Management dengan Zustand + TanStack Query**
 
 #### Zustand for Global UI State:
+
 ```typescript
 // src/stores/app-store.ts
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { create } from 'zustand'
+import { persist } from 'zustand/middleware'
 
 interface AppState {
   // Theme
-  theme: 'light' | 'dark';
-  setTheme: (theme: 'light' | 'dark') => void;
-  
+  theme: 'light' | 'dark'
+  setTheme: (theme: 'light' | 'dark') => void
+
   // Developer mode
-  isDeveloperMode: boolean;
-  toggleDeveloperMode: () => void;
-  
+  isDeveloperMode: boolean
+  toggleDeveloperMode: () => void
+
   // Notifications
-  notifications: Notification[];
-  addNotification: (notif: Notification) => void;
-  removeNotification: (id: string) => void;
+  notifications: Notification[]
+  addNotification: (notif: Notification) => void
+  removeNotification: (id: string) => void
 }
 
 export const useAppStore = create<AppState>()(
@@ -709,28 +749,32 @@ export const useAppStore = create<AppState>()(
     (set) => ({
       theme: 'light',
       setTheme: (theme) => set({ theme }),
-      
+
       isDeveloperMode: false,
-      toggleDeveloperMode: () => set((state) => ({
-        isDeveloperMode: !state.isDeveloperMode
-      })),
-      
+      toggleDeveloperMode: () =>
+        set((state) => ({
+          isDeveloperMode: !state.isDeveloperMode,
+        })),
+
       notifications: [],
-      addNotification: (notif) => set((state) => ({
-        notifications: [...state.notifications, notif]
-      })),
-      removeNotification: (id) => set((state) => ({
-        notifications: state.notifications.filter((n) => n.id !== id)
-      })),
+      addNotification: (notif) =>
+        set((state) => ({
+          notifications: [...state.notifications, notif],
+        })),
+      removeNotification: (id) =>
+        set((state) => ({
+          notifications: state.notifications.filter((n) => n.id !== id),
+        })),
     }),
     {
       name: 'app-storage',
     }
   )
-);
+)
 ```
 
 #### TanStack Query for Server State:
+
 ```typescript
 // Already handled by tRPC!
 // tRPC uses TanStack Query internally
@@ -742,6 +786,7 @@ export const useAppStore = create<AppState>()(
 ### 5. **Component Library dengan shadcn/ui**
 
 #### Why shadcn/ui?
+
 - ✅ **Copy-paste components**: No dependencies bloat
 - ✅ **Full customization**: Own the code
 - ✅ **Tailwind-based**: Consistent with current styling
@@ -749,6 +794,7 @@ export const useAppStore = create<AppState>()(
 - ✅ **TypeScript**: Fully typed
 
 #### Setup:
+
 ```bash
 npx shadcn@latest init
 
@@ -763,11 +809,12 @@ npx shadcn@latest add dropdown-menu
 ```
 
 #### Usage:
+
 ```typescript
 // src/app/koperasi/financial/page.tsx
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { 
+import {
   Table,
   TableBody,
   TableCell,
@@ -801,7 +848,7 @@ export default function FinancialPage() {
             ))}
           </TableBody>
         </Table>
-        
+
         <Button onClick={handleAddTransaction}>
           Tambah Transaksi
         </Button>
@@ -818,6 +865,7 @@ export default function FinancialPage() {
 ### Week 1: Foundation Setup
 
 #### Day 1-2: Project Structure
+
 - [ ] Create new Next.js 15 project with App Router
 - [ ] Setup Tailwind CSS + shadcn/ui
 - [ ] Configure TypeScript strict mode
@@ -826,6 +874,7 @@ export default function FinancialPage() {
 - [ ] Setup environment variables (.env.example)
 
 #### Day 3-4: Authentication
+
 - [ ] Install NextAuth.js v5
 - [ ] Configure credentials provider
 - [ ] Setup JWT strategy
@@ -834,6 +883,7 @@ export default function FinancialPage() {
 - [ ] Test authentication flow
 
 #### Day 5-7: Core Architecture
+
 - [ ] Setup tRPC server + client
 - [ ] Create base routers (financial, inventory, pos, members)
 - [ ] Setup Zustand stores
@@ -846,6 +896,7 @@ export default function FinancialPage() {
 ### Week 2: Feature Migration - Financial Module
 
 #### Day 1-3: Financial Backend
+
 - [ ] Migrate financial schema to new database
 - [ ] Create financial tRPC router
   - [ ] getDailySummary
@@ -858,6 +909,7 @@ export default function FinancialPage() {
 - [ ] Write unit tests for financial logic
 
 #### Day 4-7: Financial Frontend
+
 - [ ] Build financial dashboard page
 - [ ] Create FinancialSummaryCard component (preserve current design)
 - [ ] Create FinancialMetricsCards component
@@ -872,6 +924,7 @@ export default function FinancialPage() {
 ### Week 3: Feature Migration - POS & Inventory
 
 #### Day 1-3: POS Module
+
 - [ ] Migrate POS schema
 - [ ] Create POS tRPC router
   - [ ] getProducts (with search & pagination)
@@ -883,6 +936,7 @@ export default function FinancialPage() {
 - [ ] Test payment flows
 
 #### Day 4-7: Inventory Module
+
 - [ ] Migrate inventory schema
 - [ ] Create inventory tRPC router
   - [ ] getProducts
@@ -899,6 +953,7 @@ export default function FinancialPage() {
 ### Week 4: Feature Migration - Suppliers & Members
 
 #### Day 1-3: Supplier Module
+
 - [ ] Migrate supplier schema
 - [ ] Create supplier tRPC router
   - [ ] getSuppliers
@@ -911,6 +966,7 @@ export default function FinancialPage() {
 - [ ] Build supplier management UI (admin side)
 
 #### Day 4-7: Members Module
+
 - [ ] Migrate members schema
 - [ ] Create members tRPC router
 - [ ] Build member management UI
@@ -922,12 +978,14 @@ export default function FinancialPage() {
 ### Week 5: Activity Logging & Reporting
 
 #### Day 1-3: Activity Logging
+
 - [ ] Integrate activity logging middleware
 - [ ] Create activity logs viewer (Super Admin)
 - [ ] Add activity log filters
 - [ ] Add activity log export
 
 #### Day 4-7: Reporting & Analytics
+
 - [ ] Build comprehensive reports page
 - [ ] Add financial charts (trends, comparisons)
 - [ ] Add inventory analytics
@@ -939,6 +997,7 @@ export default function FinancialPage() {
 ### Week 6: Testing & Documentation
 
 #### Day 1-3: Testing
+
 - [ ] Write unit tests (target: 80% coverage)
 - [ ] Write E2E tests for critical flows
   - [ ] Login/logout
@@ -949,6 +1008,7 @@ export default function FinancialPage() {
 - [ ] Setup test CI pipeline
 
 #### Day 4-5: Documentation
+
 - [ ] Write API documentation
 - [ ] Write database schema documentation
 - [ ] Write deployment guide
@@ -956,6 +1016,7 @@ export default function FinancialPage() {
 - [ ] Write troubleshooting guide
 
 #### Day 6-7: Final Polish
+
 - [ ] Fix remaining bugs
 - [ ] Optimize performance
 - [ ] Security audit
@@ -967,12 +1028,14 @@ export default function FinancialPage() {
 ### Week 7: Migration & Deployment
 
 #### Day 1-3: Data Migration
+
 - [ ] Write data migration scripts
 - [ ] Test migration with production data copy
 - [ ] Validate migrated data
 - [ ] Prepare rollback plan
 
 #### Day 4-5: Deployment
+
 - [ ] Setup production environment
 - [ ] Deploy to staging
 - [ ] Staging testing (full QA)
@@ -980,6 +1043,7 @@ export default function FinancialPage() {
 - [ ] Monitor for issues
 
 #### Day 6-7: Training & Handoff
+
 - [ ] Train Koperasi staff
 - [ ] Train Reyvan on new architecture
 - [ ] Create maintenance runbook
@@ -1053,22 +1117,28 @@ docs/
 **Severity:** 🔴 Critical / ⚠️ High / 🟡 Medium / 🟢 Low
 
 ## Problem Description
+
 [Clear description of the issue]
 
 ## Steps to Reproduce
+
 1. Step 1
 2. Step 2
 3. Step 3
 
 ## Expected Behavior
+
 [What should happen]
 
 ## Actual Behavior
+
 [What actually happens]
 
 ## Error Messages
 ```
+
 [Paste error messages here]
+
 ```
 
 ## Screenshots
@@ -1138,6 +1208,7 @@ docs/
 ## 🎯 SUCCESS CRITERIA
 
 ### Technical Criteria:
+
 - ✅ Zero TypeScript errors
 - ✅ 80%+ test coverage
 - ✅ All API endpoints documented
@@ -1147,6 +1218,7 @@ docs/
 - ✅ Consistent code style
 
 ### User Experience Criteria:
+
 - ✅ All pages load < 2 seconds
 - ✅ No 403/500 errors in production
 - ✅ Smooth loading states
@@ -1155,6 +1227,7 @@ docs/
 - ✅ Accessible (WCAG 2.1 Level AA)
 
 ### Documentation Criteria:
+
 - ✅ Single source of truth for docs (not 92 files!)
 - ✅ API reference complete
 - ✅ Deployment guide tested
@@ -1162,6 +1235,7 @@ docs/
 - ✅ User manual in Bahasa Indonesia
 
 ### Team Criteria:
+
 - ✅ Reyvan can work independently
 - ✅ New features take < 2 days
 - ✅ Bug fixes take < 4 hours
@@ -1175,6 +1249,7 @@ docs/
 **Pilih Option A (Full Rebuild)** dengan alasan:
 
 ### Pros:
+
 1. ✅ **Clean slate**: No technical debt
 2. ✅ **Modern stack**: Best practices from day 1
 3. ✅ **Type safety**: tRPC + Zod = zero runtime errors
@@ -1185,11 +1260,13 @@ docs/
 8. ✅ **Documentable**: Simple docs because simple code
 
 ### Cons:
+
 1. ⚠️ **Time**: 4-6 weeks (but better than 6 months of bug fixes)
 2. ⚠️ **Risk**: Migration risk (mitigated with proper planning)
 3. ⚠️ **Learning curve**: New tools (but better long-term)
 
 ### Why Not Incremental Refactor?
+
 - Current codebase sudah terlalu berantakan
 - Fixing one part breaks another part (domino effect)
 - Technical debt terlalu besar
@@ -1200,18 +1277,21 @@ docs/
 ## 📞 CONTACT & COLLABORATION
 
 ### For Reyvan:
+
 - Jika menemukan masalah, **gunakan ISSUES-TRACKER.md** (jangan bikin file .md baru)
 - Screenshot error messages + stack traces
 - Include steps to reproduce
 - Tag Aegner di GitHub Issues
 
 ### For Aegner:
+
 - Review Reyvan's PRs within 24 hours
 - Provide constructive feedback
 - Pair programming 2x per week
 - Weekly sync meeting (30 min)
 
 ### For Both:
+
 - Daily standup (async via Discord/Slack/WhatsApp)
 - What did you do yesterday?
 - What will you do today?
@@ -1227,6 +1307,6 @@ Mari kita buat sistem yang **clean**, **scalable**, dan **maintainable**! 🚀
 
 ---
 
-*Prepared by: GitHub Copilot*  
-*Reviewed by: Aegner & Reyvan*  
-*Version: 1.0*
+_Prepared by: GitHub Copilot_  
+_Reviewed by: Aegner & Reyvan_  
+_Version: 1.0_

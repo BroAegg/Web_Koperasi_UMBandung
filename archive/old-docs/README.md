@@ -5,6 +5,7 @@ This folder contains screenshots of the current working system for UI/UX referen
 ## Screenshot Organization
 
 ### By Page
+
 ```
 screenshots/
 ├── dashboard/
@@ -42,16 +43,19 @@ screenshots/
 ## Screenshot Requirements
 
 ### Resolution
+
 - **Desktop**: 1920x1080 (Full HD)
 - **Tablet**: 1024x768 (iPad landscape)
 - **Mobile**: 375x667 (iPhone SE)
 
 ### Format
+
 - **File Type**: PNG (for transparency support)
 - **Quality**: High quality, no compression artifacts
 - **File Size**: Optimize to < 500KB per screenshot
 
 ### Naming Convention
+
 ```
 {page}-{section}-{variant}.png
 
@@ -64,21 +68,25 @@ Examples:
 ## What to Capture
 
 ### Full Page Screenshots
+
 - Show complete page layout with sidebar and header
 - Capture actual data (not empty states)
 - Show responsive behavior at different breakpoints
 
 ### Component Screenshots
+
 - Focus on specific component
 - Show all states (default, hover, active, disabled)
 - Capture interactions (modals, dropdowns, tooltips)
 
 ### Interaction Flows
+
 - Multi-step processes (e.g., checkout flow)
 - Before/after states (e.g., form submission)
 - Error states and validation
 
 ### Developer Features
+
 - Developer toolbar in action
 - Role toggle functionality
 - Environment indicators (DEV/PROD)
@@ -98,17 +106,20 @@ Before taking screenshots:
 ## Tools
 
 ### Recommended Screenshot Tools
+
 - **Windows**: Snipping Tool, Snip & Sketch
 - **Browser**: Chrome DevTools Device Toolbar
 - **Extensions**: GoFullPage (full page capture)
 
 ### Annotation Tools
+
 - **For Specifications**: Use arrows, boxes, text to highlight features
 - **Tool**: Excalidraw, Figma, or simple image editor
 
 ## Priority Screenshots Needed
 
 ### High Priority (Take First)
+
 1. ✅ Financial page with 500px chart
 2. ✅ POS payment modal (Cash mode with 2k-20k buttons)
 3. ✅ POS payment modal (Transfer mode with auto-fill)
@@ -117,6 +128,7 @@ Before taking screenshots:
 6. ✅ Developer toolbar in action
 
 ### Medium Priority
+
 - Dashboard overview
 - Inventory product grid
 - Product add/edit form
@@ -124,6 +136,7 @@ Before taking screenshots:
 - Transaction filters
 
 ### Low Priority
+
 - Empty states
 - Loading states
 - Error states
@@ -132,6 +145,7 @@ Before taking screenshots:
 ## Usage During Rebuild
 
 These screenshots will serve as:
+
 1. **Visual Reference**: Exact UI to recreate
 2. **Feature Checklist**: Ensure no features are missed
 3. **UX Patterns**: Maintain consistent user experience

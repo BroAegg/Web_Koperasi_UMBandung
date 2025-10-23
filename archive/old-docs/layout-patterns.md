@@ -3,6 +3,7 @@
 ## Page Structure
 
 ### Standard Layout
+
 ```
 ┌─────────────────────────────────────────────┐
 │ Header (64px height)                        │
@@ -21,6 +22,7 @@
 ```
 
 ### Z-index Hierarchy
+
 - **Sidebar**: z-50
 - **Modal Overlay**: z-60
 - **Modal Content**: z-70
@@ -30,17 +32,20 @@
 ## Spacing System
 
 ### Container Padding
+
 - **Page Container**: `p-6` (24px)
 - **Card Padding**: `p-6` (24px)
 - **Form Fields**: `p-4` (16px)
 - **Table Cells**: `px-6 py-4`
 
 ### Margins
+
 - **Section Spacing**: `mb-6` (24px)
 - **Card Spacing**: `mb-4` (16px)
 - **Element Spacing**: `mb-2` (8px)
 
 ### Gaps
+
 - **Grid Gap**: `gap-6` (24px)
 - **Flex Gap**: `gap-4` (16px)
 - **Button Group**: `gap-2` (8px)
@@ -48,6 +53,7 @@
 ## Component Layouts
 
 ### Cards
+
 ```typescript
 // Standard Card
 <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
@@ -74,6 +80,7 @@
 ```
 
 ### Tables
+
 ```typescript
 // Standard Table Layout
 <div className="overflow-x-auto">
@@ -97,6 +104,7 @@
 ```
 
 ### Forms
+
 ```typescript
 // Standard Form Layout
 <form className="space-y-6">
@@ -104,7 +112,7 @@
     <label className="block text-sm font-medium text-gray-700">
       Field Label
     </label>
-    <input 
+    <input
       className="w-full border border-gray-300 rounded-lg px-4 py-2
                  focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500"
     />
@@ -123,6 +131,7 @@
 ```
 
 ### Modals
+
 ```typescript
 // Modal Structure
 <div className="fixed inset-0 z-60 bg-black/50 backdrop-blur-sm">
@@ -134,12 +143,12 @@
           <h3 className="text-xl font-bold">Title</h3>
           <button className="text-gray-400 hover:text-gray-600">✕</button>
         </div>
-        
+
         {/* Modal Body */}
         <div className="space-y-4">
           {/* Content */}
         </div>
-        
+
         {/* Modal Footer */}
         <div className="flex justify-end gap-3 mt-6 pt-4 border-t">
           <button className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg">
@@ -158,6 +167,7 @@
 ## Responsive Breakpoints
 
 ### Tailwind Defaults
+
 - **sm**: 640px
 - **md**: 768px
 - **lg**: 1024px
@@ -165,6 +175,7 @@
 - **2xl**: 1536px
 
 ### Usage Patterns
+
 ```typescript
 // Mobile First Approach
 <div className="
@@ -178,29 +189,34 @@
 ## Page-Specific Layouts
 
 ### Dashboard
+
 - **Grid**: 3 columns (metric cards)
 - **Chart**: Full width, 500px height
 - **Table**: Full width, paginated
 
 ### POS (Point of Sale)
-- **Two Column**: 
+
+- **Two Column**:
   - Left: Product selector (60%)
   - Right: Cart + Payment (40%)
 - **Mobile**: Stacked vertical
 
 ### Inventory
+
 - **Three Section**:
   - Top: Filters + Actions
   - Middle: Product Grid/Table
   - Bottom: Pagination
 
 ### Financial
+
 - **Single Column Stack**:
   - Balance Card (full width)
   - Financial Chart (full width, 500px)
   - Transaction Table (full width)
 
 ### Transactions
+
 - **Standard List**:
   - Filters (top)
   - Table (full width)
@@ -209,6 +225,7 @@
 ## Animation Patterns
 
 ### Transitions
+
 ```css
 /* Standard Transition */
 transition-all duration-200
@@ -221,6 +238,7 @@ transition-colors duration-150
 ```
 
 ### Loading States
+
 ```typescript
 // Skeleton Loader
 <div className="animate-pulse space-y-4">
@@ -235,11 +253,13 @@ transition-colors duration-150
 ## Accessibility
 
 ### Focus Management
+
 - All interactive elements have visible focus states
 - Modal traps focus when open
 - Keyboard navigation supported (Tab, Enter, Escape)
 
 ### Screen Reader
+
 - Use semantic HTML (`<header>`, `<nav>`, `<main>`, `<article>`)
 - Add `aria-label` for icon-only buttons
 - Add `role` attributes for custom components
@@ -247,15 +267,22 @@ transition-colors duration-150
 ## Print Styles
 
 ### Print-specific CSS
+
 ```css
 @media print {
   /* Hide sidebar, header, buttons */
-  .no-print { display: none; }
-  
+  .no-print {
+    display: none;
+  }
+
   /* Full width content */
-  .print-full-width { width: 100% !important; }
-  
+  .print-full-width {
+    width: 100% !important;
+  }
+
   /* Black text for better print */
-  .print-text-black { color: black !important; }
+  .print-text-black {
+    color: black !important;
+  }
 }
 ```

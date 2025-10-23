@@ -1,12 +1,29 @@
-# Web Koperasi UM Bandung 🏪
+# 🏪 Web Koperasi UM Bandung
 
-**Modern Cooperative Management System** - Sistem Informasi Manajemen Koperasi berbasis web untuk UM Bandung
+**Modern Cooperative Management System** - Built with Next.js 15, React 19, tRPC v11, and PostgreSQL
 
-[![Next.js](https://img.shields.io/badge/Next.js-16.0-black)](https://nextjs.org/)
+[![Next.js](https://img.shields.io/badge/Next.js-15.5-black)](https://nextjs.org/)
+[![React](https://img.shields.io/badge/React-19.2-61dafb)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue)](https://www.typescriptlang.org/)
-[![Prisma](https://img.shields.io/badge/Prisma-6.x-2D3748)](https://www.prisma.io/)
+[![Prisma](https://img.shields.io/badge/Prisma-6.17-2D3748)](https://www.prisma.io/)
 [![tRPC](https://img.shields.io/badge/tRPC-11.x-398CCB)](https://trpc.io/)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-17-316192)](https://www.postgresql.org/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-14+-316192)](https://www.postgresql.org/)
+[![Tailwind](https://img.shields.io/badge/Tailwind-4.1-38bdf8)](https://tailwindcss.com/)
+
+> **🚧 Full UI Rebuild In Progress** - Creating modern, clean, professional interface with dark mode support
+
+---
+
+## 📖 Documentation
+
+- **[Getting Started](./GETTING-STARTED.md)** - Setup & installation guide
+- **[Architecture](./ARCHITECTURE.md)** - System architecture & design principles
+- **[Database](./DATABASE.md)** - Database schema & migration guide
+- **[Coding Standards](./CODING-STANDARDS.md)** - Code quality guidelines
+- **[API Reference](./API-REFERENCE.md)** - tRPC API documentation _(coming soon)_
+- **[Testing](./TESTING.md)** - Testing strategy & guides _(coming soon)_
+
+---
 
 ## 🚀 Fitur Utama
 
@@ -159,34 +176,37 @@ npm run dev
 
 Buka `http://localhost:3000`
 
-## 📁 Struktur Proyek
+## 📁 Project Structure
 
 ```
-src/
-├── app/
-│   ├── (auth)/              # Login, Register
-│   ├── (roles)/koperasi/    # Dashboard & Features
-│   │   ├── financial/       # 💰 Keuangan
-│   │   ├── pos/             # 🛒 Point of Sale
-│   │   ├── inventory/       # 📦 Inventori
-│   │   ├── suppliers/       # 🏢 Supplier
-│   │   ├── members/         # 👥 Anggota
-│   │   ├── activity/        # 📋 Activity Log
-│   │   └── reports/         # 📊 Laporan
-│   └── api/trpc/            # tRPC endpoint
-├── components/
-│   ├── ui/                  # shadcn/ui
-│   └── features/            # Feature components
-├── lib/
-│   ├── auth.ts              # JWT utilities
-│   ├── db.ts                # Prisma client
-│   └── trpc.ts              # tRPC client
-├── server/
-│   ├── routers/             # tRPC routers
-│   ├── context.ts           # Request context
-│   └── index.ts             # Main router
-└── types/                   # TypeScript types
+Web_Koperasi_UMBandung/
+├── src/
+│   ├── app/              # Next.js App Router pages
+│   │   ├── (auth)/       # Authentication pages
+│   │   ├── (roles)/      # Role-based pages
+│   │   │   ├── koperasi/ # Koperasi dashboard & features
+│   │   │   ├── kasir/    # Kasir POS interface
+│   │   │   └── anggota/  # Member portal
+│   │   └── api/          # API routes & tRPC handler
+│   ├── components/
+│   │   ├── ui/           # shadcn/ui base components
+│   │   ├── shared/       # Shared business components
+│   │   └── layout/       # Layout components
+│   ├── server/
+│   │   ├── api/          # tRPC routers
+│   │   └── db.ts         # Prisma client
+│   ├── lib/              # Utilities & helpers
+│   ├── hooks/            # Custom React hooks
+│   └── styles/           # Global styles
+├── prisma/               # Database schema & migrations
+│   ├── schema.prisma
+│   ├── migrations/
+│   └── seed.ts
+├── archive/              # Old documentation (archived)
+└── docs/                 # Documentation *(new structure)*
 ```
+
+For detailed explanations, see [Architecture Guide](./ARCHITECTURE.md).
 
 ## 🔐 Authentication
 
@@ -308,30 +328,51 @@ npx prisma migrate deploy
 
 Semua dengan soft deletes (`deleted_at`), timestamps, dan proper relations.
 
+## 🎯 Current Status
+
+**Phase 0: Preparation** (In Progress)
+
+- ✅ Documentation cleanup & restructure
+- ⏳ Codebase analysis
+- ⏳ GitHub Projects board setup
+- ⏳ Coding standards definition
+
+**Next: Phase 1 - Foundation**
+
+- Design System (CSS variables, colors, typography)
+- Component Library (shadcn/ui + custom)
+- Database Schema redesign
+- Authentication System (NextAuth.js v5)
+
+See full roadmap in GitHub Projects or contact maintainer.
+
+---
+
 ## 🤝 Contributing
 
-1. Fork repo
-2. Create branch (`git checkout -b feature/AmazingFeature`)
-3. Commit (`git commit -m 'Add AmazingFeature'`)
-4. Push (`git push origin feature/AmazingFeature`)
-5. Open Pull Request
+This is a private project for UM Bandung. For contributions:
+
+1. Follow [Coding Standards](./CODING-STANDARDS.md) strictly
+2. Write tests for new features
+3. Ensure dark mode compatibility
+4. Update documentation
+5. Submit PR with detailed description
 
 ## 📝 License
 
-Private & Proprietary. All rights reserved.
+Private & Proprietary. All rights reserved by Universitas Muhammadiyah Bandung.
 
 ## 👨‍💻 Team
 
 - **Developer**: [@BroAegg](https://github.com/BroAegg)
-- **Organization**: UM Bandung
+- **Organization**: Universitas Muhammadiyah Bandung
+- **Purpose**: Digital transformation for UMB Cooperative
 
 ## 📞 Support
 
-- Email: support@umbandung.ac.id
 - GitHub Issues: [Create Issue](https://github.com/BroAegg/Web_Koperasi_UMBandung/issues)
+- Email: ti@umb.ac.id
 
 ---
 
-**Built with ❤️ for UM Bandung Cooperative**
-
-🌟 Star this repo if you find it helpful!
+**Built with ❤️ for Koperasi Universitas Muhammadiyah Bandung**

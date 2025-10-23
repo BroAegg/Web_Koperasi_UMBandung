@@ -11,6 +11,7 @@
 Anda adalah AI assistant yang akan membantu rebuild **Web Koperasi Universitas Muhammadiyah Bandung** dari scratch. Project lama memiliki masalah arsitektur yang serius (database schema chaos, API inconsistency, state management issues). Kita melakukan full rebuild dengan tech stack modern.
 
 ### Key Files You MUST Read First:
+
 1. **PROJECT-REBUILD-ANALYSIS.md** - Lengkap analysis masalah lama & solusi rebuild
 2. **ISSUES-TRACKER.md** - Tempat track semua issues yang ditemukan
 3. **README.md** - Overview project & getting started
@@ -20,7 +21,9 @@ Anda adalah AI assistant yang akan membantu rebuild **Web Koperasi Universitas M
 ## 📋 YOUR MISSION
 
 ### Primary Objective:
+
 Build a **clean**, **type-safe**, **maintainable** web application untuk manajemen koperasi dengan fitur:
+
 - Financial management (transaksi, laporan keuangan)
 - Point of Sale (POS) system
 - Inventory management
@@ -30,6 +33,7 @@ Build a **clean**, **type-safe**, **maintainable** web application untuk manajem
 - Activity logging untuk audit trail
 
 ### Success Criteria:
+
 - ✅ Zero TypeScript errors (strict mode)
 - ✅ 100% type-safe API (tRPC)
 - ✅ All forms validated with Zod
@@ -73,6 +77,7 @@ Build a **clean**, **type-safe**, **maintainable** web application untuk manajem
 ```
 
 **DO NOT USE:**
+
 - ❌ Redux/MobX (use Zustand)
 - ❌ REST API (use tRPC)
 - ❌ Class components (use functional + hooks)
@@ -253,6 +258,7 @@ web-koperasi-umb/
    - Period selector (Hari Ini, 7 Hari, 1 Bulan, 3 Bulan, 1 Tahun)
 
 4. **Component Design Patterns:**
+
    ```typescript
    // Card component pattern
    <Card className="bg-gradient-to-br from-blue-500 to-blue-600">
@@ -271,23 +277,13 @@ web-koperasi-umb/
    ```
 
 5. **Color Palette:**
+
    ```css
    /* Primary */
-   --primary: Blue (500-600)
-   --secondary: Green (500-600)
-   --accent: Purple (500-600)
-   
-   /* Status Colors */
-   --success: Green 500
-   --warning: Yellow 500
-   --error: Red 500
-   --info: Blue 500
-   
-   /* Neutrals */
-   --background: White / Gray 50
-   --foreground: Gray 900
-   --muted: Gray 100
-   --border: Gray 200
+   --primary: Blue (500-600) --secondary: Green (500-600) --accent: Purple (500-600)
+     /* Status Colors */ --success: Green 500 --warning: Yellow 500 --error: Red 500 --info: Blue
+     500 /* Neutrals */ --background: White / Gray 50 --foreground: Gray 900 --muted: Gray 100
+     --border: Gray 200;
    ```
 
 ---
@@ -295,6 +291,7 @@ web-koperasi-umb/
 ## 🔐 ROLE-BASED ARCHITECTURE
 
 ### Role Hierarchy (Top to Bottom):
+
 ```
 DEVELOPER (dev mode only, full access)
   └─ SUPER_ADMIN (production + dev, full access)
@@ -306,44 +303,44 @@ DEVELOPER (dev mode only, full access)
 
 ### Permission Matrix:
 
-| Module | View | Create | Edit | Delete | Export |
-|--------|------|--------|------|--------|--------|
-| **Dashboard** |
-| Super Admin Dashboard | SUPER_ADMIN, DEVELOPER | - | - | - | - |
-| Admin Dashboard | ADMIN, SUPER_ADMIN, DEVELOPER | - | - | - | - |
-| **Financial** |
-| View Transactions | ADMIN, SUPER_ADMIN, DEVELOPER | - | - | - | - |
-| Create Transaction | ADMIN, SUPER_ADMIN, DEVELOPER | ✅ | - | - | - |
-| Edit Transaction | SUPER_ADMIN, DEVELOPER | - | ✅ | - | - |
-| Delete Transaction | SUPER_ADMIN, DEVELOPER | - | - | ✅ | - |
-| Export Reports | ADMIN, SUPER_ADMIN, DEVELOPER | - | - | - | ✅ |
-| **POS** |
-| View Products | KASIR, ADMIN, SUPER_ADMIN | - | - | - | - |
-| Create Transaction | KASIR, ADMIN, SUPER_ADMIN | ✅ | - | - | - |
-| Refund | ADMIN, SUPER_ADMIN | - | ✅ | - | - |
-| **Inventory** |
-| View Products | STAFF, ADMIN, SUPER_ADMIN | - | - | - | - |
-| Create Product | STAFF, ADMIN, SUPER_ADMIN | ✅ | - | - | - |
-| Edit Product | ADMIN, SUPER_ADMIN | - | ✅ | - | - |
-| Delete Product | SUPER_ADMIN | - | - | ✅ | - |
-| **Members** |
-| View Members | STAFF, ADMIN, SUPER_ADMIN | - | - | - | - |
-| Create Member | STAFF, ADMIN, SUPER_ADMIN | ✅ | - | - | - |
-| Edit Member | ADMIN, SUPER_ADMIN | - | ✅ | - | - |
-| **Suppliers** |
-| View Suppliers | ADMIN, SUPER_ADMIN | - | - | - | - |
-| Approve Supplier | SUPER_ADMIN | ✅ | - | - | - |
-| Supplier Dashboard | SUPPLIER | ✅ | - | - | - | - |
-| **Activity Logs** |
-| View All Logs | DEVELOPER | - | - | - | - |
-| View Own Logs | SUPER_ADMIN | - | - | - | - |
+| Module                | View                          | Create | Edit | Delete | Export |
+| --------------------- | ----------------------------- | ------ | ---- | ------ | ------ | --- |
+| **Dashboard**         |
+| Super Admin Dashboard | SUPER_ADMIN, DEVELOPER        | -      | -    | -      | -      |
+| Admin Dashboard       | ADMIN, SUPER_ADMIN, DEVELOPER | -      | -    | -      | -      |
+| **Financial**         |
+| View Transactions     | ADMIN, SUPER_ADMIN, DEVELOPER | -      | -    | -      | -      |
+| Create Transaction    | ADMIN, SUPER_ADMIN, DEVELOPER | ✅     | -    | -      | -      |
+| Edit Transaction      | SUPER_ADMIN, DEVELOPER        | -      | ✅   | -      | -      |
+| Delete Transaction    | SUPER_ADMIN, DEVELOPER        | -      | -    | ✅     | -      |
+| Export Reports        | ADMIN, SUPER_ADMIN, DEVELOPER | -      | -    | -      | ✅     |
+| **POS**               |
+| View Products         | KASIR, ADMIN, SUPER_ADMIN     | -      | -    | -      | -      |
+| Create Transaction    | KASIR, ADMIN, SUPER_ADMIN     | ✅     | -    | -      | -      |
+| Refund                | ADMIN, SUPER_ADMIN            | -      | ✅   | -      | -      |
+| **Inventory**         |
+| View Products         | STAFF, ADMIN, SUPER_ADMIN     | -      | -    | -      | -      |
+| Create Product        | STAFF, ADMIN, SUPER_ADMIN     | ✅     | -    | -      | -      |
+| Edit Product          | ADMIN, SUPER_ADMIN            | -      | ✅   | -      | -      |
+| Delete Product        | SUPER_ADMIN                   | -      | -    | ✅     | -      |
+| **Members**           |
+| View Members          | STAFF, ADMIN, SUPER_ADMIN     | -      | -    | -      | -      |
+| Create Member         | STAFF, ADMIN, SUPER_ADMIN     | ✅     | -    | -      | -      |
+| Edit Member           | ADMIN, SUPER_ADMIN            | -      | ✅   | -      | -      |
+| **Suppliers**         |
+| View Suppliers        | ADMIN, SUPER_ADMIN            | -      | -    | -      | -      |
+| Approve Supplier      | SUPER_ADMIN                   | ✅     | -    | -      | -      |
+| Supplier Dashboard    | SUPPLIER                      | ✅     | -    | -      | -      | -   |
+| **Activity Logs**     |
+| View All Logs         | DEVELOPER                     | -      | -    | -      | -      |
+| View Own Logs         | SUPER_ADMIN                   | -      | -    | -      | -      |
 
 ### Implementation Pattern:
 
 ```typescript
 // src/server/middleware/permissions.ts
-import { TRPCError } from '@trpc/server';
-import type { Role } from '@prisma/client';
+import { TRPCError } from '@trpc/server'
+import type { Role } from '@prisma/client'
 
 export const permissions = {
   financial: {
@@ -365,20 +362,20 @@ export const permissions = {
     delete: ['DEVELOPER', 'SUPER_ADMIN'],
   },
   // ... etc
-} as const;
+} as const
 
 export function requirePermission(
   userRole: Role,
   module: keyof typeof permissions,
   action: string
 ) {
-  const allowed = permissions[module][action as keyof typeof permissions[typeof module]];
-  
+  const allowed = permissions[module][action as keyof (typeof permissions)[typeof module]]
+
   if (!allowed || !allowed.includes(userRole)) {
     throw new TRPCError({
       code: 'FORBIDDEN',
       message: `Role ${userRole} tidak memiliki akses untuk ${action} di modul ${module}`,
-    });
+    })
   }
 }
 
@@ -387,10 +384,10 @@ export const financialRouter = router({
   createTransaction: protectedProcedure
     .input(createTransactionSchema)
     .mutation(async ({ ctx, input }) => {
-      requirePermission(ctx.user.role, 'financial', 'create');
+      requirePermission(ctx.user.role, 'financial', 'create')
       // ... rest of logic
     }),
-});
+})
 ```
 
 ---
@@ -400,6 +397,7 @@ export const financialRouter = router({
 ### MANDATORY Conventions:
 
 1. **Table Names:** `snake_case` (lowercase, plural)
+
    ```prisma
    model users { }       // ✅ Correct
    model user { }        // ❌ Wrong (singular)
@@ -407,6 +405,7 @@ export const financialRouter = router({
    ```
 
 2. **Column Names:** `snake_case`
+
    ```prisma
    model users {
      created_at DateTime  // ✅ Correct
@@ -415,6 +414,7 @@ export const financialRouter = router({
    ```
 
 3. **Relation Names:** `camelCase`
+
    ```prisma
    model users {
      transactions transactions[]  // ✅ Correct
@@ -423,6 +423,7 @@ export const financialRouter = router({
    ```
 
 4. **Primary Keys:** Always `id` with `@id @default(cuid())`
+
    ```prisma
    model users {
      id String @id @default(cuid())  // ✅ Correct
@@ -431,6 +432,7 @@ export const financialRouter = router({
    ```
 
 5. **Timestamps:** Always include
+
    ```prisma
    model users {
      created_at DateTime  @default(now())
@@ -440,6 +442,7 @@ export const financialRouter = router({
    ```
 
 6. **Enums:** Define in schema, PascalCase
+
    ```prisma
    enum Role {
      DEVELOPER
@@ -456,7 +459,7 @@ export const financialRouter = router({
    model users {
      email String @unique
      role  Role
-     
+
      @@index([email])
      @@index([role, is_active])
    }
@@ -483,6 +486,7 @@ npx prisma db push  # ❌ Destructive, no migration history
 ## 🔒 SECURITY RULES
 
 ### ALWAYS:
+
 1. ✅ Validate all inputs with Zod
 2. ✅ Sanitize user inputs (prevent XSS)
 3. ✅ Use parameterized queries (Prisma does this)
@@ -495,6 +499,7 @@ npx prisma db push  # ❌ Destructive, no migration history
 10. ✅ Implement CSRF protection
 
 ### NEVER:
+
 1. ❌ Trust user input without validation
 2. ❌ Store passwords in plain text
 3. ❌ Expose sensitive data in error messages
@@ -511,25 +516,27 @@ npx prisma db push  # ❌ Destructive, no migration history
 ## 📝 CODING STANDARDS
 
 ### TypeScript:
+
 ```typescript
 // ✅ CORRECT
 interface User {
-  id: string;
-  email: string;
-  role: Role;
+  id: string
+  email: string
+  role: Role
 }
 
 function getUserById(id: string): Promise<User | null> {
-  return db.users.findUnique({ where: { id } });
+  return db.users.findUnique({ where: { id } })
 }
 
 // ❌ WRONG
 function getUserById(id: any): any {
-  return db.users.findUnique({ where: { id } });
+  return db.users.findUnique({ where: { id } })
 }
 ```
 
 ### React Components:
+
 ```typescript
 // ✅ CORRECT - Functional component with TypeScript
 interface ButtonProps {
@@ -564,6 +571,7 @@ export function Button(props) {
 ```
 
 ### tRPC Procedures:
+
 ```typescript
 // ✅ CORRECT - Proper validation, error handling, types
 export const financialRouter = router({
@@ -577,63 +585,63 @@ export const financialRouter = router({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      requirePermission(ctx.user.role, 'financial', 'create');
-      
+      requirePermission(ctx.user.role, 'financial', 'create')
+
       const transaction = await ctx.db.transactions.create({
         data: {
           ...input,
           created_by_id: ctx.user.id,
         },
-      });
-      
+      })
+
       await logActivity({
         userId: ctx.user.id,
         userRole: ctx.user.role,
         action: 'CREATE',
         module: 'FINANCIAL',
         description: `Created transaction: ${input.description}`,
-      });
-      
-      return transaction;
+      })
+
+      return transaction
     }),
-});
+})
 
 // ❌ WRONG - No validation, no error handling
 export const financialRouter = router({
-  createTransaction: publicProcedure
-    .mutation(async ({ ctx, input }: any) => {
-      return ctx.db.transactions.create({ data: input });
-    }),
-});
+  createTransaction: publicProcedure.mutation(async ({ ctx, input }: any) => {
+    return ctx.db.transactions.create({ data: input })
+  }),
+})
 ```
 
 ### Error Handling:
+
 ```typescript
 // ✅ CORRECT - Specific error types, helpful messages
 try {
   const user = await db.users.findUniqueOrThrow({
     where: { id: userId },
-  });
-  return user;
+  })
+  return user
 } catch (error) {
   if (error instanceof Prisma.NotFoundError) {
     throw new TRPCError({
       code: 'NOT_FOUND',
       message: 'User tidak ditemukan',
-    });
+    })
   }
   throw new TRPCError({
     code: 'INTERNAL_SERVER_ERROR',
     message: 'Terjadi kesalahan saat mengambil data user',
-  });
+  })
 }
 
 // ❌ WRONG - Generic catch, no context
 try {
-  return await db.users.findUnique({ where: { id: userId } });
+  return await db.users.findUnique({ where: { id: userId } })
 } catch (error) {
-  console.log(error);
-  throw error;
+  console.log(error)
+  throw error
 }
 ```
 
@@ -642,57 +650,60 @@ try {
 ## 🧪 TESTING REQUIREMENTS
 
 ### Unit Tests (Vitest):
+
 ```typescript
 // src/lib/utils/currency.test.ts
-import { describe, it, expect } from 'vitest';
-import { formatCurrency } from './currency';
+import { describe, it, expect } from 'vitest'
+import { formatCurrency } from './currency'
 
 describe('formatCurrency', () => {
   it('should format positive numbers correctly', () => {
-    expect(formatCurrency(1000)).toBe('Rp 1.000');
-    expect(formatCurrency(1000000)).toBe('Rp 1.000.000');
-  });
+    expect(formatCurrency(1000)).toBe('Rp 1.000')
+    expect(formatCurrency(1000000)).toBe('Rp 1.000.000')
+  })
 
   it('should format negative numbers correctly', () => {
-    expect(formatCurrency(-1000)).toBe('-Rp 1.000');
-  });
+    expect(formatCurrency(-1000)).toBe('-Rp 1.000')
+  })
 
   it('should format zero correctly', () => {
-    expect(formatCurrency(0)).toBe('Rp 0');
-  });
-});
+    expect(formatCurrency(0)).toBe('Rp 0')
+  })
+})
 ```
 
 ### E2E Tests (Playwright):
+
 ```typescript
 // tests/e2e/auth.spec.ts
-import { test, expect } from '@playwright/test';
+import { test, expect } from '@playwright/test'
 
 test.describe('Authentication', () => {
   test('should login as admin successfully', async ({ page }) => {
-    await page.goto('/login');
-    
-    await page.fill('input[name="email"]', 'admin@umb.ac.id');
-    await page.fill('input[name="password"]', 'admin123');
-    await page.click('button[type="submit"]');
-    
-    await expect(page).toHaveURL('/admin/dashboard');
-    await expect(page.locator('h1')).toContainText('Dashboard Admin');
-  });
+    await page.goto('/login')
+
+    await page.fill('input[name="email"]', 'admin@umb.ac.id')
+    await page.fill('input[name="password"]', 'admin123')
+    await page.click('button[type="submit"]')
+
+    await expect(page).toHaveURL('/admin/dashboard')
+    await expect(page.locator('h1')).toContainText('Dashboard Admin')
+  })
 
   test('should show error for invalid credentials', async ({ page }) => {
-    await page.goto('/login');
-    
-    await page.fill('input[name="email"]', 'wrong@email.com');
-    await page.fill('input[name="password"]', 'wrongpass');
-    await page.click('button[type="submit"]');
-    
-    await expect(page.locator('[role="alert"]')).toContainText('Email atau password salah');
-  });
-});
+    await page.goto('/login')
+
+    await page.fill('input[name="email"]', 'wrong@email.com')
+    await page.fill('input[name="password"]', 'wrongpass')
+    await page.click('button[type="submit"]')
+
+    await expect(page.locator('[role="alert"]')).toContainText('Email atau password salah')
+  })
+})
 ```
 
 ### Coverage Requirements:
+
 - ✅ Unit tests: 80%+ coverage
 - ✅ Critical paths: 100% coverage (auth, payments, financial)
 - ✅ E2E tests: All main user flows
@@ -702,16 +713,17 @@ test.describe('Authentication', () => {
 ## 📚 DOCUMENTATION REQUIREMENTS
 
 ### Code Documentation:
-```typescript
+
+````typescript
 /**
  * Creates a new financial transaction
- * 
+ *
  * @param input - Transaction data (type, amount, description, category)
  * @returns Created transaction object
  * @throws {TRPCError} FORBIDDEN if user lacks permission
  * @throws {TRPCError} BAD_REQUEST if validation fails
  * @throws {TRPCError} INTERNAL_SERVER_ERROR if database operation fails
- * 
+ *
  * @example
  * ```ts
  * const transaction = await trpc.financial.createTransaction.mutate({
@@ -726,35 +738,36 @@ export const createTransaction = protectedProcedure
   .input(createTransactionSchema)
   .mutation(async ({ ctx, input }) => {
     // Implementation...
-  });
-```
+  })
+````
 
 ### Component Documentation:
-```typescript
+
+````typescript
 /**
  * Financial summary card displaying available balance for the selected period
- * 
+ *
  * @param props.period - Selected time period (today, week, month, etc)
  * @param props.onPeriodChange - Callback when period changes
- * 
+ *
  * Features:
  * - Displays total available balance
  * - Shows breakdown by source (Toko, Titipan)
  * - Indicates surplus/deficit status
  * - Transaction count for the period
- * 
+ *
  * @example
  * ```tsx
- * <FinancialSummaryCard 
- *   period="today" 
- *   onPeriodChange={(p) => setPeriod(p)} 
+ * <FinancialSummaryCard
+ *   period="today"
+ *   onPeriodChange={(p) => setPeriod(p)}
  * />
  * ```
  */
 export function FinancialSummaryCard({ period, onPeriodChange }: Props) {
   // Implementation...
 }
-```
+````
 
 ---
 
@@ -763,6 +776,7 @@ export function FinancialSummaryCard({ period, onPeriodChange }: Props) {
 Before deploying to production:
 
 ### Code Quality:
+
 - [ ] Zero TypeScript errors
 - [ ] All ESLint warnings resolved
 - [ ] Code formatted with Prettier
@@ -770,6 +784,7 @@ Before deploying to production:
 - [ ] No TODO/FIXME comments unresolved
 
 ### Testing:
+
 - [ ] All unit tests passing
 - [ ] All E2E tests passing
 - [ ] Manual testing completed
@@ -777,6 +792,7 @@ Before deploying to production:
 - [ ] Mobile responsive testing
 
 ### Security:
+
 - [ ] Environment variables configured
 - [ ] No secrets in code
 - [ ] HTTPS enabled
@@ -784,6 +800,7 @@ Before deploying to production:
 - [ ] CORS configured properly
 
 ### Performance:
+
 - [ ] Lighthouse score > 90
 - [ ] LCP < 2.5s
 - [ ] FID < 100ms
@@ -791,12 +808,14 @@ Before deploying to production:
 - [ ] Bundle size optimized
 
 ### Database:
+
 - [ ] Migrations applied
 - [ ] Seed data loaded
 - [ ] Indexes optimized
 - [ ] Backup strategy in place
 
 ### Documentation:
+
 - [ ] README.md updated
 - [ ] API documentation complete
 - [ ] Deployment guide ready
@@ -809,19 +828,21 @@ Before deploying to production:
 ### Common Issues & Solutions:
 
 #### 1. TypeScript Error: "Type X is not assignable to type Y"
+
 ```typescript
 // ❌ Problem
-const user: User = await db.users.findUnique({ where: { id } });
+const user: User = await db.users.findUnique({ where: { id } })
 // Error: Type 'User | null' is not assignable to type 'User'
 
 // ✅ Solution
-const user = await db.users.findUniqueOrThrow({ where: { id } });
+const user = await db.users.findUniqueOrThrow({ where: { id } })
 // OR
-const user = await db.users.findUnique({ where: { id } });
-if (!user) throw new TRPCError({ code: 'NOT_FOUND' });
+const user = await db.users.findUnique({ where: { id } })
+if (!user) throw new TRPCError({ code: 'NOT_FOUND' })
 ```
 
 #### 2. tRPC Error: "UNAUTHORIZED"
+
 ```typescript
 // Check:
 1. Is user logged in? (check token in cookies)
@@ -834,6 +855,7 @@ console.log('Required roles:', permissions.financial.view);
 ```
 
 #### 3. Prisma Error: "Unknown field 'X'"
+
 ```typescript
 // Cause: Schema and database out of sync
 // Solution:
@@ -844,6 +866,7 @@ console.log('Required roles:', permissions.financial.view);
 ```
 
 #### 4. React Error: "Hydration mismatch"
+
 ```typescript
 // Cause: Server HTML != Client HTML
 // Common causes:
@@ -860,12 +883,14 @@ const Component = dynamic(() => import('./Component'), { ssr: false });
 ## 📞 COMMUNICATION PROTOCOL
 
 ### When to ask for help:
+
 1. 🔴 **Critical bug** (app crashes, data loss): Ask immediately
 2. ⚠️ **Blocked** (can't proceed): Ask within 30 minutes
 3. 🟡 **Unsure** (design decision): Ask during daily sync
 4. 🟢 **Nice to have** (optimization): Document and discuss later
 
 ### How to ask for help:
+
 ```markdown
 ## Issue: [Short title]
 
@@ -874,15 +899,19 @@ const Component = dynamic(() => import('./Component'), { ssr: false });
 **File:** src/path/to/file.ts:123
 
 ### Problem
+
 [Clear description of what's wrong]
 
 ### What I tried
+
 1. Tried solution A → Result X
 2. Tried solution B → Result Y
 
 ### Error message
 ```
+
 [Paste full error stack trace]
+
 ```
 
 ### Expected behavior
@@ -895,6 +924,7 @@ const Component = dynamic(() => import('./Component'), { ssr: false });
 ```
 
 ### Use ISSUES-TRACKER.md
+
 - Document every non-trivial issue
 - Update status regularly
 - Link to commits when resolved
@@ -904,6 +934,7 @@ const Component = dynamic(() => import('./Component'), { ssr: false });
 ## ✅ MILESTONES & DELIVERABLES
 
 ### Week 1: Foundation ✅
+
 - [ ] Project setup (Next.js, TypeScript, Tailwind)
 - [ ] Database schema defined
 - [ ] Authentication working (NextAuth.js)
@@ -911,6 +942,7 @@ const Component = dynamic(() => import('./Component'), { ssr: false });
 - [ ] tRPC setup complete
 
 ### Week 2: Financial Module ✅
+
 - [ ] Financial tRPC router complete
 - [ ] Dashboard page with summary card
 - [ ] Transaction table with filters
@@ -918,24 +950,28 @@ const Component = dynamic(() => import('./Component'), { ssr: false });
 - [ ] Export functionality
 
 ### Week 3: POS & Inventory ✅
+
 - [ ] POS system (product search, cart, checkout)
 - [ ] Inventory management (CRUD)
 - [ ] Stock movements tracking
 - [ ] Low stock alerts
 
 ### Week 4: Suppliers & Members ✅
+
 - [ ] Supplier registration & approval
 - [ ] Supplier dashboard
 - [ ] Member management
 - [ ] Member transactions (simpan pinjam)
 
 ### Week 5: Activity Logging & Reporting ✅
+
 - [ ] Activity logs for all actions
 - [ ] Logs viewer (Developer/Super Admin)
 - [ ] Comprehensive reports
 - [ ] Export to PDF/Excel
 
 ### Week 6: Testing & Launch 🚀
+
 - [ ] Unit tests (80%+ coverage)
 - [ ] E2E tests (main flows)
 - [ ] Performance optimization
@@ -949,6 +985,7 @@ const Component = dynamic(() => import('./Component'), { ssr: false });
 If you need to understand these technologies better:
 
 ### Core Technologies:
+
 - **Next.js 15:** https://nextjs.org/docs
 - **tRPC:** https://trpc.io/docs
 - **Prisma:** https://prisma.io/docs
@@ -957,6 +994,7 @@ If you need to understand these technologies better:
 - **shadcn/ui:** https://ui.shadcn.com
 
 ### Patterns & Best Practices:
+
 - **TypeScript Deep Dive:** https://basarat.gitbook.io/typescript
 - **React Patterns:** https://patterns.dev
 - **tRPC + Next.js Guide:** https://trpc.io/docs/nextjs
@@ -966,6 +1004,7 @@ If you need to understand these technologies better:
 ## 🎯 REMEMBER
 
 ### Golden Rules:
+
 1. **Type Safety First** - Always type properly, never use `any`
 2. **Test Before Push** - Run tests locally before committing
 3. **Document as You Go** - Don't leave it for later
@@ -976,6 +1015,7 @@ If you need to understand these technologies better:
 8. **User Experience Matters** - Loading states, error messages, responsive design
 
 ### Success Metrics:
+
 - ✅ Zero runtime errors in production
 - ✅ 80%+ test coverage
 - ✅ Lighthouse score > 90

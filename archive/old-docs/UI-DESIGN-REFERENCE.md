@@ -2,16 +2,18 @@
 
 **Purpose:** Dokumentasi design yang harus dipertahankan dari project lama  
 **Source:** Super Admin & Developer dashboard  
-**Target:** New Copilot agent untuk rebuild  
+**Target:** New Copilot agent untuk rebuild
 
 ---
 
 ## 📸 DESIGN SCREENSHOTS & COMPONENTS
 
 ### 1. SUPER ADMIN DASHBOARD
+
 **File Reference:** `app/koperasi/super-admin-dashboard/page.tsx`
 
 #### Layout Structure:
+
 ```
 ┌─────────────────────────────────────────────────┐
 │  Header: "Dashboard Super Admin"                │
@@ -36,6 +38,7 @@
 #### Component Specifications:
 
 **Stats Card Pattern:**
+
 ```typescript
 <Card className="bg-gradient-to-br from-blue-500 to-blue-600 text-white">
   <CardHeader>
@@ -61,6 +64,7 @@
 ```
 
 #### Color Gradients:
+
 - **Suppliers:** `from-blue-500 to-blue-600`
 - **Products:** `from-green-500 to-green-600`
 - **Users:** `from-purple-500 to-purple-600`
@@ -69,6 +73,7 @@
 - **Activity:** `from-pink-500 to-pink-600`
 
 #### Icons (Lucide React):
+
 - Suppliers: `Users`
 - Products: `Package`
 - Users: `UserCog`
@@ -79,9 +84,11 @@
 ---
 
 ### 2. DEVELOPER DASHBOARD
+
 **File Reference:** `app/koperasi/developer-dashboard/page.tsx`
 
 #### Layout Structure:
+
 ```
 ┌─────────────────────────────────────────────────┐
 │  Header: "Developer Dashboard"                  │
@@ -104,6 +111,7 @@
 ```
 
 #### Developer Toolbar:
+
 ```typescript
 <div className="fixed bottom-4 right-4 z-50">
   <Button
@@ -118,6 +126,7 @@
 ```
 
 #### Activity Logs Table:
+
 ```typescript
 <Table>
   <TableHeader>
@@ -158,9 +167,11 @@
 ---
 
 ### 3. FINANCIAL PAGE
+
 **File Reference:** `app/koperasi/financial/page.tsx`
 
 #### Layout Structure:
+
 ```
 ┌─────────────────────────────────────────────────────────┐
 │  Header: "Keuangan"                                     │
@@ -211,6 +222,7 @@
 ```
 
 #### Saldo Tersedia Card (IMPORTANT - Keep This Design!):
+
 ```typescript
 <Card className="bg-gradient-to-br from-green-50 to-green-100 border-2 border-green-300 max-w-md">
   <CardContent className="pt-6 pb-4">
@@ -286,6 +298,7 @@
 ```
 
 #### Metrics Cards:
+
 ```typescript
 {/* Mutasi Masuk - Green */}
 <Card className="bg-white border-2 border-green-200">
@@ -349,6 +362,7 @@
 ```
 
 #### Financial Chart (Recharts):
+
 ```typescript
 <Card>
   <CardHeader>
@@ -358,36 +372,36 @@
     <ResponsiveContainer width="100%" height={300}>
       <LineChart data={chartData}>
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis 
-          dataKey="date" 
+        <XAxis
+          dataKey="date"
           tickFormatter={(date) => format(date, 'dd MMM')}
         />
-        <YAxis 
+        <YAxis
           tickFormatter={(value) => formatCurrency(value)}
         />
-        <Tooltip 
+        <Tooltip
           content={<CustomTooltip />}
           formatter={(value) => formatCurrency(value)}
         />
         <Legend />
-        <Line 
-          type="monotone" 
-          dataKey="cashIn" 
-          stroke="#10b981" 
+        <Line
+          type="monotone"
+          dataKey="cashIn"
+          stroke="#10b981"
           strokeWidth={2}
           name="Pemasukan"
         />
-        <Line 
-          type="monotone" 
-          dataKey="cashOut" 
-          stroke="#ef4444" 
+        <Line
+          type="monotone"
+          dataKey="cashOut"
+          stroke="#ef4444"
           strokeWidth={2}
           name="Pengeluaran"
         />
-        <Line 
-          type="monotone" 
-          dataKey="balance" 
-          stroke="#3b82f6" 
+        <Line
+          type="monotone"
+          dataKey="balance"
+          stroke="#3b82f6"
           strokeWidth={2}
           name="Saldo"
         />
@@ -402,91 +416,50 @@
 ## 🎨 DESIGN TOKENS
 
 ### Typography:
+
 ```css
 --font-family: 'Inter', sans-serif;
 
 /* Headings */
---text-4xl: 36px / 1.2 / 900
---text-3xl: 30px / 1.2 / 800
---text-2xl: 24px / 1.3 / 700
---text-xl: 20px / 1.4 / 600
---text-lg: 18px / 1.5 / 500
-
-/* Body */
---text-base: 16px / 1.5 / 400
---text-sm: 14px / 1.5 / 400
---text-xs: 12px / 1.5 / 400
+--text-4xl: 36px / 1.2 / 900 --text-3xl: 30px / 1.2 / 800 --text-2xl: 24px / 1.3 / 700
+  --text-xl: 20px / 1.4 / 600 --text-lg: 18px / 1.5 / 500 /* Body */ --text-base: 16px / 1.5 / 400
+  --text-sm: 14px / 1.5 / 400 --text-xs: 12px / 1.5 / 400;
 ```
 
 ### Colors:
+
 ```css
 /* Primary Brand Colors */
---primary-50: #eff6ff
---primary-100: #dbeafe
---primary-500: #3b82f6
---primary-600: #2563eb
---primary-700: #1d4ed8
-
-/* Success */
---success-50: #f0fdf4
---success-100: #dcfce7
---success-500: #22c55e
---success-600: #16a34a
-
-/* Warning */
---warning-50: #fefce8
---warning-100: #fef3c7
---warning-500: #eab308
---warning-600: #ca8a04
-
-/* Error */
---error-50: #fef2f2
---error-100: #fee2e2
---error-500: #ef4444
---error-600: #dc2626
-
-/* Neutral */
---gray-50: #f9fafb
---gray-100: #f3f4f6
---gray-200: #e5e7eb
---gray-300: #d1d5db
---gray-400: #9ca3af
---gray-500: #6b7280
---gray-600: #4b5563
---gray-700: #374151
---gray-800: #1f2937
---gray-900: #111827
+--primary-50: #eff6ff --primary-100: #dbeafe --primary-500: #3b82f6 --primary-600: #2563eb
+  --primary-700: #1d4ed8 /* Success */ --success-50: #f0fdf4 --success-100: #dcfce7
+  --success-500: #22c55e --success-600: #16a34a /* Warning */ --warning-50: #fefce8
+  --warning-100: #fef3c7 --warning-500: #eab308 --warning-600: #ca8a04 /* Error */
+  --error-50: #fef2f2 --error-100: #fee2e2 --error-500: #ef4444 --error-600: #dc2626 /* Neutral */
+  --gray-50: #f9fafb --gray-100: #f3f4f6 --gray-200: #e5e7eb --gray-300: #d1d5db --gray-400: #9ca3af
+  --gray-500: #6b7280 --gray-600: #4b5563 --gray-700: #374151 --gray-800: #1f2937
+  --gray-900: #111827;
 ```
 
 ### Spacing:
+
 ```css
---space-1: 0.25rem  /* 4px */
---space-2: 0.5rem   /* 8px */
---space-3: 0.75rem  /* 12px */
---space-4: 1rem     /* 16px */
---space-5: 1.25rem  /* 20px */
---space-6: 1.5rem   /* 24px */
---space-8: 2rem     /* 32px */
---space-10: 2.5rem  /* 40px */
---space-12: 3rem    /* 48px */
+--space-1: 0.25rem /* 4px */ --space-2: 0.5rem /* 8px */ --space-3: 0.75rem /* 12px */
+  --space-4: 1rem /* 16px */ --space-5: 1.25rem /* 20px */ --space-6: 1.5rem /* 24px */
+  --space-8: 2rem /* 32px */ --space-10: 2.5rem /* 40px */ --space-12: 3rem /* 48px */;
 ```
 
 ### Border Radius:
+
 ```css
---radius-sm: 0.375rem   /* 6px */
---radius-md: 0.5rem     /* 8px */
---radius-lg: 0.75rem    /* 12px */
---radius-xl: 1rem       /* 16px */
---radius-2xl: 1.5rem    /* 24px */
---radius-full: 9999px
+--radius-sm: 0.375rem /* 6px */ --radius-md: 0.5rem /* 8px */ --radius-lg: 0.75rem /* 12px */
+  --radius-xl: 1rem /* 16px */ --radius-2xl: 1.5rem /* 24px */ --radius-full: 9999px;
 ```
 
 ### Shadows:
+
 ```css
---shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05)
---shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1)
---shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1)
---shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1)
+--shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05) --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1)
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1) --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
 ```
 
 ---
@@ -498,19 +471,28 @@
 /* Default: 0px - 639px (mobile) */
 
 /* Tablet */
-@media (min-width: 640px) { /* sm */ }
+@media (min-width: 640px) {
+  /* sm */
+}
 
 /* Laptop */
-@media (min-width: 1024px) { /* lg */ }
+@media (min-width: 1024px) {
+  /* lg */
+}
 
 /* Desktop */
-@media (min-width: 1280px) { /* xl */ }
+@media (min-width: 1280px) {
+  /* xl */
+}
 
 /* Large Desktop */
-@media (min-width: 1536px) { /* 2xl */ }
+@media (min-width: 1536px) {
+  /* 2xl */
+}
 ```
 
 ### Responsive Card Grid:
+
 ```typescript
 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
   {/* Cards here */}
@@ -522,6 +504,7 @@
 ## ♿ ACCESSIBILITY REQUIREMENTS
 
 ### Must Have:
+
 - ✅ Semantic HTML (header, nav, main, footer, section)
 - ✅ ARIA labels for icons
 - ✅ Keyboard navigation (Tab, Enter, Escape)
@@ -534,6 +517,7 @@
 - ✅ Skip to main content link
 
 ### Example:
+
 ```typescript
 <button
   aria-label="Close dialog"
@@ -549,6 +533,7 @@
 ## 🎯 ANIMATION GUIDELINES
 
 ### Use Subtle Animations:
+
 ```typescript
 // Hover effects
 <Card className="transition-all duration-200 hover:shadow-lg hover:scale-[1.02]">
@@ -565,6 +550,7 @@
 ```
 
 ### Animation Durations:
+
 - **Fast:** 150ms (hover, focus)
 - **Normal:** 200-300ms (transitions)
 - **Slow:** 500ms (page transitions)
@@ -590,6 +576,7 @@ When creating new components, ensure:
 ## 🖼️ EXAMPLE IMPLEMENTATIONS
 
 ### Dashboard Stats Card (Reusable):
+
 ```typescript
 interface StatsCardProps {
   title: string;
@@ -664,6 +651,7 @@ export function StatsCard({
 ---
 
 **NOTE FOR NEW COPILOT:**
+
 1. Study these designs carefully
 2. Preserve the visual language
 3. Improve where needed (performance, accessibility)
