@@ -1,8 +1,138 @@
 @import "tailwindcss";
 
+/* ============================================
+   🎨 DESIGN TOKENS - Web Koperasi UM Bandung
+   Based on UI-DESIGN-REFERENCE.md
+   ============================================ */
+
 :root {
+  /* Base Colors */
   --background: #ffffff;
   --foreground: #171717;
+
+  /* Primary Colors */
+  --primary-50: #eff6ff;
+  --primary-100: #dbeafe;
+  --primary-200: #bfdbfe;
+  --primary-300: #93c5fd;
+  --primary-400: #60a5fa;
+  --primary-500: #3b82f6;
+  --primary-600: #2563eb;
+  --primary-700: #1d4ed8;
+  --primary-800: #1e40af;
+  --primary-900: #1e3a8a;
+
+  /* Success Colors (Green) */
+  --success-50: #f0fdf4;
+  --success-100: #dcfce7;
+  --success-200: #bbf7d0;
+  --success-300: #86efac;
+  --success-400: #4ade80;
+  --success-500: #22c55e;
+  --success-600: #16a34a;
+  --success-700: #15803d;
+  --success-800: #166534;
+  --success-900: #14532d;
+
+  /* Warning Colors (Orange/Yellow) */
+  --warning-50: #fffbeb;
+  --warning-100: #fef3c7;
+  --warning-200: #fde68a;
+  --warning-300: #fcd34d;
+  --warning-400: #fbbf24;
+  --warning-500: #f59e0b;
+  --warning-600: #d97706;
+  --warning-700: #b45309;
+  --warning-800: #92400e;
+  --warning-900: #78350f;
+
+  /* Error Colors (Red) */
+  --error-50: #fef2f2;
+  --error-100: #fee2e2;
+  --error-200: #fecaca;
+  --error-300: #fca5a5;
+  --error-400: #f87171;
+  --error-500: #ef4444;
+  --error-600: #dc2626;
+  --error-700: #b91c1c;
+  --error-800: #991b1b;
+  --error-900: #7f1d1d;
+
+  /* Neutral Colors (Gray) */
+  --neutral-50: #f9fafb;
+  --neutral-100: #f3f4f6;
+  --neutral-200: #e5e7eb;
+  --neutral-300: #d1d5db;
+  --neutral-400: #9ca3af;
+  --neutral-500: #6b7280;
+  --neutral-600: #4b5563;
+  --neutral-700: #374151;
+  --neutral-800: #1f2937;
+  --neutral-900: #111827;
+
+  /* Gradient Colors */
+  --gradient-blue-start: #3b82f6;
+  --gradient-blue-end: #2563eb;
+  --gradient-green-start: #22c55e;
+  --gradient-green-end: #16a34a;
+  --gradient-purple-start: #a855f7;
+  --gradient-purple-end: #9333ea;
+  --gradient-emerald-start: #10b981;
+  --gradient-emerald-end: #059669;
+  --gradient-orange-start: #f97316;
+  --gradient-orange-end: #ea580c;
+  --gradient-pink-start: #ec4899;
+  --gradient-pink-end: #db2777;
+  --gradient-red-start: #ef4444;
+  --gradient-red-end: #dc2626;
+
+  /* Spacing Scale */
+  --spacing-xs: 0.25rem; /* 4px */
+  --spacing-sm: 0.5rem; /* 8px */
+  --spacing-md: 1rem; /* 16px */
+  --spacing-lg: 1.5rem; /* 24px */
+  --spacing-xl: 2rem; /* 32px */
+  --spacing-2xl: 3rem; /* 48px */
+  --spacing-3xl: 4rem; /* 64px */
+
+  /* Border Radius */
+  --radius-sm: 0.25rem; /* 4px */
+  --radius-md: 0.5rem; /* 8px */
+  --radius-lg: 0.75rem; /* 12px */
+  --radius-xl: 1rem; /* 16px */
+  --radius-2xl: 1.5rem; /* 24px */
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+
+  /* Typography */
+  --font-size-xs: 0.75rem; /* 12px */
+  --font-size-sm: 0.875rem; /* 14px */
+  --font-size-base: 1rem; /* 16px */
+  --font-size-lg: 1.125rem; /* 18px */
+  --font-size-xl: 1.25rem; /* 20px */
+  --font-size-2xl: 1.5rem; /* 24px */
+  --font-size-3xl: 1.875rem; /* 30px */
+  --font-size-4xl: 2.25rem; /* 36px */
+
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  --line-height-tight: 1.25;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.75;
+
+  /* Transitions */
+  --transition-fast: 150ms;
+  --transition-normal: 200ms;
+  --transition-slow: 300ms;
 }
 
 @theme inline {
@@ -10,6 +140,12 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  /* Map design tokens to Tailwind */
+  --color-primary-500: var(--primary-500);
+  --color-success-500: var(--success-500);
+  --color-warning-500: var(--warning-500);
+  --color-error-500: var(--error-500);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -24,3 +160,66 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* ============================================
+   🎯 UTILITY CLASSES
+   ============================================ */
+
+/* Smooth animations */
+.animate-fade-in {
+  animation: fadeIn var(--transition-slow) ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-slide-up {
+  animation: slideUp var(--transition-slow) ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(1rem);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Gradient backgrounds */
+.bg-gradient-blue {
+  background: linear-gradient(to bottom right, var(--gradient-blue-start), var(--gradient-blue-end));
+}
+
+.bg-gradient-green {
+  background: linear-gradient(to bottom right, var(--gradient-green-start), var(--gradient-green-end));
+}
+
+.bg-gradient-purple {
+  background: linear-gradient(to bottom right, var(--gradient-purple-start), var(--gradient-purple-end));
+}
+
+.bg-gradient-emerald {
+  background: linear-gradient(to bottom right, var(--gradient-emerald-start), var(--gradient-emerald-end));
+}
+
+.bg-gradient-orange {
+  background: linear-gradient(to bottom right, var(--gradient-orange-start), var(--gradient-orange-end));
+}
+
+.bg-gradient-pink {
+  background: linear-gradient(to bottom right, var(--gradient-pink-start), var(--gradient-pink-end));
+}
+
+.bg-gradient-red {
+  background: linear-gradient(to bottom right, var(--gradient-red-start), var(--gradient-red-end));
+}
+
