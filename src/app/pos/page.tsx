@@ -1,4 +1,4 @@
-import { getSession } from '@/lib/session'
+import { getSession } from '@/lib/auth'
 import { redirect } from 'next/navigation'
 import { AppLayout } from '@/components/layout/AppLayout'
 import { POSContent } from '@/components/pos/pos-content'
