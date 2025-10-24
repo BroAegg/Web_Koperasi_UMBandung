@@ -508,11 +508,10 @@ export const inventoryRouter = router({
     })
 
     // Calculate inventory value
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+     
     const inventoryValue = products.reduce(
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (sum: number, p: any) =>
-        sum + p.stock * Number(p.purchase_price),
+      (sum: number, p: any) => sum + p.stock * Number(p.purchase_price),
       0
     )
 

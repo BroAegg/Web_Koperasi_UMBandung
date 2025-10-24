@@ -455,6 +455,7 @@ export const financialRouter = router({
    ```
 
 7. **Indexes:** Add for frequently queried fields
+
    ```prisma
    model users {
      email String @unique

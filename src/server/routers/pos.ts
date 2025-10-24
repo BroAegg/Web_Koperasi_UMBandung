@@ -422,7 +422,7 @@ export const posRouter = router({
       })
 
       // Get top products with details
-       
+
       const topProductsWithDetails = await Promise.all(
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         topProducts.map(async (item: any) => {

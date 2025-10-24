@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 /* ============================================
    🎨 DESIGN SYSTEM - Web Koperasi UM Bandung
@@ -8,60 +8,60 @@
 
 :root {
   /* ===== BASE COLORS ===== */
-  --background: 0 0% 100%;           /* #ffffff - Light mode background */
-  --foreground: 240 10% 3.9%;        /* #09090b - Light mode text */
-  
-  --card: 0 0% 100%;                 /* Card background */
-  --card-foreground: 240 10% 3.9%;  /* Card text */
-  
-  --popover: 0 0% 100%;              /* Popover background */
+  --background: 0 0% 100%; /* #ffffff - Light mode background */
+  --foreground: 240 10% 3.9%; /* #09090b - Light mode text */
+
+  --card: 0 0% 100%; /* Card background */
+  --card-foreground: 240 10% 3.9%; /* Card text */
+
+  --popover: 0 0% 100%; /* Popover background */
   --popover-foreground: 240 10% 3.9%; /* Popover text */
 
   /* ===== PRIMARY (Blue) ===== */
-  --primary: 217.2 91.2% 59.8%;           /* #3b82f6 - Blue 500 */
-  --primary-foreground: 0 0% 98%;         /* White text on primary */
-  
+  --primary: 217.2 91.2% 59.8%; /* #3b82f6 - Blue 500 */
+  --primary-foreground: 0 0% 98%; /* White text on primary */
+
   /* ===== SECONDARY (Slate) ===== */
-  --secondary: 240 4.8% 95.9%;            /* #f8fafc - Slate 50 */
-  --secondary-foreground: 240 5.9% 10%;   /* Slate 900 text */
-  
+  --secondary: 240 4.8% 95.9%; /* #f8fafc - Slate 50 */
+  --secondary-foreground: 240 5.9% 10%; /* Slate 900 text */
+
   /* ===== MUTED (Background variations) ===== */
-  --muted: 240 4.8% 95.9%;                /* #f8fafc - Subtle background */
-  --muted-foreground: 240 3.8% 46.1%;     /* #64748b - Muted text */
-  
+  --muted: 240 4.8% 95.9%; /* #f8fafc - Subtle background */
+  --muted-foreground: 240 3.8% 46.1%; /* #64748b - Muted text */
+
   /* ===== ACCENT (Highlight) ===== */
-  --accent: 240 4.8% 95.9%;               /* Accent background */
-  --accent-foreground: 240 5.9% 10%;      /* Accent text */
-  
+  --accent: 240 4.8% 95.9%; /* Accent background */
+  --accent-foreground: 240 5.9% 10%; /* Accent text */
+
   /* ===== DESTRUCTIVE (Red) ===== */
-  --destructive: 0 84.2% 60.2%;           /* #ef4444 - Red 500 */
-  --destructive-foreground: 0 0% 98%;     /* White text on destructive */
-  
+  --destructive: 0 84.2% 60.2%; /* #ef4444 - Red 500 */
+  --destructive-foreground: 0 0% 98%; /* White text on destructive */
+
   /* ===== SUCCESS (Green) ===== */
-  --success: 142.1 76.2% 36.3%;           /* #10b981 - Green 500 */
-  --success-foreground: 0 0% 98%;         /* White text on success */
-  
+  --success: 142.1 76.2% 36.3%; /* #10b981 - Green 500 */
+  --success-foreground: 0 0% 98%; /* White text on success */
+
   /* ===== WARNING (Amber) ===== */
-  --warning: 37.7 92.1% 50.2%;            /* #f59e0b - Amber 500 */
-  --warning-foreground: 26 83.3% 14.1%;   /* Amber 950 text */
-  
+  --warning: 37.7 92.1% 50.2%; /* #f59e0b - Amber 500 */
+  --warning-foreground: 26 83.3% 14.1%; /* Amber 950 text */
+
   /* ===== INFO (Blue) ===== */
-  --info: 199 89% 48%;                    /* #06b6d4 - Cyan 500 */
-  --info-foreground: 0 0% 98%;            /* White text on info */
+  --info: 199 89% 48%; /* #06b6d4 - Cyan 500 */
+  --info-foreground: 0 0% 98%; /* White text on info */
 
   /* ===== BORDERS & INPUTS ===== */
-  --border: 240 5.9% 90%;                 /* #e2e8f0 - Border color */
-  --input: 240 5.9% 90%;                  /* Input border */
-  --ring: 217.2 91.2% 59.8%;              /* Focus ring (primary) */
-  
+  --border: 240 5.9% 90%; /* #e2e8f0 - Border color */
+  --input: 240 5.9% 90%; /* Input border */
+  --ring: 217.2 91.2% 59.8%; /* Focus ring (primary) */
+
   /* ===== RADIUS ===== */
-  --radius: 0.5rem;                       /* Base border radius (8px) */
+  --radius: 0.5rem; /* Base border radius (8px) */
 
   /* ===== TRANSITIONS ===== */
   --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
   --transition-normal: 200ms cubic-bezier(0.4, 0, 0.2, 1);
   --transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
-  
+
   /* ===== SHADOWS ===== */
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
@@ -80,10 +80,12 @@
   * {
     @apply border-border;
   }
-  
+
   body {
     @apply bg-background text-foreground;
-    font-feature-settings: "rlig" 1, "calt" 1;
+    font-feature-settings:
+      'rlig' 1,
+      'calt' 1;
   }
 }
 
@@ -94,43 +96,43 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  
+
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
-  
+
   --color-popover: var(--popover);
   --color-popover-foreground: var(--popover-foreground);
-  
+
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
-  
+
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
-  
+
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
-  
+
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
-  
+
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
-  
+
   --color-success: var(--success);
   --color-success-foreground: var(--success-foreground);
-  
+
   --color-warning: var(--warning);
   --color-warning-foreground: var(--warning-foreground);
-  
+
   --color-info: var(--info);
   --color-info-foreground: var(--info-foreground);
-  
+
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-  
+
   --border-radius: var(--radius);
-  
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
@@ -141,52 +143,52 @@
 
 .dark {
   /* ===== BASE COLORS (Dark) ===== */
-  --background: 240 10% 3.9%;             /* #09090b - Dark background */
-  --foreground: 0 0% 98%;                 /* #fafafa - Light text */
-  
-  --card: 240 10% 7%;                     /* #18181b - Card background */
-  --card-foreground: 0 0% 98%;            /* Light text */
-  
-  --popover: 240 10% 7%;                  /* Popover background */
-  --popover-foreground: 0 0% 98%;         /* Popover text */
-  
+  --background: 240 10% 3.9%; /* #09090b - Dark background */
+  --foreground: 0 0% 98%; /* #fafafa - Light text */
+
+  --card: 240 10% 7%; /* #18181b - Card background */
+  --card-foreground: 0 0% 98%; /* Light text */
+
+  --popover: 240 10% 7%; /* Popover background */
+  --popover-foreground: 0 0% 98%; /* Popover text */
+
   /* ===== PRIMARY (Lighter for dark) ===== */
-  --primary: 217.2 91.2% 59.8%;           /* #3b82f6 - Blue stays same */
-  --primary-foreground: 0 0% 98%;         /* White text */
-  
+  --primary: 217.2 91.2% 59.8%; /* #3b82f6 - Blue stays same */
+  --primary-foreground: 0 0% 98%; /* White text */
+
   /* ===== SECONDARY (Dark) ===== */
-  --secondary: 240 3.7% 15.9%;            /* #27272a - Zinc 800 */
-  --secondary-foreground: 0 0% 98%;       /* Light text */
-  
+  --secondary: 240 3.7% 15.9%; /* #27272a - Zinc 800 */
+  --secondary-foreground: 0 0% 98%; /* Light text */
+
   /* ===== MUTED (Dark) ===== */
-  --muted: 240 3.7% 15.9%;                /* Subtle dark background */
-  --muted-foreground: 240 5% 64.9%;       /* #a1a1aa - Muted text */
-  
+  --muted: 240 3.7% 15.9%; /* Subtle dark background */
+  --muted-foreground: 240 5% 64.9%; /* #a1a1aa - Muted text */
+
   /* ===== ACCENT (Dark) ===== */
-  --accent: 240 3.7% 15.9%;               /* Accent background */
-  --accent-foreground: 0 0% 98%;          /* Accent text */
-  
+  --accent: 240 3.7% 15.9%; /* Accent background */
+  --accent-foreground: 0 0% 98%; /* Accent text */
+
   /* ===== DESTRUCTIVE (Lighter) ===== */
-  --destructive: 0 62.8% 30.6%;           /* #991b1b - Darker red */
-  --destructive-foreground: 0 0% 98%;     /* White text */
-  
+  --destructive: 0 62.8% 30.6%; /* #991b1b - Darker red */
+  --destructive-foreground: 0 0% 98%; /* White text */
+
   /* ===== SUCCESS (Adjusted) ===== */
-  --success: 142.1 70.6% 45.3%;           /* #16a34a - Green 600 */
-  --success-foreground: 0 0% 98%;         /* White text */
-  
+  --success: 142.1 70.6% 45.3%; /* #16a34a - Green 600 */
+  --success-foreground: 0 0% 98%; /* White text */
+
   /* ===== WARNING (Adjusted) ===== */
-  --warning: 32.1 94.6% 43.7%;            /* #d97706 - Amber 600 */
-  --warning-foreground: 0 0% 98%;         /* White text */
-  
+  --warning: 32.1 94.6% 43.7%; /* #d97706 - Amber 600 */
+  --warning-foreground: 0 0% 98%; /* White text */
+
   /* ===== INFO (Adjusted) ===== */
-  --info: 188.7 85.2% 39.2%;              /* #0891b2 - Cyan 600 */
-  --info-foreground: 0 0% 98%;            /* White text */
-  
+  --info: 188.7 85.2% 39.2%; /* #0891b2 - Cyan 600 */
+  --info-foreground: 0 0% 98%; /* White text */
+
   /* ===== BORDERS & INPUTS (Dark) ===== */
-  --border: 240 3.7% 15.9%;               /* #27272a - Dark border */
-  --input: 240 3.7% 15.9%;                /* Dark input border */
-  --ring: 217.2 91.2% 59.8%;              /* Focus ring stays same */
-  
+  --border: 240 3.7% 15.9%; /* #27272a - Dark border */
+  --input: 240 3.7% 15.9%; /* Dark input border */
+  --ring: 217.2 91.2% 59.8%; /* Focus ring stays same */
+
   /* ===== SHADOWS (Enhanced for dark) ===== */
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
   --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.3);
@@ -201,18 +203,18 @@
 
 :root {
   --spacing-0: 0;
-  --spacing-1: 0.25rem;    /* 4px */
-  --spacing-2: 0.5rem;     /* 8px */
-  --spacing-3: 0.75rem;    /* 12px */
-  --spacing-4: 1rem;       /* 16px */
-  --spacing-5: 1.25rem;    /* 20px */
-  --spacing-6: 1.5rem;     /* 24px */
-  --spacing-8: 2rem;       /* 32px */
-  --spacing-10: 2.5rem;    /* 40px */
-  --spacing-12: 3rem;      /* 48px */
-  --spacing-16: 4rem;      /* 64px */
-  --spacing-20: 5rem;      /* 80px */
-  --spacing-24: 6rem;      /* 96px */
+  --spacing-1: 0.25rem; /* 4px */
+  --spacing-2: 0.5rem; /* 8px */
+  --spacing-3: 0.75rem; /* 12px */
+  --spacing-4: 1rem; /* 16px */
+  --spacing-5: 1.25rem; /* 20px */
+  --spacing-6: 1.5rem; /* 24px */
+  --spacing-8: 2rem; /* 32px */
+  --spacing-10: 2.5rem; /* 40px */
+  --spacing-12: 3rem; /* 48px */
+  --spacing-16: 4rem; /* 64px */
+  --spacing-20: 5rem; /* 80px */
+  --spacing-24: 6rem; /* 96px */
 }
 
 /* ============================================
@@ -221,24 +223,24 @@
 
 :root {
   /* Font Sizes */
-  --text-xs: 0.75rem;      /* 12px */
-  --text-sm: 0.875rem;     /* 14px */
-  --text-base: 1rem;       /* 16px */
-  --text-lg: 1.125rem;     /* 18px */
-  --text-xl: 1.25rem;      /* 20px */
-  --text-2xl: 1.5rem;      /* 24px */
-  --text-3xl: 1.875rem;    /* 30px */
-  --text-4xl: 2.25rem;     /* 36px */
-  --text-5xl: 3rem;        /* 48px */
-  --text-6xl: 3.75rem;     /* 60px */
-  
+  --text-xs: 0.75rem; /* 12px */
+  --text-sm: 0.875rem; /* 14px */
+  --text-base: 1rem; /* 16px */
+  --text-lg: 1.125rem; /* 18px */
+  --text-xl: 1.25rem; /* 20px */
+  --text-2xl: 1.5rem; /* 24px */
+  --text-3xl: 1.875rem; /* 30px */
+  --text-4xl: 2.25rem; /* 36px */
+  --text-5xl: 3rem; /* 48px */
+  --text-6xl: 3.75rem; /* 60px */
+
   /* Font Weights */
   --font-normal: 400;
   --font-medium: 500;
   --font-semibold: 600;
   --font-bold: 700;
   --font-extrabold: 800;
-  
+
   /* Line Heights */
   --leading-none: 1;
   --leading-tight: 1.25;
@@ -246,7 +248,7 @@
   --leading-normal: 1.5;
   --leading-relaxed: 1.625;
   --leading-loose: 2;
-  
+
   /* Letter Spacing */
   --tracking-tighter: -0.05em;
   --tracking-tight: -0.025em;
@@ -352,7 +354,8 @@
 }
 
 @keyframes pulse {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 1;
   }
   50% {
@@ -361,7 +364,8 @@
 }
 
 @keyframes bounce {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(-25%);
     animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
   }
@@ -471,7 +475,11 @@
 }
 
 .bg-gradient-destructive {
-  background: linear-gradient(135deg, hsl(var(--destructive)) 0%, hsl(var(--destructive) / 0.8) 100%);
+  background: linear-gradient(
+    135deg,
+    hsl(var(--destructive)) 0%,
+    hsl(var(--destructive) / 0.8) 100%
+  );
 }
 
 .bg-gradient-info {
@@ -508,4 +516,3 @@
   border: 1px solid hsl(var(--border) / 0.3);
   box-shadow: var(--shadow-lg);
 }
-

@@ -289,7 +289,6 @@ const parseCurrencyInput = (value: string): number => {
 
 ```tsx
 import PaymentModal from '@/components/pos/PaymentModal'
-
 ;<PaymentModal
   isOpen={isPaymentModalOpen}
   onClose={() => setIsPaymentModalOpen(false)}

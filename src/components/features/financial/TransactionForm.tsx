@@ -65,7 +65,7 @@ export function TransactionForm({
       })
     } else {
       // Reset form
-       
+
       setFormData({
         type: 'CASH_IN',
         category: 'SALES',
