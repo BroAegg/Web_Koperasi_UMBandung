@@ -27,7 +27,7 @@ interface ProductSearchProps {
 }
 
 const CATEGORIES = [
-  { id: '', name: 'Semua Kategori' },
+  { id: 'all', name: 'Semua Kategori' },
   { id: '1', name: 'Makanan' },
   { id: '2', name: 'Minuman' },
   { id: '3', name: 'Snack' },
@@ -38,7 +38,7 @@ const CATEGORIES = [
 
 export function ProductSearch({ onAddToCart }: ProductSearchProps) {
   const [search, setSearch] = useState('')
-  const [categoryId, setCategoryId] = useState('')
+  const [categoryId, setCategoryId] = useState('all')
   const [debouncedSearch, setDebouncedSearch] = useState('')
 
   // Debounce search
@@ -52,7 +52,7 @@ export function ProductSearch({ onAddToCart }: ProductSearchProps) {
 
   const productsQuery = trpc.pos.getProducts.useQuery({
     search: debouncedSearch,
-    category_id: categoryId || undefined,
+    category_id: categoryId === 'all' ? undefined : categoryId,
     page: 1,
     limit: 20,
   })
