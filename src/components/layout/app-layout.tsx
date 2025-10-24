@@ -7,6 +7,7 @@ import { Header } from './header'
 import { MobileNav } from './mobile-nav'
 import { cn } from '@/lib/utils'
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet'
+import { useTheme } from '@/contexts/theme-context'
 
 interface AppLayoutProps {
   children: React.ReactNode
@@ -22,6 +23,7 @@ interface AppLayoutProps {
 }
 
 export function AppLayout({ children, session }: AppLayoutProps) {
+  const { theme } = useTheme()
   const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('sidebar-collapsed')
@@ -52,7 +54,7 @@ export function AppLayout({ children, session }: AppLayoutProps) {
   })
 
   return (
-    <div className="bg-background min-h-screen">
+    <div className={`min-h-screen ${theme.bg}`}>
       {/* Desktop Sidebar */}
       <div className="hidden lg:block">
         <Sidebar session={session} onToggle={handleSidebarToggle} />

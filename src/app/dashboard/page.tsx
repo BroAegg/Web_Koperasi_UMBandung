@@ -1,5 +1,7 @@
+'use client'
+
+import { useEffect, useState } from 'react'
 import { redirect } from 'next/navigation'
-import { getSession } from '@/lib/auth'
 import { Wallet, TrendingUp, ShoppingCart, Package, Users } from 'lucide-react'
 import { AppLayout } from '@/components/layout/app-layout'
 import { MetricsCard } from '@/components/dashboard/metrics-card'
@@ -7,22 +9,41 @@ import { RevenueChart } from '@/components/dashboard/revenue-chart'
 import { BalanceChart } from '@/components/dashboard/balance-chart'
 import { RecentActivity } from '@/components/dashboard/recent-activity'
 import { QuickActions } from '@/components/dashboard/quick-actions'
+import { useTheme } from '@/contexts/theme-context'
+import { getSession } from '@/lib/auth'
 
-export default async function DashboardPage() {
-  const session = await getSession()
+export default function DashboardPage() {
+  const { theme } = useTheme()
+  const [session, setSession] = useState<{
+    userId: string
+    username: string
+    email: string | null
+    fullName: string
+    role: string
+    isActive: boolean
+    expiresAt: Date
+  } | null>(null)
+  const [loading, setLoading] = useState(true)
 
-  // Redirect to login if no session
-  if (!session) {
-    redirect('/login')
-  }
+  useEffect(() => {
+    getSession().then((s) => {
+      if (!s) {
+        redirect('/login')
+      }
+      setSession(s)
+      setLoading(false)
+    })
+  }, [])
+
+  if (loading) return null
 
   return (
     <AppLayout session={session}>
       <div className="space-y-6">
         {/* Welcome Header */}
         <div className="mb-6">
-          <h1 className="text-3xl font-bold">Welcome back, {session.fullName}! 👋</h1>
-          <p className="text-muted-foreground mt-1">
+          <h1 className="text-2xl font-semibold">Welcome back, {session.fullName}! 👋</h1>
+          <p className={`mt-1 text-sm ${theme.subtext}`}>
             Here&apos;s what&apos;s happening with your cooperative today
           </p>
         </div>

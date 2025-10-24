@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import { canAccessModule, getRoleDisplayName } from '@/lib/permissions'
 import { Button } from '@/components/ui/button'
+import { useTheme } from '@/contexts/theme-context'
 import {
   LayoutDashboard,
   Wallet,
@@ -17,7 +18,6 @@ import {
   Activity,
   ChevronLeft,
   ChevronRight,
-  ShoppingBag,
 } from 'lucide-react'
 
 interface SidebarProps {
@@ -93,6 +93,7 @@ const menuItems: MenuItem[] = [
 ]
 
 export function Sidebar({ session, onToggle }: SidebarProps) {
+  const { theme } = useTheme()
   const [collapsed, setCollapsed] = useState(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('sidebar-collapsed')
@@ -122,19 +123,19 @@ export function Sidebar({ session, onToggle }: SidebarProps) {
   return (
     <aside
       className={cn(
-        'fixed top-0 left-0 z-40 h-screen border-r border-gray-200 bg-white transition-all duration-300 dark:border-slate-700 dark:bg-slate-800',
+        'fixed top-0 left-0 z-40 h-screen border-r transition-all duration-300',
+        theme.card,
+        theme.border,
         collapsed ? 'w-20' : 'w-64'
       )}
     >
       {/* Logo & Brand - Orange to Green Gradient! */}
-      <div className="flex h-16 items-center justify-between border-b border-gray-200 px-4 dark:border-slate-700">
+      <div className={`flex h-16 items-center justify-between border-b px-4 ${theme.border}`}>
         <div className="flex items-center gap-3">
           {/* Snippet style: gradient logo */}
           <div className="h-8 w-8 rounded-xl bg-gradient-to-tr from-orange-500 to-green-400" />
           {!collapsed && (
-            <span className="font-semibold tracking-tight text-gray-900 dark:text-slate-100">
-              Koperasi UMB
-            </span>
+            <span className={`font-semibold tracking-tight ${theme.text}`}>Koperasi UMB</span>
           )}
         </div>
         <Button size="icon" variant="ghost" className="h-8 w-8" onClick={handleToggle}>
@@ -143,15 +144,13 @@ export function Sidebar({ session, onToggle }: SidebarProps) {
       </div>
 
       {/* User Info */}
-      <div className="border-b border-gray-200 p-3 dark:border-slate-700">
+      <div className={`border-b p-3 ${theme.border}`}>
         <div className="flex items-center gap-3">
           <div className="h-8 w-8 rounded-full bg-gray-400/20" />
           {!collapsed && (
             <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-medium text-gray-900 dark:text-slate-100">
-                {session.fullName}
-              </p>
-              <p className="truncate text-xs text-gray-500 dark:text-slate-400">
+              <p className={`truncate text-sm font-medium ${theme.text}`}>{session.fullName}</p>
+              <p className={`truncate text-xs ${theme.subtext}`}>
                 {getRoleDisplayName(
                   session.role as
                     | 'DEVELOPER'
@@ -178,9 +177,7 @@ export function Sidebar({ session, onToggle }: SidebarProps) {
               <button
                 className={cn(
                   'group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-colors',
-                  isActive
-                    ? 'bg-gray-100 font-medium text-orange-500 dark:bg-white/10 dark:text-orange-400'
-                    : 'text-gray-600 hover:bg-gray-100 dark:text-slate-300 dark:hover:bg-white/5'
+                  isActive ? theme.navActive + ' font-medium' : theme.navHover
                 )}
               >
                 <Icon className="h-5 w-5" />
@@ -192,13 +189,13 @@ export function Sidebar({ session, onToggle }: SidebarProps) {
       </nav>
 
       {/* Bottom section */}
-      <div className="absolute right-0 bottom-0 left-0 border-t border-gray-200 p-3 dark:border-slate-700">
+      <div className={`absolute right-0 bottom-0 left-0 border-t p-3 ${theme.border}`}>
         <div className="flex items-center gap-3">
           <div className="h-8 w-8 rounded-full bg-gray-400/20" />
           {!collapsed && (
             <div>
-              <p className="text-sm font-medium text-gray-900 dark:text-slate-100">Administrator</p>
-              <p className="text-xs text-gray-500 dark:text-slate-400">Admin</p>
+              <p className={`text-sm font-medium ${theme.text}`}>Administrator</p>
+              <p className={`text-xs ${theme.subtext}`}>Admin</p>
             </div>
           )}
         </div>

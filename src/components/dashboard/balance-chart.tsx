@@ -8,10 +8,10 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-  Area,
-  AreaChart,
+  Line,
+  LineChart,
 } from 'recharts'
-import { useTheme } from 'next-themes'
+import { useTheme } from '@/contexts/theme-context'
 
 interface BalanceChartProps {
   data?: Array<{
@@ -22,9 +22,7 @@ interface BalanceChartProps {
 }
 
 export function BalanceChart({ data, loading = false }: BalanceChartProps) {
-  const { theme } = useTheme()
-  // Force light mode until toggle is implemented (Phase 10.4)
-  const isDark = false // theme === 'dark'
+  const { theme, darkMode } = useTheme()
 
   if (loading) {
     return (
@@ -67,39 +65,33 @@ export function BalanceChart({ data, loading = false }: BalanceChartProps) {
       </CardHeader>
       <CardContent>
         <ResponsiveContainer width="100%" height={300}>
-          <AreaChart data={chartData}>
-            <defs>
-              <linearGradient id="balanceGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3} />
-                <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0} />
-              </linearGradient>
-            </defs>
-            <CartesianGrid strokeDasharray="3 3" stroke={isDark ? '#374151' : '#e5e7eb'} />
-            <XAxis dataKey="date" stroke={isDark ? '#9ca3af' : '#6b7280'} fontSize={12} />
+          <LineChart data={chartData}>
+            <CartesianGrid strokeDasharray="3 3" stroke={theme.chartGrid} />
+            <XAxis dataKey="date" stroke={theme.subtext} fontSize={12} />
             <YAxis
-              stroke={isDark ? '#9ca3af' : '#6b7280'}
+              stroke={theme.subtext}
               fontSize={12}
               tickFormatter={(value) => formatCurrency(value)}
             />
             <Tooltip
               contentStyle={{
-                backgroundColor: isDark ? '#1f2937' : '#ffffff',
-                border: `1px solid ${isDark ? '#374151' : '#e5e7eb'}`,
+                backgroundColor: darkMode ? '#0f172a' : '#fff',
+                border: `1px solid ${darkMode ? '#334155' : '#e5e7eb'}`,
                 borderRadius: '8px',
               }}
               labelStyle={{
-                color: isDark ? '#f3f4f6' : '#111827',
+                color: darkMode ? '#f3f4f6' : '#111827',
               }}
               formatter={(value: number) => [formatCurrency(value), 'Balance']}
             />
-            <Area
+            <Line
               type="monotone"
               dataKey="balance"
-              stroke="hsl(var(--primary))"
-              strokeWidth={2}
-              fill="url(#balanceGradient)"
+              stroke={theme.highlight}
+              strokeWidth={3}
+              dot={{ r: 4 }}
             />
-          </AreaChart>
+          </LineChart>
         </ResponsiveContainer>
       </CardContent>
     </Card>

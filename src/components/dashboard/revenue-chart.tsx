@@ -2,17 +2,8 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  Cell,
-} from 'recharts'
-import { useTheme } from 'next-themes'
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
+import { useTheme } from '@/contexts/theme-context'
 
 interface RevenueChartProps {
   data?: Array<{
@@ -23,9 +14,7 @@ interface RevenueChartProps {
 }
 
 export function RevenueChart({ data, loading = false }: RevenueChartProps) {
-  const { theme } = useTheme()
-  // Force light mode until toggle is implemented (Phase 10.4)
-  const isDark = false // theme === 'dark'
+  const { theme, darkMode } = useTheme()
 
   if (loading) {
     return (
@@ -69,29 +58,25 @@ export function RevenueChart({ data, loading = false }: RevenueChartProps) {
       <CardContent>
         <ResponsiveContainer width="100%" height={300}>
           <BarChart data={chartData}>
-            <CartesianGrid strokeDasharray="3 3" stroke={isDark ? '#374151' : '#e5e7eb'} />
-            <XAxis dataKey="date" stroke={isDark ? '#9ca3af' : '#6b7280'} fontSize={12} />
+            <CartesianGrid strokeDasharray="3 3" stroke={theme.chartGrid} />
+            <XAxis dataKey="date" stroke={theme.subtext} fontSize={12} />
             <YAxis
-              stroke={isDark ? '#9ca3af' : '#6b7280'}
+              stroke={theme.subtext}
               fontSize={12}
               tickFormatter={(value) => `${(value / 1000).toFixed(0)}k`}
             />
             <Tooltip
               contentStyle={{
-                backgroundColor: isDark ? '#1f2937' : '#ffffff',
-                border: `1px solid ${isDark ? '#374151' : '#e5e7eb'}`,
+                backgroundColor: darkMode ? '#0f172a' : '#fff',
+                border: `1px solid ${darkMode ? '#334155' : '#e5e7eb'}`,
                 borderRadius: '8px',
               }}
               labelStyle={{
-                color: isDark ? '#f3f4f6' : '#111827',
+                color: darkMode ? '#f3f4f6' : '#111827',
               }}
               formatter={(value: number) => [formatCurrency(value), 'Revenue']}
             />
-            <Bar dataKey="revenue" radius={[8, 8, 0, 0]}>
-              {chartData.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={`hsl(var(--primary))`} opacity={0.8} />
-              ))}
-            </Bar>
+            <Bar dataKey="revenue" fill={theme.accent} radius={[8, 8, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
       </CardContent>

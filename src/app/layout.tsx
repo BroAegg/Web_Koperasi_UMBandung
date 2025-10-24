@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
 import { TRPCProvider } from '@/components/providers/trpc-provider'
-import { ThemeProvider } from '@/components/providers/theme-provider'
+import { ThemeProvider } from '@/contexts/theme-context'
 import { ToastProvider } from '@/components/shared/ToastContext'
 import { Toaster } from 'sonner'
 
@@ -38,12 +38,7 @@ export default function RootLayout({
   return (
     <html lang="id" suppressHydrationWarning>
       <body className={`${inter.variable} font-sans antialiased`}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="light"
-          enableSystem={false}
-          disableTransitionOnChange={false}
-        >
+        <ThemeProvider>
           <TRPCProvider>
             <ToastProvider>
               <div className="animate-fade-in">{children}</div>
