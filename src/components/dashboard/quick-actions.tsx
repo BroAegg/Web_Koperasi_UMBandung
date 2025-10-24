@@ -13,10 +13,7 @@ interface Session {
   fullName: string
   role: string
   isActive: boolean
-  expiresAt: number
-  user: {
-    role: string
-  }
+  expiresAt: Date | number
 }
 
 interface QuickActionsProps {
@@ -89,7 +86,7 @@ export function QuickActions({ session }: QuickActionsProps) {
   // Filter actions based on user's role
   const availableActions = allActions.filter((action) =>
     canAccessModule(
-      session.user.role as 'DEVELOPER' | 'SUPER_ADMIN' | 'ADMIN' | 'KASIR' | 'STAFF' | 'SUPPLIER',
+      session.role as 'DEVELOPER' | 'SUPER_ADMIN' | 'ADMIN' | 'KASIR' | 'STAFF' | 'SUPPLIER',
       action.requiredModule
     )
   )
