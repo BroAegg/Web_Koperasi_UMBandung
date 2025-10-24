@@ -28,12 +28,21 @@ export default function RootLayout({
           attribute="class"
           defaultTheme="system"
           enableSystem
-          disableTransitionOnChange
+          disableTransitionOnChange={false}
         >
           <TRPCProvider>
-            <ToastProvider>{children}</ToastProvider>
+            <ToastProvider>
+              <div className="animate-fade-in">{children}</div>
+            </ToastProvider>
           </TRPCProvider>
-          <Toaster richColors position="top-right" />
+          <Toaster
+            richColors
+            position="top-right"
+            toastOptions={{
+              className: 'animate-slide-down',
+              duration: 3000,
+            }}
+          />
         </ThemeProvider>
       </body>
     </html>
