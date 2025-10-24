@@ -47,7 +47,7 @@ export function FilterBar({
         <div key={idx} className="flex items-center gap-2">
           <Filter className="h-4 w-4 text-gray-400" />
           <label className="text-sm font-medium text-gray-700">{filter.label}:</label>
-          <Select value={filter.value} onChange={(e) => filter.onChange(e.target.value)}>
+          <Select value={filter.value} onValueChange={filter.onChange}>
             {filter.options.map((option) => (
               <option key={option.value} value={option.value}>
                 {option.label}

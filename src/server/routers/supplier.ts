@@ -2,6 +2,7 @@ import { z } from 'zod'
 import { router, protectedProcedure } from '../trpc'
 import { prisma } from '@/lib/db'
 import { TRPCError } from '@trpc/server'
+import { Role } from '@prisma/client'
 
 // Zod Schemas
 const supplierFilterSchema = z.object({
@@ -148,7 +149,7 @@ export const supplierRouter = router({
       await prisma.activityLog.create({
         data: {
           user_id: ctx.user.userId,
-          role: ctx.user.role,
+          role: ctx.user.role as Role,
           action: 'CREATE',
           module: 'SUPPLIER',
           description: `Created supplier ${input.business_name}`,
@@ -206,7 +207,7 @@ export const supplierRouter = router({
       await prisma.activityLog.create({
         data: {
           user_id: ctx.user.userId,
-          role: ctx.user.role,
+          role: ctx.user.role as Role,
           action: 'UPDATE',
           module: 'SUPPLIER',
           description: `Updated supplier ${supplier.business_name}`,
@@ -258,7 +259,7 @@ export const supplierRouter = router({
       await prisma.activityLog.create({
         data: {
           user_id: ctx.user.userId,
-          role: ctx.user.role,
+          role: ctx.user.role as Role,
           action: 'DELETE',
           module: 'SUPPLIER',
           description: `Deleted supplier ${supplier.business_name}`,
