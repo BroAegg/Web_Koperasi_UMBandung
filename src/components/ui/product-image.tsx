@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Package } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
-interface ProductImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
+interface ProductImageProps extends Omit<React.ImgHTMLAttributes<HTMLImageElement>, 'src'> {
   src?: string | null
   alt: string
   fallback?: React.ReactNode

@@ -154,13 +154,19 @@ export function ProductFormDialog({ product, open, onOpenChange }: ProductFormDi
   })
 
   const onSubmit = (values: FormValues) => {
+    // Convert null to undefined for image field
+    const sanitizedValues = {
+      ...values,
+      image: values.image ?? undefined,
+    }
+
     if (typedProduct) {
       updateMutation.mutate({
         id: typedProduct.id,
-        ...values,
+        ...sanitizedValues,
       })
     } else {
-      createMutation.mutate(values)
+      createMutation.mutate(sanitizedValues)
     }
   }
 
