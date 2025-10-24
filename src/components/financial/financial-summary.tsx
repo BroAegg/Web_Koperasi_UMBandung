@@ -1,3 +1,4 @@
+import { memo, useCallback } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Wallet, TrendingUp, TrendingDown, Activity } from 'lucide-react'
@@ -26,14 +27,26 @@ interface FinancialSummaryProps {
   onPeriodChange: (period: 'today' | 'week' | 'month' | 'custom') => void
 }
 
-export function FinancialSummary({ data, loading, period, onPeriodChange }: FinancialSummaryProps) {
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('id-ID', {
-      style: 'currency',
-      currency: 'IDR',
-      minimumFractionDigits: 0,
-    }).format(value)
-  }
+const formatCurrency = (value: number) => {
+  return new Intl.NumberFormat('id-ID', {
+    style: 'currency',
+    currency: 'IDR',
+    minimumFractionDigits: 0,
+  }).format(value)
+}
+
+export const FinancialSummary = memo(function FinancialSummary({
+  data,
+  loading,
+  period,
+  onPeriodChange,
+}: FinancialSummaryProps) {
+  const handlePeriodChange = useCallback(
+    (value: string) => {
+      onPeriodChange(value as typeof period)
+    },
+    [onPeriodChange]
+  )
 
   if (loading) {
     return (
@@ -58,7 +71,7 @@ export function FinancialSummary({ data, loading, period, onPeriodChange }: Fina
     <div className="space-y-4">
       {/* Period Selector */}
       <div className="flex justify-end">
-        <Select value={period} onValueChange={(value) => onPeriodChange(value as typeof period)}>
+        <Select value={period} onValueChange={handlePeriodChange}>
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Select period" />
           </SelectTrigger>
@@ -152,4 +165,4 @@ export function FinancialSummary({ data, loading, period, onPeriodChange }: Fina
       </div>
     </div>
   )
-}
+})

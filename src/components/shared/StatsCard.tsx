@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { LucideIcon, TrendingUp, TrendingDown } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -37,7 +38,7 @@ const textColorClasses: Record<GradientVariant, string> = {
   red: 'text-red-100',
 }
 
-export function StatsCard({
+export const StatsCard = memo(function StatsCard({
   title,
   value,
   subtitle,
@@ -85,4 +86,4 @@ export function StatsCard({
       )}
     </Card>
   )
-}
+})

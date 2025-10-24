@@ -1,5 +1,6 @@
 'use client'
 
+import { memo, useMemo } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -18,7 +19,7 @@ interface ShoppingCartProps {
   onCheckout: () => void
 }
 
-export function ShoppingCart({
+export const ShoppingCart = memo(function ShoppingCart({
   items,
   customerName,
   onCustomerNameChange,
@@ -27,8 +28,12 @@ export function ShoppingCart({
   onClearCart,
   onCheckout,
 }: ShoppingCartProps) {
-  const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0)
-  const itemCount = items.reduce((sum, item) => sum + item.quantity, 0)
+  // Memoize expensive calculations
+  const subtotal = useMemo(
+    () => items.reduce((sum, item) => sum + item.price * item.quantity, 0),
+    [items]
+  )
+  const itemCount = useMemo(() => items.reduce((sum, item) => sum + item.quantity, 0), [items])
 
   return (
     <Card className="sticky top-6">
@@ -171,4 +176,4 @@ export function ShoppingCart({
       </CardContent>
     </Card>
   )
-}
+})
