@@ -47,7 +47,7 @@ const navItems: NavItem[] = [
   },
   {
     title: 'Inventori',
-    href: '/inventory',
+    href: '/inventori',
     icon: Package,
     module: 'inventory',
   },

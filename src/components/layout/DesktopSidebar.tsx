@@ -21,7 +21,7 @@ const navigationItems = [
   { name: 'Dashboard', href: '/koperasi', icon: Home },
   { name: 'Financial', href: '/koperasi/financial', icon: DollarSign },
   { name: 'POS', href: '/koperasi/pos', icon: ShoppingCart },
-  { name: 'Inventory', href: '/koperasi/inventory', icon: Package },
+  { name: 'Inventory', href: '/koperasi/inventori', icon: Package },
   { name: 'Members', href: '/koperasi/members', icon: Users },
   { name: 'Suppliers', href: '/koperasi/suppliers', icon: Building2 },
   { name: 'Activity', href: '/koperasi/activity', icon: Activity },

@@ -55,7 +55,7 @@ const menuItems: MenuItem[] = [
   },
   {
     title: 'Inventori',
-    href: '/inventory',
+    href: '/inventori',
     icon: Package,
     module: 'inventory',
   },
