@@ -47,12 +47,6 @@ export function InventoryContent() {
     limit: filters.limit,
   })
 
-  // Fetch summary stats (using getProducts with aggregation)
-  const summaryQuery = trpc.inventory.getProducts.useQuery({
-    page: 1,
-    limit: 1,
-  })
-
   const handleCreateProduct = () => {
     setProductToEdit(null)
     setShowProductForm(true)
@@ -168,7 +162,8 @@ export function InventoryContent() {
                   })),
                   pagination: productsQuery.data.pagination,
                   lowStockCount: productsQuery.data.lowStockCount,
-                } as typeof productsQuery.data)
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                } as any)
               : undefined
           }
           loading={productsQuery.isLoading}
@@ -189,7 +184,8 @@ export function InventoryContent() {
                   })),
                   pagination: productsQuery.data.pagination,
                   lowStockCount: productsQuery.data.lowStockCount,
-                } as typeof productsQuery.data)
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                } as any)
               : undefined
           }
           loading={productsQuery.isLoading}

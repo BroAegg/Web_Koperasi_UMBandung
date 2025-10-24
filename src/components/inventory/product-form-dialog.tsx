@@ -43,7 +43,7 @@ const formSchema = z.object({
   selling_price: z.number().min(0, 'Harga jual tidak boleh negatif'),
   stock: z.number().min(0, 'Stok tidak boleh negatif').optional(),
   min_stock: z.number().min(0, 'Stok minimum tidak boleh negatif'),
-  is_active: z.boolean().default(true),
+  is_active: z.boolean(),
 })
 
 type FormValues = z.infer<typeof formSchema>
@@ -80,7 +80,8 @@ export function ProductFormDialog({ product, open, onOpenChange }: ProductFormDi
   })
 
   const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    resolver: zodResolver(formSchema) as any,
     defaultValues: {
       sku: typedProduct?.sku || '',
       name: typedProduct?.name || '',
