@@ -23,7 +23,8 @@ interface BalanceChartProps {
 
 export function BalanceChart({ data, loading = false }: BalanceChartProps) {
   const { theme } = useTheme()
-  const isDark = theme === 'dark'
+  // Force light mode until toggle is implemented (Phase 10.4)
+  const isDark = false // theme === 'dark'
 
   if (loading) {
     return (
