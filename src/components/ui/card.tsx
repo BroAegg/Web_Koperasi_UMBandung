@@ -8,14 +8,15 @@ const Card = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement> & { hover?: boolean; interactive?: boolean }
 >(({ className, hover = false, interactive = false, ...props }, ref) => {
-  const { theme } = useTheme()
+  const context = useTheme()
+  const theme = context?.theme || { card: 'bg-white border-gray-200' }
 
   return (
     <div
       ref={ref}
       className={cn(
         'rounded-2xl border shadow-sm transition-all duration-300',
-        theme.card, // bg-white / bg-slate-800
+        theme.card,
         hover && 'hover:shadow-md',
         interactive && 'cursor-pointer hover:border-gray-300',
         className
@@ -35,7 +36,8 @@ CardHeader.displayName = 'CardHeader'
 
 const CardTitle = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => {
-    const { theme } = useTheme()
+    const context = useTheme()
+    const theme = context?.theme || { kpiTitleText: 'text-gray-500' }
 
     return (
       <div
@@ -54,7 +56,8 @@ CardTitle.displayName = 'CardTitle'
 
 const CardDescription = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => {
-    const { theme } = useTheme()
+    const context = useTheme()
+    const theme = context?.theme || { subtext: 'text-gray-500' }
 
     return <div ref={ref} className={cn('text-sm', theme.subtext, className)} {...props} />
   }
