@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { animations, transitions, hovers, effects } from '@/lib/animations'
+import { animations, transitions, hovers, effects, keyframes } from '@/lib/animations'
 
 describe('Animation Utilities', () => {
   describe('animations object', () => {
@@ -59,8 +59,6 @@ describe('Animation Utilities', () => {
 
 describe('Animation Keyframes', () => {
   it('should export keyframe animation names', () => {
-    const { keyframes } = await import('@/lib/animations')
-
     expect(keyframes.shake).toBe('shake')
     expect(keyframes.slideUp).toBe('slide-up')
     expect(keyframes.slideDown).toBe('slide-down')
