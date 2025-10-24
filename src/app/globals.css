@@ -757,6 +757,33 @@
   animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   background-color: hsl(var(--muted));
   border-radius: var(--radius);
+  position: relative;
+  overflow: hidden;
+}
+
+.skeleton::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    hsl(var(--muted-foreground) / 0.1) 50%,
+    transparent 100%
+  );
+  animation: shimmer 2s infinite;
+}
+
+.dark .skeleton::after {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    hsl(var(--muted-foreground) / 0.15) 50%,
+    transparent 100%
+  );
 }
 
 .skeleton-text {
