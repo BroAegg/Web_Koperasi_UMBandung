@@ -49,7 +49,7 @@ const menuItems: MenuItem[] = [
   },
   {
     title: 'Keuangan',
-    href: '/financial',
+    href: '/keuangan',
     icon: Wallet,
     module: 'financial',
   },
