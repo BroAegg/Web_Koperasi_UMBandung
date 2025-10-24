@@ -1,6 +1,6 @@
 import { getSession } from '@/lib/auth'
 import { redirect } from 'next/navigation'
-import { AppLayout } from '@/components/layout/AppLayout'
+import { AppLayout } from '@/components/layout/app-layout'
 import { POSContent } from '@/components/pos/pos-content'
 
 export default async function POSPage() {
@@ -11,7 +11,7 @@ export default async function POSPage() {
   }
 
   return (
-    <AppLayout>
+    <AppLayout session={session}>
       <POSContent />
     </AppLayout>
   )
