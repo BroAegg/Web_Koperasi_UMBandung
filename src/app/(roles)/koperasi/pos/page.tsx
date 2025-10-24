@@ -1,9 +1,19 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, Suspense } from 'react'
 import { trpc } from '@/lib/trpc'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { lazyWithRetry } from '@/lib/lazy-utils'
+import { FormLoadingFallback } from '@/components/ui/lazy-loading'
+
+// Lazy load heavy modal components
+const PaymentModal = lazyWithRetry(() =>
+  import('@/components/pos/PaymentModal').then((m) => ({ default: m.PaymentModal }))
+)
+const ReceiptModal = lazyWithRetry(() =>
+  import('@/components/pos/ReceiptModal').then((m) => ({ default: m.ReceiptModal }))
+)
 import { useDebounce } from '@/hooks/useDebounce'
 import {
   ShoppingCart,
@@ -593,327 +603,39 @@ export default function POSPage() {
           </div>
         )}
 
-        {/* Payment Modal */}
+        {/* Payment Modal - Lazy loaded for better performance */}
         {showPayment && (
-          <div className="animate-in fade-in fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm duration-200">
-            <Card className="animate-in zoom-in w-full max-w-md shadow-2xl duration-200">
-              <CardHeader className="bg-linear-to-r from-green-600 to-emerald-600 text-white">
-                <CardTitle className="flex items-center gap-2">
-                  <CreditCard className="h-6 w-6" />
-                  Pembayaran
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4 p-6">
-                <div>
-                  <label className="mb-2 block text-sm font-semibold text-gray-700">
-                    Nama Pelanggan (Opsional)
-                  </label>
-                  <input
-                    type="text"
-                    value={customerName}
-                    onChange={(e) => setCustomerName(e.target.value)}
-                    className="w-full rounded-lg border-2 px-4 py-2.5 transition-all focus:border-green-500 focus:ring-2 focus:ring-green-500 focus:outline-none"
-                    placeholder="Masukkan nama pelanggan..."
-                  />
-                </div>
-
-                <div>
-                  <label className="mb-2 block text-sm font-semibold text-gray-700">
-                    Metode Pembayaran
-                  </label>
-                  <select
-                    value={paymentMethod}
-                    onChange={(e) => setPaymentMethod(e.target.value as PaymentMethod)}
-                    className="w-full rounded-lg border-2 px-4 py-2.5 font-medium transition-all focus:border-green-500 focus:ring-2 focus:ring-green-500 focus:outline-none"
-                  >
-                    <option value="CASH">💵 Tunai</option>
-                    <option value="BANK_TRANSFER">🏦 Transfer Bank</option>
-                    <option value="E_WALLET">📱 E-Wallet</option>
-                    <option value="OTHER">💳 Lainnya</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="mb-2 block text-sm font-semibold text-gray-700">
-                    Diskon (Rp)
-                  </label>
-                  <input
-                    type="number"
-                    value={discount || ''}
-                    onChange={(e) => setDiscount(Number(e.target.value))}
-                    className="w-full rounded-lg border-2 px-4 py-2.5 transition-all focus:border-green-500 focus:ring-2 focus:ring-green-500 focus:outline-none"
-                    placeholder="0"
-                    min="0"
-                  />
-                </div>
-
-                {/* Total Summary */}
-                <div className="rounded-xl border-2 border-green-100 bg-linear-to-br from-green-50 to-emerald-50 p-4">
-                  <div className="mb-2 flex justify-between text-sm">
-                    <span className="text-gray-700">Subtotal:</span>
-                    <span className="font-semibold">Rp {subtotal.toLocaleString('id-ID')}</span>
-                  </div>
-                  {discount > 0 && (
-                    <div className="mb-2 flex justify-between text-sm">
-                      <span className="text-gray-700">Diskon:</span>
-                      <span className="font-semibold text-red-600">
-                        - Rp {discount.toLocaleString('id-ID')}
-                      </span>
-                    </div>
-                  )}
-                  <div className="flex justify-between border-t-2 border-green-200 pt-3">
-                    <span className="text-lg font-bold text-gray-900">Total:</span>
-                    <span className="text-2xl font-bold text-green-600">
-                      Rp {total.toLocaleString('id-ID')}
-                    </span>
-                  </div>
-                </div>
-
-                <div>
-                  <label className="mb-2 block text-sm font-semibold text-gray-700">
-                    Jumlah Bayar
-                  </label>
-                  <input
-                    type="number"
-                    value={paymentAmount || ''}
-                    onChange={(e) => setPaymentAmount(Number(e.target.value))}
-                    className="w-full rounded-lg border-2 px-4 py-2.5 text-lg font-bold transition-all focus:border-green-500 focus:ring-2 focus:ring-green-500 focus:outline-none"
-                    placeholder={total.toString()}
-                    min={total}
-                  />
-                  <div className="mt-2 flex gap-2">
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => setPaymentAmount(total)}
-                      className="flex-1 border-2 hover:border-green-500 hover:bg-green-50 hover:text-green-600"
-                    >
-                      Uang Pas
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => setPaymentAmount(Math.ceil(total / 1000) * 1000)}
-                      className="flex-1 border-2 hover:border-green-500 hover:bg-green-50 hover:text-green-600"
-                    >
-                      Bulatkan
-                    </Button>
-                  </div>
-                </div>
-
-                {paymentAmount >= total && (
-                  <div className="animate-in slide-in-from-bottom rounded-xl border-2 border-emerald-300 bg-linear-to-br from-emerald-100 to-green-100 p-4 duration-300">
-                    <div className="flex items-center justify-between">
-                      <span className="text-lg font-bold text-gray-900">Kembalian:</span>
-                      <span className="text-3xl font-bold text-emerald-600">
-                        Rp {change.toLocaleString('id-ID')}
-                      </span>
-                    </div>
-                  </div>
-                )}
-
-                <div className="flex gap-3 pt-2">
-                  <Button
-                    variant="outline"
-                    onClick={() => setShowPayment(false)}
-                    className="flex-1 border-2 hover:bg-gray-50"
-                    disabled={createOrderMutation.isPending}
-                  >
-                    Batal
-                  </Button>
-                  <Button
-                    onClick={handlePayment}
-                    disabled={paymentAmount < total || createOrderMutation.isPending}
-                    className="flex-1 bg-linear-to-r from-green-600 to-emerald-600 text-white shadow-lg transition-all hover:from-green-700 hover:to-emerald-700 hover:shadow-xl disabled:cursor-not-allowed disabled:opacity-50"
-                  >
-                    {createOrderMutation.isPending ? (
-                      <>
-                        <span className="mr-2 animate-spin">⏳</span>
-                        Memproses...
-                      </>
-                    ) : (
-                      <>
-                        <CreditCard className="mr-2 h-4 w-4" />
-                        Bayar Sekarang
-                      </>
-                    )}
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+          <Suspense fallback={<FormLoadingFallback />}>
+            <PaymentModal
+              show={showPayment}
+              onClose={() => setShowPayment(false)}
+              customerName={customerName}
+              setCustomerName={setCustomerName}
+              paymentMethod={paymentMethod}
+              setPaymentMethod={setPaymentMethod}
+              discount={discount}
+              setDiscount={setDiscount}
+              paymentAmount={paymentAmount}
+              setPaymentAmount={setPaymentAmount}
+              subtotal={subtotal}
+              total={total}
+              change={change}
+              onProcessPayment={handlePayment}
+              isProcessing={createOrderMutation.isPending}
+            />
+          </Suspense>
         )}
 
-        {/* Receipt Modal */}
+        {/* Receipt Modal - Lazy loaded for better performance */}
         {showReceipt && lastOrder && (
-          <div className="animate-in fade-in fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm duration-200">
-            <Card className="animate-in zoom-in w-full max-w-md shadow-2xl duration-200">
-              <CardHeader className="bg-linear-to-r from-green-600 to-emerald-600 text-white">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="flex items-center gap-2">
-                    <Receipt className="h-6 w-6" />
-                    Struk Penjualan
-                  </CardTitle>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setShowReceipt(false)}
-                    className="text-white hover:bg-white/20"
-                  >
-                    <X className="h-5 w-5" />
-                  </Button>
-                </div>
-              </CardHeader>
-              <CardContent className="p-6" id="receipt-content">
-                {/* Receipt Header */}
-                <div className="border-b-2 border-dashed pb-4 text-center">
-                  <h3 className="text-xl font-bold text-gray-900">Koperasi UM Bandung</h3>
-                  <p className="mt-1 text-sm text-gray-600">Jl. Raya Bandung No. 123</p>
-                  <p className="text-xs text-gray-500">Telp: (022) 1234-5678</p>
-                </div>
-
-                {/* Order Info */}
-                <div className="space-y-2 border-b py-4 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">No. Order:</span>
-                    <span className="font-mono font-bold text-gray-900">
-                      {lastOrder.order_number}
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Tanggal:</span>
-                    <span className="font-medium text-gray-900">
-                      {new Date(lastOrder.created_at).toLocaleString('id-ID', {
-                        dateStyle: 'medium',
-                        timeStyle: 'short',
-                      })}
-                    </span>
-                  </div>
-                  {lastOrder.customer_name && (
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Pelanggan:</span>
-                      <span className="font-medium text-gray-900">{lastOrder.customer_name}</span>
-                    </div>
-                  )}
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Pembayaran:</span>
-                    <span className="font-medium text-gray-900">
-                      {lastOrder.payment_method === 'CASH'
-                        ? '💵 Tunai'
-                        : lastOrder.payment_method === 'BANK_TRANSFER'
-                          ? '🏦 Transfer'
-                          : lastOrder.payment_method === 'E_WALLET'
-                            ? '📱 E-Wallet'
-                            : '💳 Lainnya'}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Items */}
-                <div className="space-y-3 border-b py-4">
-                  <h4 className="mb-3 font-bold text-gray-900">Detail Pembelian</h4>
-                  {/* Map through order items */}
-                  {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-                  {lastOrder.items.map((item: any, index: number) => (
-                    <div key={item.id} className="space-y-1">
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <p className="text-sm leading-tight font-semibold text-gray-900">
-                            {index + 1}. {item.product.name}
-                          </p>
-                          <p className="mt-0.5 text-xs text-gray-500">SKU: {item.product.sku}</p>
-                        </div>
-                      </div>
-                      <div className="flex justify-between pl-4 text-sm">
-                        <span className="text-gray-600">
-                          {item.quantity} x Rp {Number(item.price).toLocaleString('id-ID')}
-                        </span>
-                        <span className="font-bold text-gray-900">
-                          Rp {Number(item.subtotal).toLocaleString('id-ID')}
-                        </span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Totals */}
-                <div className="space-y-2 py-4">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-700">Subtotal:</span>
-                    <span className="font-semibold text-gray-900">
-                      Rp {Number(lastOrder.subtotal).toLocaleString('id-ID')}
-                    </span>
-                  </div>
-                  {Number(lastOrder.discount) > 0 && (
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-700">Diskon:</span>
-                      <span className="font-semibold text-red-600">
-                        - Rp {Number(lastOrder.discount).toLocaleString('id-ID')}
-                      </span>
-                    </div>
-                  )}
-                  {Number(lastOrder.tax) > 0 && (
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-700">Pajak:</span>
-                      <span className="font-semibold text-gray-900">
-                        Rp {Number(lastOrder.tax).toLocaleString('id-ID')}
-                      </span>
-                    </div>
-                  )}
-                  <div className="flex justify-between border-t-2 border-dashed pt-3">
-                    <span className="text-lg font-bold text-gray-900">Total:</span>
-                    <span className="text-2xl font-bold text-green-600">
-                      Rp {Number(lastOrder.total).toLocaleString('id-ID')}
-                    </span>
-                  </div>
-                  <div className="flex justify-between rounded bg-gray-50 p-2 text-sm">
-                    <span className="text-gray-700">Bayar:</span>
-                    <span className="font-semibold text-gray-900">
-                      Rp {Number(lastOrder.payment_amount).toLocaleString('id-ID')}
-                    </span>
-                  </div>
-                  <div className="flex justify-between rounded bg-green-50 p-2 text-sm">
-                    <span className="font-medium text-gray-700">Kembalian:</span>
-                    <span className="text-xl font-bold text-green-600">
-                      Rp {Number(lastOrder.change_amount).toLocaleString('id-ID')}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Footer */}
-                <div className="space-y-2 border-t-2 border-dashed pt-4 text-center">
-                  <p className="text-sm font-medium text-gray-900">
-                    Terima kasih atas kunjungan Anda!
-                  </p>
-                  <p className="text-xs text-gray-500">
-                    Barang yang sudah dibeli tidak dapat dikembalikan
-                  </p>
-                  <div className="mt-3 font-mono text-xs text-gray-400">
-                    {new Date().toLocaleString('id-ID')}
-                  </div>
-                </div>
-
-                {/* Action Buttons */}
-                <div className="mt-6 flex gap-3">
-                  <Button
-                    variant="outline"
-                    onClick={() => setShowReceipt(false)}
-                    className="flex-1 border-2"
-                  >
-                    <X className="mr-2 h-4 w-4" />
-                    Tutup
-                  </Button>
-                  <Button
-                    onClick={handlePrintReceipt}
-                    className="flex-1 bg-linear-to-r from-green-600 to-emerald-600 text-white shadow-lg hover:from-green-700 hover:to-emerald-700"
-                  >
-                    <Receipt className="mr-2 h-4 w-4" />
-                    Cetak Struk
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+          <Suspense fallback={<FormLoadingFallback />}>
+            <ReceiptModal
+              show={showReceipt}
+              onClose={() => setShowReceipt(false)}
+              order={lastOrder}
+              onPrint={handlePrintReceipt}
+            />
+          </Suspense>
         )}
       </div>
     </ResponsiveLayout>

@@ -1,20 +1,38 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, Suspense } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { trpc } from '@/lib/trpc'
 import { formatCurrency, getPeriodLabel } from '@/lib/financial-utils'
-import { FinancialChart } from '@/components/features/financial/FinancialChart'
-import { TransactionTable } from '@/components/features/financial/TransactionTable'
+import { lazyWithRetry } from '@/lib/lazy-utils'
 import {
-  TransactionForm,
-  type TransactionFormData,
-} from '@/components/features/financial/TransactionForm'
+  ChartLoadingFallback,
+  TableLoadingFallback,
+  FormLoadingFallback,
+} from '@/components/ui/lazy-loading'
 import type { Transaction, Period } from '@/types/financial'
+import type { TransactionFormData } from '@/components/features/financial/TransactionForm'
 import { PiggyBank, TrendingUp, ArrowUp, ArrowDown, DollarSign, Plus } from 'lucide-react'
 import { ResponsiveLayout } from '@/components/layout'
 import { useDebounce } from '@/hooks/useDebounce'
+
+// Lazy load heavy chart and table components
+const FinancialChart = lazyWithRetry(() =>
+  import('@/components/features/financial/FinancialChart').then((m) => ({
+    default: m.FinancialChart,
+  }))
+)
+const TransactionTable = lazyWithRetry(() =>
+  import('@/components/features/financial/TransactionTable').then((m) => ({
+    default: m.TransactionTable,
+  }))
+)
+const TransactionForm = lazyWithRetry(() =>
+  import('@/components/features/financial/TransactionForm').then((m) => ({
+    default: m.TransactionForm,
+  }))
+)
 
 export default function FinancialPage() {
   const [period, setPeriod] = useState<Period>('today')
@@ -289,32 +307,40 @@ export default function FinancialPage() {
           </Card>
         </div>
 
-        {/* Financial Chart */}
+        {/* Financial Chart - Lazy loaded */}
         <div className="mb-6">
-          <FinancialChart data={chartData} />
+          <Suspense fallback={<ChartLoadingFallback />}>
+            <FinancialChart data={chartData} />
+          </Suspense>
         </div>
 
-        {/* Transaction Table */}
-        <TransactionTable
-          transactions={transactions}
-          pagination={pagination}
-          onPageChange={setPage}
-          onSearch={setSearchQuery}
-          onEdit={handleEdit}
-          onDelete={handleDelete}
-        />
+        {/* Transaction Table - Lazy loaded */}
+        <Suspense fallback={<TableLoadingFallback />}>
+          <TransactionTable
+            transactions={transactions}
+            pagination={pagination}
+            onPageChange={setPage}
+            onSearch={setSearchQuery}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+          />
+        </Suspense>
 
-        {/* Transaction Form Modal */}
-        <TransactionForm
-          transaction={editingTransaction}
-          isOpen={isFormOpen}
-          onClose={() => {
-            setIsFormOpen(false)
-            setEditingTransaction(null)
-          }}
-          onSubmit={handleFormSubmit}
-          isLoading={createMutation.isPending || updateMutation.isPending}
-        />
+        {/* Transaction Form Modal - Lazy loaded */}
+        {isFormOpen && (
+          <Suspense fallback={<FormLoadingFallback />}>
+            <TransactionForm
+              transaction={editingTransaction}
+              isOpen={isFormOpen}
+              onClose={() => {
+                setIsFormOpen(false)
+                setEditingTransaction(null)
+              }}
+              onSubmit={handleFormSubmit}
+              isLoading={createMutation.isPending || updateMutation.isPending}
+            />
+          </Suspense>
+        )}
       </div>
     </ResponsiveLayout>
   )

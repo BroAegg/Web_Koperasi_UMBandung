@@ -1,17 +1,27 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, Suspense } from 'react'
 import { trpc } from '@/lib/trpc/client'
 import { Button } from '@/components/ui/button'
 import { Plus, Grid3x3, List, Download } from 'lucide-react'
 import { ProductGrid } from './product-grid'
 import { ProductTable } from './product-table'
-import { ProductFormDialog } from './product-form-dialog'
 import { ProductFilters } from './product-filters'
-import { StockUpdateDialog } from './stock-update-dialog'
-import { DeleteConfirmDialog } from './delete-confirm-dialog'
 import { SkeletonCard, SkeletonTable } from '@/components/ui/loading-skeleton'
 import { Card } from '@/components/ui/card'
+import { lazyWithRetry } from '@/lib/lazy-utils'
+import { FormLoadingFallback } from '@/components/ui/lazy-loading'
+
+// Lazy load heavy dialog components
+const ProductFormDialog = lazyWithRetry(() =>
+  import('./product-form-dialog').then((m) => ({ default: m.ProductFormDialog }))
+)
+const StockUpdateDialog = lazyWithRetry(() =>
+  import('./stock-update-dialog').then((m) => ({ default: m.StockUpdateDialog }))
+)
+const DeleteConfirmDialog = lazyWithRetry(() =>
+  import('./delete-confirm-dialog').then((m) => ({ default: m.DeleteConfirmDialog }))
+)
 
 type ViewMode = 'grid' | 'table'
 
@@ -208,24 +218,36 @@ export function InventoryContent() {
         />
       )}
 
-      {/* Dialogs */}
-      <ProductFormDialog
-        product={productToEdit}
-        open={showProductForm}
-        onOpenChange={setShowProductForm}
-      />
+      {/* Dialogs - Lazy loaded for better performance */}
+      {showProductForm && (
+        <Suspense fallback={<FormLoadingFallback />}>
+          <ProductFormDialog
+            product={productToEdit}
+            open={showProductForm}
+            onOpenChange={setShowProductForm}
+          />
+        </Suspense>
+      )}
 
-      <StockUpdateDialog
-        productId={selectedProduct}
-        open={showStockUpdate}
-        onOpenChange={setShowStockUpdate}
-      />
+      {showStockUpdate && (
+        <Suspense fallback={<FormLoadingFallback />}>
+          <StockUpdateDialog
+            productId={selectedProduct}
+            open={showStockUpdate}
+            onOpenChange={setShowStockUpdate}
+          />
+        </Suspense>
+      )}
 
-      <DeleteConfirmDialog
-        product={productToDelete}
-        open={showDeleteConfirm}
-        onOpenChange={setShowDeleteConfirm}
-      />
+      {showDeleteConfirm && (
+        <Suspense fallback={<FormLoadingFallback />}>
+          <DeleteConfirmDialog
+            product={productToDelete}
+            open={showDeleteConfirm}
+            onOpenChange={setShowDeleteConfirm}
+          />
+        </Suspense>
+      )}
     </div>
   )
 }
