@@ -9,11 +9,25 @@ import { Toaster } from 'sonner'
 const inter = Inter({
   subsets: ['latin'],
   variable: '--font-inter',
+  display: 'swap', // Performance: Prevent invisible text during font load
+  preload: true,
+  fallback: ['system-ui', 'arial'],
 })
 
 export const metadata: Metadata = {
   title: 'Web Koperasi UM Bandung',
   description: 'Sistem Informasi Koperasi Universitas Muhammadiyah Bandung',
+  keywords: 'koperasi, um bandung, manajemen koperasi, pos, inventory',
+  authors: [{ name: 'UM Bandung' }],
+  viewport: {
+    width: 'device-width',
+    initialScale: 1,
+    maximumScale: 5,
+  },
+  // Performance: Preconnect to external domains
+  other: {
+    'google-site-verification': 'verification-code-here',
+  },
 }
 
 export default function RootLayout({
