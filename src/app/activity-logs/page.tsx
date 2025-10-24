@@ -10,9 +10,10 @@ export default async function ActivityLogsPage() {
     redirect('/login')
   }
 
-  // Only Super Admin can access activity logs
-  if (session.role !== 'SUPER_ADMIN') {
-    redirect('/')
+  // Only Developer, Super Admin and Admin can access activity logs
+  const allowedRoles = ['DEVELOPER', 'SUPER_ADMIN', 'ADMIN']
+  if (!allowedRoles.includes(session.role)) {
+    redirect('/dashboard')
   }
 
   return (

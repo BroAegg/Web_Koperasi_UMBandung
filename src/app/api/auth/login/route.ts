@@ -57,6 +57,20 @@ export async function POST(request: NextRequest) {
       user.is_active
     )
 
+    // Log activity
+    await prisma.activityLog.create({
+      data: {
+        user_id: user.id,
+        role: user.role,
+        module: 'AUTH',
+        action: 'LOGIN',
+        description: `User ${user.username} logged in successfully`,
+        ip_address:
+          request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown',
+        user_agent: request.headers.get('user-agent') || 'unknown',
+      },
+    })
+
     // Return success response
     return NextResponse.json({
       success: true,
