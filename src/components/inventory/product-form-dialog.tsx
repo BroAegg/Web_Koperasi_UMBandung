@@ -76,11 +76,16 @@ export function ProductFormDialog({ product, open, onOpenChange }: ProductFormDi
   const typedProduct = product as Product | null | undefined
 
   // Fetch suppliers for dropdown
-  const suppliersQuery = trpc.supplier.getSuppliers.useQuery({
-    is_active: true,
-    page: 1,
-    limit: 100,
-  })
+  const suppliersQuery = trpc.supplier.getSuppliers.useQuery(
+    {
+      is_active: true,
+      page: 1,
+      limit: 100,
+    },
+    {
+      enabled: open, // Only fetch when dialog is open
+    }
+  )
 
   const form = useForm<FormValues>({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
