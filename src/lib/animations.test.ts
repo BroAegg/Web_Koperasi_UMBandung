@@ -4,10 +4,10 @@ import { animations, transitions, hovers, effects, keyframes } from '@/lib/anima
 describe('Animation Utilities', () => {
   describe('animations object', () => {
     it('should contain all animation classes', () => {
-      expect(animations.fadeIn).toBe('animate-fade-in')
-      expect(animations.fadeOut).toBe('animate-fade-out')
-      expect(animations.scaleIn).toBe('animate-scale-up')
-      expect(animations.slideInLeft).toBe('animate-slide-left')
+      expect(animations.fadeIn).toBe('animate-in fade-in duration-300')
+      expect(animations.fadeOut).toBe('animate-out fade-out duration-200')
+      expect(animations.scaleIn).toBe('animate-in zoom-in-95 duration-200')
+      expect(animations.slideInLeft).toBe('animate-in slide-in-from-left duration-300')
       expect(animations.spin).toBe('animate-spin')
       expect(animations.pulse).toBe('animate-pulse')
       expect(animations.bounce).toBe('animate-bounce')
@@ -31,7 +31,7 @@ describe('Animation Utilities', () => {
 
   describe('hovers object', () => {
     it('should contain hover effect classes', () => {
-      expect(hovers.scaleUp).toBe('hover:scale-105')
+      expect(hovers.scaleUp).toBe('hover:scale-105 active:scale-95')
       expect(hovers.shadowMd).toBe('hover:shadow-md')
       expect(hovers.brighten).toBe('hover:brightness-110')
       expect(hovers.opacityHigh).toBe('hover:opacity-100')
@@ -45,25 +45,33 @@ describe('Animation Utilities', () => {
     })
 
     it('should contain card effects', () => {
-      expect(effects.cardFlat).toContain('bg-card')
+      expect(effects.cardFlat).toContain('bg-white')
+      expect(effects.cardFlat).toContain('dark:bg-gray-800')
       expect(effects.cardFlat).toContain('border')
-      expect(effects.cardElevated).toContain('shadow-lg')
+      expect(effects.cardElevated).toContain('shadow-sm')
+      expect(effects.cardElevated).toContain('hover:shadow-md')
     })
 
     it('should contain focus ring', () => {
-      expect(effects.focusRing).toContain('focus:ring-2')
-      expect(effects.focusRing).toContain('focus:ring-primary')
+      expect(effects.focusRing).toContain('focus-visible:ring-2')
+      expect(effects.focusRing).toContain('focus-visible:ring-blue-500')
     })
   })
 })
 
 describe('Animation Keyframes', () => {
-  it('should export keyframe animation names', () => {
-    expect(keyframes.shake).toBe('shake')
-    expect(keyframes.slideUp).toBe('slide-up')
-    expect(keyframes.slideDown).toBe('slide-down')
-    expect(keyframes.scaleUp).toBe('scale-up')
-    expect(keyframes.checkmark).toBe('checkmark')
-    expect(keyframes.ripple).toBe('ripple')
+  it('should export keyframe objects with correct properties', () => {
+    expect(keyframes.shake).toHaveProperty('0%, 100%')
+    expect(keyframes.slideUp).toHaveProperty('0%')
+    expect(keyframes.slideUp).toHaveProperty('100%')
+    expect(keyframes.scaleUp).toHaveProperty('0%')
+    expect(keyframes.checkmark).toHaveProperty('0%')
+    expect(keyframes.ripple).toHaveProperty('0%')
+  })
+
+  it('should have correct keyframe values', () => {
+    expect(keyframes.shake['0%, 100%']).toEqual({ transform: 'translateX(0)' })
+    expect(keyframes.slideUp['100%']).toEqual({ transform: 'translateY(0)', opacity: '1' })
+    expect(keyframes.scaleUp['100%']).toEqual({ transform: 'scale(1)', opacity: '1' })
   })
 })

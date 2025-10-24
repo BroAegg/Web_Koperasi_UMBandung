@@ -25,7 +25,8 @@ describe('Button Component', () => {
     render(<Button variant="outline">Outline</Button>)
     const button = screen.getByRole('button')
     expect(button).toHaveClass('border')
-    expect(button).toHaveClass('border-input')
+    expect(button).toHaveClass('bg-background')
+    expect(button).toHaveClass('shadow-xs')
   })
 
   it('should apply secondary variant classes', () => {
@@ -57,8 +58,7 @@ describe('Button Component', () => {
 
     rerender(<Button size="icon">Icon</Button>)
     button = screen.getByRole('button')
-    expect(button).toHaveClass('h-9')
-    expect(button).toHaveClass('w-9')
+    expect(button).toHaveClass('size-9') // Uses size-9 (width AND height) not separate h-9 w-9
   })
 
   it('should apply disabled state', () => {
