@@ -10,6 +10,7 @@ import { ProductFormDialog } from './product-form-dialog'
 import { ProductFilters } from './product-filters'
 import { StockUpdateDialog } from './stock-update-dialog'
 import { DeleteConfirmDialog } from './delete-confirm-dialog'
+import { SkeletonCard, SkeletonTable } from '@/components/ui/loading-skeleton'
 
 type ViewMode = 'grid' | 'table'
 
@@ -150,7 +151,17 @@ export function InventoryContent() {
       </div>
 
       {/* Product Display */}
-      {viewMode === 'grid' ? (
+      {productsQuery.isLoading ? (
+        viewMode === 'grid' ? (
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <SkeletonCard key={i} />
+            ))}
+          </div>
+        ) : (
+          <SkeletonTable rows={8} />
+        )
+      ) : viewMode === 'grid' ? (
         <ProductGrid
           data={
             productsQuery.data

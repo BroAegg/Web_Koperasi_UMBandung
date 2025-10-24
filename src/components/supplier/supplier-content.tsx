@@ -10,6 +10,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { SupplierFormDialog } from './supplier-form-dialog'
 import { SupplierDetailDialog } from './supplier-detail-dialog'
 import { DeleteConfirmDialog } from './delete-confirm-dialog'
+import { SkeletonCard } from '@/components/ui/loading-skeleton'
 import {
   Plus,
   Search,
@@ -129,18 +130,11 @@ export function SupplierContent() {
         </CardContent>
       </Card>
 
-      {/* Supplier Grid */}
+      {/* Suppliers Grid */}
       {suppliersQuery.isLoading ? (
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {[...Array(6)].map((_, i) => (
-            <Card key={i}>
-              <CardContent className="p-6">
-                <Skeleton className="mb-4 h-6 w-3/4" />
-                <Skeleton className="mb-2 h-4 w-full" />
-                <Skeleton className="mb-4 h-4 w-2/3" />
-                <Skeleton className="h-8 w-full" />
-              </CardContent>
-            </Card>
+          {Array.from({ length: 9 }).map((_, i) => (
+            <SkeletonCard key={i} />
           ))}
         </div>
       ) : suppliersQuery.error ? (
@@ -216,22 +210,22 @@ export function SupplierContent() {
                   {/* Info */}
                   <div className="space-y-2 text-sm">
                     <div className="text-muted-foreground flex items-center gap-2">
-                      <User className="h-4 w-4 flex-shrink-0" />
+                      <User className="h-4 w-4 shrink-0" />
                       <span className="truncate">{supplier.contact_person}</span>
                     </div>
                     <div className="text-muted-foreground flex items-center gap-2">
-                      <Phone className="h-4 w-4 flex-shrink-0" />
+                      <Phone className="h-4 w-4 shrink-0" />
                       <span>{supplier.phone}</span>
                     </div>
                     {supplier.email && (
                       <div className="text-muted-foreground flex items-center gap-2">
-                        <Mail className="h-4 w-4 flex-shrink-0" />
+                        <Mail className="h-4 w-4 shrink-0" />
                         <span className="truncate">{supplier.email}</span>
                       </div>
                     )}
                     {supplier.address && (
                       <div className="text-muted-foreground flex items-center gap-2">
-                        <MapPin className="h-4 w-4 flex-shrink-0" />
+                        <MapPin className="h-4 w-4 shrink-0" />
                         <span className="line-clamp-1">{supplier.address}</span>
                       </div>
                     )}

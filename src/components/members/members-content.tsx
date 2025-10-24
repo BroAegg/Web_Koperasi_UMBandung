@@ -17,6 +17,7 @@ import { trpc } from '@/lib/trpc'
 import { DepositModal } from './deposit-modal'
 import { WithdrawalModal } from './withdrawal-modal'
 import { TransactionHistoryDialog } from './transaction-history-dialog'
+import { SkeletonCard, SkeletonTable } from '@/components/ui/loading-skeleton'
 
 export function MembersContent() {
   const [searchQuery, setSearchQuery] = useState('')
@@ -155,108 +156,106 @@ export function MembersContent() {
       {/* Transactions Table */}
       <Card>
         <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="border-b">
-              <tr className="text-left">
-                <th className="p-4 font-medium">Tanggal</th>
-                <th className="p-4 font-medium">Nama Anggota</th>
-                <th className="p-4 font-medium">Tipe</th>
-                <th className="p-4 font-medium">Metode</th>
-                <th className="p-4 font-medium">Jumlah</th>
-                <th className="p-4 font-medium">Catatan</th>
-                <th className="p-4 font-medium">Aksi</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y">
-              {isLoading ? (
-                <tr>
-                  <td colSpan={7} className="text-muted-foreground p-8 text-center">
-                    Memuat data...
-                  </td>
+          {isLoading ? (
+            <SkeletonTable rows={10} />
+          ) : (
+            <table className="w-full">
+              <thead className="border-b">
+                <tr className="text-left">
+                  <th className="p-4 font-medium">Tanggal</th>
+                  <th className="p-4 font-medium">Nama Anggota</th>
+                  <th className="p-4 font-medium">Tipe</th>
+                  <th className="p-4 font-medium">Metode</th>
+                  <th className="p-4 font-medium">Jumlah</th>
+                  <th className="p-4 font-medium">Catatan</th>
+                  <th className="p-4 font-medium">Aksi</th>
                 </tr>
-              ) : data?.transactions.length === 0 ? (
-                <tr>
-                  <td colSpan={7} className="text-muted-foreground p-8 text-center">
-                    Tidak ada transaksi
-                  </td>
-                </tr>
-              ) : (
-                data?.transactions.map((transaction) => {
-                  const memberName = extractMemberName(transaction.description)
-                  return (
-                    <tr key={transaction.id} className="hover:bg-muted/50">
-                      <td className="p-4">
-                        {new Date(transaction.created_at).toLocaleDateString('id-ID', {
-                          day: '2-digit',
-                          month: 'short',
-                          year: 'numeric',
-                        })}
-                        <br />
-                        <span className="text-muted-foreground text-sm">
-                          {new Date(transaction.created_at).toLocaleTimeString('id-ID', {
-                            hour: '2-digit',
-                            minute: '2-digit',
+              </thead>
+              <tbody className="divide-y">
+                {data?.transactions.length === 0 ? (
+                  <tr>
+                    <td colSpan={7} className="text-muted-foreground p-8 text-center">
+                      Tidak ada transaksi
+                    </td>
+                  </tr>
+                ) : (
+                  data?.transactions.map((transaction) => {
+                    const memberName = extractMemberName(transaction.description)
+                    return (
+                      <tr key={transaction.id} className="hover:bg-muted/50">
+                        <td className="p-4">
+                          {new Date(transaction.created_at).toLocaleDateString('id-ID', {
+                            day: '2-digit',
+                            month: 'short',
+                            year: 'numeric',
                           })}
-                        </span>
-                      </td>
-                      <td className="p-4 font-medium">{memberName}</td>
-                      <td className="p-4">
-                        <Badge
-                          variant={
-                            transaction.category === 'MEMBER_DEPOSIT' ? 'default' : 'destructive'
-                          }
-                        >
-                          {transaction.category === 'MEMBER_DEPOSIT' ? (
-                            <>
-                              <ArrowDownCircle className="mr-1 h-3 w-3" />
-                              Setoran
-                            </>
-                          ) : (
-                            <>
-                              <ArrowUpCircle className="mr-1 h-3 w-3" />
-                              Penarikan
-                            </>
-                          )}
-                        </Badge>
-                      </td>
-                      <td className="p-4">
-                        <span className="text-sm">
-                          {transaction.payment_method.replace(/_/g, ' ')}
-                        </span>
-                      </td>
-                      <td className="p-4">
-                        <span
-                          className={`font-semibold ${
-                            transaction.category === 'MEMBER_DEPOSIT'
-                              ? 'text-green-600'
-                              : 'text-red-600'
-                          }`}
-                        >
-                          {transaction.category === 'MEMBER_DEPOSIT' ? '+' : '-'}
-                          Rp {Number(transaction.amount).toLocaleString('id-ID')}
-                        </span>
-                      </td>
-                      <td className="p-4">
-                        <span className="text-muted-foreground text-sm">
-                          {transaction.notes || '-'}
-                        </span>
-                      </td>
-                      <td className="p-4">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleViewHistory(memberName)}
-                        >
-                          <History className="mr-1 h-4 w-4" />
-                          Riwayat
-                        </Button>
-                      </td>
-                    </tr>
-                  )
-                })
-              )}
-            </tbody>
-          </table>
+                          <br />
+                          <span className="text-muted-foreground text-sm">
+                            {new Date(transaction.created_at).toLocaleTimeString('id-ID', {
+                              hour: '2-digit',
+                              minute: '2-digit',
+                            })}
+                          </span>
+                        </td>
+                        <td className="p-4 font-medium">{memberName}</td>
+                        <td className="p-4">
+                          <Badge
+                            variant={
+                              transaction.category === 'MEMBER_DEPOSIT' ? 'default' : 'destructive'
+                            }
+                          >
+                            {transaction.category === 'MEMBER_DEPOSIT' ? (
+                              <>
+                                <ArrowDownCircle className="mr-1 h-3 w-3" />
+                                Setoran
+                              </>
+                            ) : (
+                              <>
+                                <ArrowUpCircle className="mr-1 h-3 w-3" />
+                                Penarikan
+                              </>
+                            )}
+                          </Badge>
+                        </td>
+                        <td className="p-4">
+                          <span className="text-sm">
+                            {transaction.payment_method.replace(/_/g, ' ')}
+                          </span>
+                        </td>
+                        <td className="p-4">
+                          <span
+                            className={`font-semibold ${
+                              transaction.category === 'MEMBER_DEPOSIT'
+                                ? 'text-green-600'
+                                : 'text-red-600'
+                            }`}
+                          >
+                            {transaction.category === 'MEMBER_DEPOSIT' ? '+' : '-'}
+                            Rp {Number(transaction.amount).toLocaleString('id-ID')}
+                          </span>
+                        </td>
+                        <td className="p-4">
+                          <span className="text-muted-foreground text-sm">
+                            {transaction.notes || '-'}
+                          </span>
+                        </td>
+                        <td className="p-4">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleViewHistory(memberName)}
+                          >
+                            <History className="mr-1 h-4 w-4" />
+                            Riwayat
+                          </Button>
+                        </td>
+                      </tr>
+                    )
+                  })
+                )}
+              </tbody>
+            </table>
+          )}
         </div>
 
         {/* Pagination */}

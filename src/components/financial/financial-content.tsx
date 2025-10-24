@@ -9,6 +9,7 @@ import { FinancialSummary } from './financial-summary'
 import { TransactionTable } from './transaction-table'
 import { TransactionFormDialog } from './transaction-form-dialog'
 import { TransactionFilters } from './transaction-filters'
+import { SkeletonTable, SkeletonStatsCard } from '@/components/ui/loading-skeleton'
 
 export function FinancialContent() {
   const [isFormOpen, setIsFormOpen] = useState(false)
@@ -83,27 +84,31 @@ export function FinancialContent() {
         <CardContent>
           {/* Filters */}
           {isFilterOpen && (
-            <div className="mb-4">
+            <div className="animate-slide-down mb-4">
               <TransactionFilters filters={filters} onFilterChange={handleFilterChange} />
             </div>
           )}
 
           {/* Transactions Table */}
-          <TransactionTable
-            data={
-              transactionsQuery.data
-                ? {
-                    transactions: transactionsQuery.data.transactions.map((tx) => ({
-                      ...tx,
-                      amount: Number(tx.amount),
-                    })),
-                    pagination: transactionsQuery.data.pagination,
-                  }
-                : undefined
-            }
-            loading={transactionsQuery.isLoading}
-            onPageChange={(page) => setFilters({ ...filters, page })}
-          />
+          {transactionsQuery.isLoading ? (
+            <SkeletonTable rows={5} />
+          ) : (
+            <TransactionTable
+              data={
+                transactionsQuery.data
+                  ? {
+                      transactions: transactionsQuery.data.transactions.map((tx) => ({
+                        ...tx,
+                        amount: Number(tx.amount),
+                      })),
+                      pagination: transactionsQuery.data.pagination,
+                    }
+                  : undefined
+              }
+              loading={transactionsQuery.isLoading}
+              onPageChange={(page) => setFilters({ ...filters, page })}
+            />
+          )}
         </CardContent>
       </Card>
 
