@@ -92,7 +92,7 @@ export function QuickActions({ session }: QuickActionsProps) {
   )
 
   return (
-    <Card>
+    <Card hover>
       <CardHeader>
         <CardTitle>Quick Actions</CardTitle>
         <CardDescription>Common tasks you can perform</CardDescription>
@@ -105,10 +105,12 @@ export function QuickActions({ session }: QuickActionsProps) {
               <Button
                 key={action.title}
                 variant="outline"
-                className="flex h-auto items-start gap-3 p-4 transition-shadow hover:shadow-md"
+                className="group flex h-auto items-start gap-3 p-4"
                 onClick={() => router.push(action.href)}
               >
-                <div className={`rounded-lg p-2 text-white ${action.color}`}>
+                <div
+                  className={`rounded-lg p-2 text-white transition-transform duration-200 group-hover:scale-110 ${action.color}`}
+                >
                   <Icon className="h-5 w-5" />
                 </div>
                 <div className="flex-1 text-left">

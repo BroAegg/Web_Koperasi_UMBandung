@@ -41,15 +41,22 @@ export function MetricsCard({
   }
 
   return (
-    <Card className="transition-shadow duration-300 hover:shadow-lg">
+    <Card hover className="group">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-sm font-medium">{title}</CardTitle>
-        <div className={cn('bg-muted rounded-md p-2', colorClass)}>
+        <div
+          className={cn(
+            'bg-muted rounded-md p-2 transition-all duration-200 group-hover:scale-110',
+            colorClass
+          )}
+        >
           <Icon className="h-4 w-4" />
         </div>
       </CardHeader>
       <CardContent>
-        <div className="text-2xl font-bold">{value}</div>
+        <div className="group-hover:text-primary text-2xl font-bold transition-colors duration-200">
+          {value}
+        </div>
         {description && <p className="text-muted-foreground mt-1 text-xs">{description}</p>}
         {trend && (
           <div className="mt-2 flex items-center gap-1">
