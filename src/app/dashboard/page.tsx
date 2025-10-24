@@ -1,8 +1,12 @@
 import { redirect } from 'next/navigation'
 import { getSession } from '@/lib/auth'
-import { User } from 'lucide-react'
+import { Wallet, TrendingUp, ShoppingCart, Package, Users } from 'lucide-react'
 import { AppLayout } from '@/components/layout/app-layout'
-import { getRoleDisplayName, getRoleBadgeColor } from '@/lib/permissions'
+import { MetricsCard } from '@/components/dashboard/metrics-card'
+import { RevenueChart } from '@/components/dashboard/revenue-chart'
+import { BalanceChart } from '@/components/dashboard/balance-chart'
+import { RecentActivity } from '@/components/dashboard/recent-activity'
+import { QuickActions } from '@/components/dashboard/quick-actions'
 
 export default async function DashboardPage() {
   const session = await getSession()
@@ -23,78 +27,76 @@ export default async function DashboardPage() {
           </p>
         </div>
 
-        {/* User Info Card */}
-        <div className="bg-card rounded-lg border p-6">
-          <div className="flex items-center space-x-4">
-            <div className="bg-primary/10 flex h-16 w-16 items-center justify-center rounded-full">
-              <User className="text-primary h-8 w-8" />
-            </div>
-            <div>
-              <h2 className="text-2xl font-bold">{session.fullName}</h2>
-              <p className="text-muted-foreground">@{session.username}</p>
-              {session.email && <p className="text-muted-foreground text-sm">{session.email}</p>}
-            </div>
-            <div className="ml-auto">
-              <span
-                className={`inline-flex items-center rounded-full px-3 py-1 text-sm font-medium ${getRoleBadgeColor(session.role as 'DEVELOPER' | 'SUPER_ADMIN' | 'ADMIN' | 'KASIR' | 'STAFF' | 'SUPPLIER')} `}
-              >
-                {getRoleDisplayName(
-                  session.role as
-                    | 'DEVELOPER'
-                    | 'SUPER_ADMIN'
-                    | 'ADMIN'
-                    | 'KASIR'
-                    | 'STAFF'
-                    | 'SUPPLIER'
-                )}
-              </span>
-            </div>
-          </div>
+        {/* Metrics Cards */}
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
+          <MetricsCard
+            title="Total Balance"
+            value="Rp 67.5M"
+            icon={Wallet}
+            description="Current cooperative balance"
+            trend={{ value: 12.5, isPositive: true }}
+            colorClass="text-green-600"
+          />
+          <MetricsCard
+            title="Today's Revenue"
+            value="Rp 4.3M"
+            icon={TrendingUp}
+            description="Revenue from all transactions"
+            trend={{ value: 8.2, isPositive: true }}
+            colorClass="text-blue-600"
+          />
+          <MetricsCard
+            title="Pending Orders"
+            value="23"
+            icon={ShoppingCart}
+            description="Orders awaiting fulfillment"
+            trend={{ value: 3.1, isPositive: false }}
+            colorClass="text-orange-600"
+          />
+          <MetricsCard
+            title="Low Stock Items"
+            value="12"
+            icon={Package}
+            description="Products need restock"
+            colorClass="text-red-600"
+          />
+          <MetricsCard
+            title="Active Members"
+            value="156"
+            icon={Users}
+            description="Registered members"
+            trend={{ value: 5.4, isPositive: true }}
+            colorClass="text-purple-600"
+          />
         </div>
 
-        {/* Session Info */}
-        <div className="bg-card rounded-lg border p-6">
-          <h3 className="mb-4 text-lg font-semibold">Session Information</h3>
-          <div className="space-y-2 text-sm">
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">User ID:</span>
-              <span className="font-mono">{session.userId}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Username:</span>
-              <span className="font-mono">{session.username}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Role:</span>
-              <span className="font-mono">{session.role}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Status:</span>
-              <span className={session.isActive ? 'text-green-600' : 'text-red-600'}>
-                {session.isActive ? 'Active' : 'Inactive'}
-              </span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Session Expires:</span>
-              <span>{new Date(session.expiresAt).toLocaleString()}</span>
-            </div>
-          </div>
+        {/* Charts Row */}
+        <div className="grid gap-4 md:grid-cols-2">
+          <RevenueChart />
+          <BalanceChart />
         </div>
 
-        {/* Phase 2.2 Complete Notice */}
+        {/* Activity and Quick Actions Row */}
+        <div className="grid gap-4 md:grid-cols-2">
+          <RecentActivity />
+          <QuickActions session={session} />
+        </div>
+
+        {/* Phase 3.1 Complete Notice */}
         <div className="rounded-lg border border-blue-200 bg-blue-50 p-6 dark:border-blue-800 dark:bg-blue-950">
           <h3 className="mb-2 text-lg font-semibold text-blue-900 dark:text-blue-100">
-            ✅ Phase 2.2 Complete: Layout & Navigation
+            ✅ Phase 3.1 Complete: Dashboard Page Rebuild
           </h3>
           <p className="text-sm text-blue-800 dark:text-blue-200">
-            Professional layout with collapsible sidebar, responsive header, and mobile navigation!
+            Modern dashboard with metrics cards, interactive charts, activity timeline, and quick
+            actions!
           </p>
           <ul className="mt-4 space-y-1 text-sm text-blue-700 dark:text-blue-300">
-            <li>• Collapsible sidebar with role-based menu filtering</li>
-            <li>• Responsive header with breadcrumbs & search</li>
-            <li>• Mobile bottom navigation with sheet menu</li>
-            <li>• Theme toggle & user profile dropdown</li>
-            <li>• Smooth transitions & dark mode support</li>
+            <li>• Hero metrics cards with trend indicators</li>
+            <li>• Interactive revenue & balance charts (Recharts)</li>
+            <li>• Recent activity timeline with user avatars</li>
+            <li>• Role-based quick actions panel</li>
+            <li>• Loading skeletons & dark mode support</li>
           </ul>
         </div>
       </div>
