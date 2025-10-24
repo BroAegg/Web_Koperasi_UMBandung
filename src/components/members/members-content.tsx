@@ -12,12 +12,12 @@ import {
 } from '@/components/ui/select'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Search, Plus, ArrowDownCircle, ArrowUpCircle, History } from 'lucide-react'
+import { Search, ArrowDownCircle, ArrowUpCircle, History } from 'lucide-react'
 import { trpc } from '@/lib/trpc'
 import { DepositModal } from './deposit-modal'
 import { WithdrawalModal } from './withdrawal-modal'
 import { TransactionHistoryDialog } from './transaction-history-dialog'
-import { SkeletonCard, SkeletonTable } from '@/components/ui/loading-skeleton'
+import { SkeletonTable } from '@/components/ui/loading-skeleton'
 
 export function MembersContent() {
   const [searchQuery, setSearchQuery] = useState('')
@@ -74,9 +74,9 @@ export function MembersContent() {
       {/* Stats Cards */}
       {stats && (
         <div className="grid gap-4 md:grid-cols-3">
-          <Card className="p-6">
+          <Card hover className="group p-6">
             <div className="flex items-center gap-2">
-              <ArrowDownCircle className="h-5 w-5 text-green-500" />
+              <ArrowDownCircle className="h-5 w-5 text-green-500 transition-transform group-hover:scale-110" />
               <div className="flex-1">
                 <p className="text-muted-foreground text-sm">Total Setoran</p>
                 <p className="text-2xl font-bold">
@@ -87,9 +87,9 @@ export function MembersContent() {
             </div>
           </Card>
 
-          <Card className="p-6">
+          <Card hover className="group p-6">
             <div className="flex items-center gap-2">
-              <ArrowUpCircle className="h-5 w-5 text-red-500" />
+              <ArrowUpCircle className="h-5 w-5 text-red-500 transition-transform group-hover:scale-110" />
               <div className="flex-1">
                 <p className="text-muted-foreground text-sm">Total Penarikan</p>
                 <p className="text-2xl font-bold">
@@ -100,10 +100,10 @@ export function MembersContent() {
             </div>
           </Card>
 
-          <Card className="p-6">
+          <Card hover className="group p-6">
             <div className="flex items-center gap-2">
               <div
-                className={`h-5 w-5 rounded-full ${
+                className={`h-5 w-5 rounded-full transition-transform group-hover:scale-110 ${
                   stats.balance >= 0 ? 'bg-green-500' : 'bg-red-500'
                 }`}
               />
@@ -154,7 +154,7 @@ export function MembersContent() {
       </Card>
 
       {/* Transactions Table */}
-      <Card>
+      <Card hover>
         <div className="overflow-x-auto">
           {isLoading ? (
             <SkeletonTable rows={10} />

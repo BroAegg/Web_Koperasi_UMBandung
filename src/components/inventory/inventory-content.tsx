@@ -11,6 +11,7 @@ import { ProductFilters } from './product-filters'
 import { StockUpdateDialog } from './stock-update-dialog'
 import { DeleteConfirmDialog } from './delete-confirm-dialog'
 import { SkeletonCard, SkeletonTable } from '@/components/ui/loading-skeleton'
+import { Card } from '@/components/ui/card'
 
 type ViewMode = 'grid' | 'table'
 
@@ -96,23 +97,23 @@ export function InventoryContent() {
       {/* Summary Cards */}
       {productsQuery.data && (
         <div className="grid gap-4 md:grid-cols-4">
-          <div className="bg-card rounded-lg border p-4">
+          <Card hover className="p-4">
             <p className="text-muted-foreground text-sm font-medium">Total Produk</p>
             <p className="mt-2 text-2xl font-bold">{productsQuery.data.pagination.total}</p>
-          </div>
-          <div className="bg-card rounded-lg border p-4">
+          </Card>
+          <Card hover className="p-4">
             <p className="text-muted-foreground text-sm font-medium">Total Stok</p>
             <p className="mt-2 text-2xl font-bold">
               {productsQuery.data.products.reduce((sum, p) => sum + p.stock, 0)}
             </p>
-          </div>
-          <div className="bg-card rounded-lg border p-4">
+          </Card>
+          <Card hover className="p-4">
             <p className="text-muted-foreground text-sm font-medium">Stok Rendah</p>
             <p className="text-destructive mt-2 text-2xl font-bold">
               {productsQuery.data.lowStockCount || 0}
             </p>
-          </div>
-          <div className="bg-card rounded-lg border p-4">
+          </Card>
+          <Card hover className="p-4">
             <p className="text-muted-foreground text-sm font-medium">Total Nilai</p>
             <p className="mt-2 text-2xl font-bold">
               Rp{' '}
@@ -120,7 +121,7 @@ export function InventoryContent() {
                 .reduce((sum, p) => sum + p.stock * Number(p.selling_price), 0)
                 .toLocaleString('id-ID')}
             </p>
-          </div>
+          </Card>
         </div>
       )}
 

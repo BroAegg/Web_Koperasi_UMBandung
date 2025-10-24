@@ -9,7 +9,7 @@ import { FinancialSummary } from './financial-summary'
 import { TransactionTable } from './transaction-table'
 import { TransactionFormDialog } from './transaction-form-dialog'
 import { TransactionFilters } from './transaction-filters'
-import { SkeletonTable, SkeletonStatsCard } from '@/components/ui/loading-skeleton'
+import { SkeletonTable } from '@/components/ui/loading-skeleton'
 
 export function FinancialContent() {
   const [isFormOpen, setIsFormOpen] = useState(false)
@@ -58,7 +58,7 @@ export function FinancialContent() {
       />
 
       {/* Transactions Section */}
-      <Card>
+      <Card hover>
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
