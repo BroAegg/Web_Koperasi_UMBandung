@@ -3,6 +3,7 @@
 import { Skeleton } from '@/components/ui/skeleton'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { ProductImage } from '@/components/ui/product-image'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -121,6 +122,16 @@ export function ProductGrid({
                   Stok Rendah
                 </Badge>
               )}
+
+              {/* Product Image */}
+              <div className="mb-3">
+                <ProductImage
+                  src={product.image}
+                  alt={product.name}
+                  size="lg"
+                  className="mx-auto"
+                />
+              </div>
 
               {/* Product Info */}
               <div className="mb-3">

@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
+import { ProductImage } from '@/components/ui/product-image'
 import { Search, Package, Plus, AlertCircle } from 'lucide-react'
 import {
   Select,
@@ -143,6 +144,14 @@ export function ProductSearch({ onAddToCart }: ProductSearchProps) {
                     >
                       <CardContent className="p-4">
                         <div className="space-y-2">
+                          {/* Product Image */}
+                          <ProductImage
+                            src={product.image}
+                            alt={product.name}
+                            size="md"
+                            className="mx-auto"
+                          />
+
                           {/* Product Name */}
                           <div>
                             <p className="group-hover:text-primary line-clamp-2 text-sm font-medium transition-colors">

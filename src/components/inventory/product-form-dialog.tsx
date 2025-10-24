@@ -32,6 +32,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
+import { ImageUpload } from '@/components/ui/image-upload'
 
 const formSchema = z.object({
   sku: z.string().min(1, 'SKU wajib diisi'),
@@ -43,6 +44,7 @@ const formSchema = z.object({
   selling_price: z.number().min(0, 'Harga jual tidak boleh negatif'),
   stock: z.number().min(0, 'Stok tidak boleh negatif').optional(),
   min_stock: z.number().min(0, 'Stok minimum tidak boleh negatif'),
+  image: z.string().nullable().optional(),
   is_active: z.boolean(),
 })
 
@@ -59,6 +61,7 @@ interface Product {
   selling_price: number
   stock: number
   min_stock: number
+  image?: string | null
   is_active: boolean
 }
 
@@ -92,6 +95,7 @@ export function ProductFormDialog({ product, open, onOpenChange }: ProductFormDi
       selling_price: typedProduct?.selling_price ? Number(typedProduct.selling_price) : 0,
       stock: typedProduct?.stock,
       min_stock: typedProduct?.min_stock || 5,
+      image: typedProduct?.image || null,
       is_active: typedProduct?.is_active ?? true,
     },
   })
@@ -108,6 +112,7 @@ export function ProductFormDialog({ product, open, onOpenChange }: ProductFormDi
         selling_price: Number(typedProduct.selling_price),
         stock: typedProduct.stock,
         min_stock: typedProduct.min_stock,
+        image: typedProduct.image || null,
         is_active: typedProduct.is_active,
       })
     } else if (open && !typedProduct) {
@@ -351,6 +356,26 @@ export function ProductFormDialog({ product, open, onOpenChange }: ProductFormDi
                   <FormLabel>Deskripsi (Opsional)</FormLabel>
                   <FormControl>
                     <Textarea placeholder="Deskripsi produk..." {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* Product Image */}
+            <FormField
+              control={form.control}
+              name="image"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Gambar Produk (Opsional)</FormLabel>
+                  <FormControl>
+                    <ImageUpload
+                      value={field.value}
+                      onChange={field.onChange}
+                      disabled={createMutation.isPending || updateMutation.isPending}
+                      maxSize={2}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
