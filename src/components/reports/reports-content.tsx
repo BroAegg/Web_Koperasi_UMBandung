@@ -175,7 +175,8 @@ export function ReportsContent() {
           </TabsContent>
 
           <TabsContent value="inventory" className="space-y-4">
-            <InventoryReport data={reportData?.inventory} />
+            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+            <InventoryReport data={reportData?.inventory as any} />
           </TabsContent>
 
           <TabsContent value="member" className="space-y-4">

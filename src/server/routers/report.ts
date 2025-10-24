@@ -59,8 +59,7 @@ export const reportRouter = router({
     ])
 
     const totalStockValue = stockValue.reduce(
-      (sum: number, p: { stock: number; purchase_price: number }) =>
-        sum + p.stock * Number(p.purchase_price),
+      (sum, p) => sum + p.stock * Number(p.purchase_price),
       0
     )
 
