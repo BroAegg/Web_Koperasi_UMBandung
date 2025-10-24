@@ -4,6 +4,7 @@ import './globals.css'
 import { TRPCProvider } from '@/components/providers/trpc-provider'
 import { ThemeProvider } from '@/components/providers/theme-provider'
 import { ToastProvider } from '@/components/shared/ToastContext'
+import { Toaster } from 'sonner'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -32,6 +33,7 @@ export default function RootLayout({
           <TRPCProvider>
             <ToastProvider>{children}</ToastProvider>
           </TRPCProvider>
+          <Toaster richColors position="top-right" />
         </ThemeProvider>
       </body>
     </html>
