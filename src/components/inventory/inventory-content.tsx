@@ -158,7 +158,19 @@ export function InventoryContent() {
       {/* Product Display */}
       {viewMode === 'grid' ? (
         <ProductGrid
-          data={productsQuery.data}
+          data={
+            productsQuery.data
+              ? ({
+                  products: productsQuery.data.products.map((p) => ({
+                    ...p,
+                    purchase_price: Number(p.purchase_price),
+                    selling_price: Number(p.selling_price),
+                  })),
+                  pagination: productsQuery.data.pagination,
+                  lowStockCount: productsQuery.data.lowStockCount,
+                } as typeof productsQuery.data)
+              : undefined
+          }
           loading={productsQuery.isLoading}
           onEdit={handleEditProduct}
           onUpdateStock={handleUpdateStock}
@@ -167,7 +179,19 @@ export function InventoryContent() {
         />
       ) : (
         <ProductTable
-          data={productsQuery.data}
+          data={
+            productsQuery.data
+              ? ({
+                  products: productsQuery.data.products.map((p) => ({
+                    ...p,
+                    purchase_price: Number(p.purchase_price),
+                    selling_price: Number(p.selling_price),
+                  })),
+                  pagination: productsQuery.data.pagination,
+                  lowStockCount: productsQuery.data.lowStockCount,
+                } as typeof productsQuery.data)
+              : undefined
+          }
           loading={productsQuery.isLoading}
           onEdit={handleEditProduct}
           onUpdateStock={handleUpdateStock}

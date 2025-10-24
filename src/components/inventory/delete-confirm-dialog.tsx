@@ -34,7 +34,6 @@ export function DeleteConfirmDialog({ product, open, onOpenChange }: DeleteConfi
     onSuccess: () => {
       toast.success('Produk berhasil dihapus')
       utils.inventory.getProducts.invalidate()
-      utils.inventory.getSummary.invalidate()
       onOpenChange(false)
     },
     onError: (error) => {
