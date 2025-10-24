@@ -1,6 +1,5 @@
 'use client'
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 import { useTheme } from '@/contexts/theme-context'
@@ -18,15 +17,11 @@ export function RevenueChart({ data, loading = false }: RevenueChartProps) {
 
   if (loading) {
     return (
-      <Card>
-        <CardHeader>
-          <Skeleton className="mb-2 h-5 w-40" />
-          <Skeleton className="h-4 w-64" />
-        </CardHeader>
-        <CardContent>
-          <Skeleton className="h-[300px] w-full" />
-        </CardContent>
-      </Card>
+      <div className={`rounded-2xl border p-6 shadow-sm ${theme.card}`}>
+        <Skeleton className="mb-2 h-5 w-40" />
+        <Skeleton className="mb-4 h-4 w-64" />
+        <Skeleton className="h-[300px] w-full" />
+      </div>
     )
   }
 
@@ -50,36 +45,36 @@ export function RevenueChart({ data, loading = false }: RevenueChartProps) {
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Revenue Overview</CardTitle>
-        <CardDescription>Daily revenue for the last 7 days</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <ResponsiveContainer width="100%" height={300}>
-          <BarChart data={chartData}>
-            <CartesianGrid strokeDasharray="3 3" stroke={theme.chartGrid} />
-            <XAxis dataKey="date" stroke={theme.subtext} fontSize={12} />
-            <YAxis
-              stroke={theme.subtext}
-              fontSize={12}
-              tickFormatter={(value) => `${(value / 1000).toFixed(0)}k`}
-            />
-            <Tooltip
-              contentStyle={{
-                backgroundColor: darkMode ? '#0f172a' : '#fff',
-                border: `1px solid ${darkMode ? '#334155' : '#e5e7eb'}`,
-                borderRadius: '8px',
-              }}
-              labelStyle={{
-                color: darkMode ? '#f3f4f6' : '#111827',
-              }}
-              formatter={(value: number) => [formatCurrency(value), 'Revenue']}
-            />
-            <Bar dataKey="revenue" fill={theme.accent} radius={[8, 8, 0, 0]} />
-          </BarChart>
-        </ResponsiveContainer>
-      </CardContent>
-    </Card>
+    <div className={`rounded-2xl border shadow-sm ${theme.card}`}>
+      <div className="p-6">
+        <h3 className={`text-base font-semibold ${theme.text}`}>Revenue Overview</h3>
+        <p className={`text-sm ${theme.subtext}`}>Daily revenue for the last 7 days</p>
+        <div className="mt-4">
+          <ResponsiveContainer width="100%" height={250}>
+            <BarChart data={chartData}>
+              <CartesianGrid strokeDasharray="3 3" stroke={theme.chartGrid} />
+              <XAxis dataKey="date" stroke={theme.subtext} fontSize={12} />
+              <YAxis
+                stroke={theme.subtext}
+                fontSize={12}
+                tickFormatter={(value) => `${(value / 1000).toFixed(0)}k`}
+              />
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: darkMode ? '#0f172a' : '#fff',
+                  border: `1px solid ${darkMode ? '#334155' : '#e5e7eb'}`,
+                  borderRadius: '8px',
+                }}
+                labelStyle={{
+                  color: darkMode ? '#f3f4f6' : '#111827',
+                }}
+                formatter={(value: number) => [formatCurrency(value), 'Revenue']}
+              />
+              <Bar dataKey="revenue" fill={theme.accent} radius={[4, 4, 0, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+    </div>
   )
 }
