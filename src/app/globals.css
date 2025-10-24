@@ -17,42 +17,42 @@
   --popover: 0 0% 100%; /* Popover background */
   --popover-foreground: 240 10% 3.9%; /* Popover text */
 
-  /* ===== PRIMARY (Blue) ===== */
-  --primary: 217.2 91.2% 59.8%; /* #3b82f6 - Blue 500 */
+  /* ===== PRIMARY (Orange) - Modern soft orange ===== */
+  --primary: 25 95% 53%; /* #FF7F2E - Vibrant but soft orange */
   --primary-foreground: 0 0% 98%; /* White text on primary */
 
-  /* ===== SECONDARY (Slate) ===== */
-  --secondary: 240 4.8% 95.9%; /* #f8fafc - Slate 50 */
-  --secondary-foreground: 240 5.9% 10%; /* Slate 900 text */
+  /* ===== SECONDARY (Green) - Modern emerald green ===== */
+  --secondary: 142 76% 36%; /* #16a34a - Green 600 */
+  --secondary-foreground: 0 0% 98%; /* White text on secondary */
 
   /* ===== MUTED (Background variations) ===== */
   --muted: 240 4.8% 95.9%; /* #f8fafc - Subtle background */
   --muted-foreground: 240 3.8% 46.1%; /* #64748b - Muted text */
 
-  /* ===== ACCENT (Highlight) ===== */
-  --accent: 240 4.8% 95.9%; /* Accent background */
-  --accent-foreground: 240 5.9% 10%; /* Accent text */
+  /* ===== ACCENT (Highlight) - Soft amber ===== */
+  --accent: 38 92% 50%; /* #f59e0b - Amber 500 */
+  --accent-foreground: 0 0% 98%; /* White text on accent */
 
   /* ===== DESTRUCTIVE (Red) ===== */
   --destructive: 0 84.2% 60.2%; /* #ef4444 - Red 500 */
   --destructive-foreground: 0 0% 98%; /* White text on destructive */
 
-  /* ===== SUCCESS (Green) ===== */
-  --success: 142.1 76.2% 36.3%; /* #10b981 - Green 500 */
+  /* ===== SUCCESS (Green) - Using secondary ===== */
+  --success: 142 76% 36%; /* #16a34a - Green 600 */
   --success-foreground: 0 0% 98%; /* White text on success */
 
   /* ===== WARNING (Amber) ===== */
-  --warning: 37.7 92.1% 50.2%; /* #f59e0b - Amber 500 */
+  --warning: 38 92% 50%; /* #f59e0b - Amber 500 */
   --warning-foreground: 26 83.3% 14.1%; /* Amber 950 text */
 
-  /* ===== INFO (Blue) ===== */
+  /* ===== INFO (Cyan) ===== */
   --info: 199 89% 48%; /* #06b6d4 - Cyan 500 */
   --info-foreground: 0 0% 98%; /* White text on info */
 
   /* ===== BORDERS & INPUTS ===== */
   --border: 240 5.9% 90%; /* #e2e8f0 - Border color */
   --input: 240 5.9% 90%; /* Input border */
-  --ring: 217.2 91.2% 59.8%; /* Focus ring (primary) */
+  --ring: 25 95% 53%; /* Focus ring (primary orange) */
 
   /* ===== RADIUS ===== */
   --radius: 0.5rem; /* Base border radius (8px) */
@@ -152,32 +152,32 @@
   --popover: 240 10% 7%; /* Popover background */
   --popover-foreground: 0 0% 98%; /* Popover text */
 
-  /* ===== PRIMARY (Lighter for dark) ===== */
-  --primary: 217.2 91.2% 59.8%; /* #3b82f6 - Blue stays same */
+  /* ===== PRIMARY (Orange - slightly brighter for dark) ===== */
+  --primary: 25 95% 58%; /* #FF8C42 - Brighter orange for contrast */
   --primary-foreground: 0 0% 98%; /* White text */
 
-  /* ===== SECONDARY (Dark) ===== */
-  --secondary: 240 3.7% 15.9%; /* #27272a - Zinc 800 */
-  --secondary-foreground: 0 0% 98%; /* Light text */
+  /* ===== SECONDARY (Green - adjusted) ===== */
+  --secondary: 142 70% 45%; /* #22c55e - Green 500 (brighter) */
+  --secondary-foreground: 0 0% 98%; /* White text */
 
   /* ===== MUTED (Dark) ===== */
   --muted: 240 3.7% 15.9%; /* Subtle dark background */
   --muted-foreground: 240 5% 64.9%; /* #a1a1aa - Muted text */
 
-  /* ===== ACCENT (Dark) ===== */
-  --accent: 240 3.7% 15.9%; /* Accent background */
-  --accent-foreground: 0 0% 98%; /* Accent text */
+  /* ===== ACCENT (Amber - brighter) ===== */
+  --accent: 38 92% 55%; /* #FFA722 - Brighter amber */
+  --accent-foreground: 0 0% 98%; /* White text */
 
   /* ===== DESTRUCTIVE (Lighter) ===== */
   --destructive: 0 62.8% 30.6%; /* #991b1b - Darker red */
   --destructive-foreground: 0 0% 98%; /* White text */
 
-  /* ===== SUCCESS (Adjusted) ===== */
-  --success: 142.1 70.6% 45.3%; /* #16a34a - Green 600 */
+  /* ===== SUCCESS (Green - adjusted) ===== */
+  --success: 142 70% 45%; /* #22c55e - Green 500 */
   --success-foreground: 0 0% 98%; /* White text */
 
   /* ===== WARNING (Adjusted) ===== */
-  --warning: 32.1 94.6% 43.7%; /* #d97706 - Amber 600 */
+  --warning: 38 92% 55%; /* #FFA722 - Amber adjusted */
   --warning-foreground: 0 0% 98%; /* White text */
 
   /* ===== INFO (Adjusted) ===== */
@@ -187,7 +187,7 @@
   /* ===== BORDERS & INPUTS (Dark) ===== */
   --border: 240 3.7% 15.9%; /* #27272a - Dark border */
   --input: 240 3.7% 15.9%; /* Dark input border */
-  --ring: 217.2 91.2% 59.8%; /* Focus ring stays same */
+  --ring: 25 95% 58%; /* Focus ring (primary orange) */
 
   /* ===== SHADOWS (Enhanced for dark) ===== */
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);

@@ -30,6 +30,7 @@ interface SidebarProps {
     isActive: boolean
     expiresAt: Date
   }
+  onToggle?: (collapsed: boolean) => void
 }
 
 interface MenuItem {
@@ -91,9 +92,24 @@ const menuItems: MenuItem[] = [
   },
 ]
 
-export function Sidebar({ session }: SidebarProps) {
-  const [collapsed, setCollapsed] = useState(false)
+export function Sidebar({ session, onToggle }: SidebarProps) {
+  const [collapsed, setCollapsed] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('sidebar-collapsed')
+      return saved === 'true'
+    }
+    return false
+  })
   const pathname = usePathname()
+
+  const handleToggle = () => {
+    const newCollapsed = !collapsed
+    setCollapsed(newCollapsed)
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('sidebar-collapsed', String(newCollapsed))
+    }
+    onToggle?.(newCollapsed)
+  }
 
   // Filter menu items based on user role permissions
   const filteredMenuItems = menuItems.filter((item) =>
@@ -106,7 +122,7 @@ export function Sidebar({ session }: SidebarProps) {
   return (
     <aside
       className={cn(
-        'bg-card fixed top-0 left-0 z-40 h-screen border-r transition-all duration-300',
+        'bg-card/95 supports-backdrop-filter:bg-card/80 fixed top-0 left-0 z-40 h-screen border-r backdrop-blur-sm transition-all duration-300',
         collapsed ? 'w-16' : 'w-64'
       )}
     >
@@ -187,12 +203,7 @@ export function Sidebar({ session }: SidebarProps) {
 
       {/* Collapse Toggle */}
       <div className="border-t p-4">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => setCollapsed(!collapsed)}
-          className="w-full justify-center"
-        >
+        <Button variant="ghost" size="sm" onClick={handleToggle} className="w-full justify-center">
           {collapsed ? (
             <ChevronRight className="h-5 w-5" />
           ) : (

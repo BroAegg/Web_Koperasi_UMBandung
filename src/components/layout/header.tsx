@@ -78,7 +78,7 @@ export function Header({ session, sidebarCollapsed, onMobileMenuToggle }: Header
   return (
     <header
       className={cn(
-        'bg-background fixed top-0 right-0 z-30 h-16 border-b transition-all duration-300',
+        'bg-background/95 supports-backdrop-filter:bg-background/80 fixed top-0 right-0 z-30 h-16 border-b backdrop-blur-sm transition-all duration-300',
         sidebarCollapsed ? 'left-16' : 'left-64',
         'max-lg:left-0'
       )}

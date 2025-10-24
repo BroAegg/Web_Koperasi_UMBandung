@@ -22,7 +22,7 @@ interface AppLayoutProps {
 }
 
 export function AppLayout({ children, session }: AppLayoutProps) {
-  const [sidebarCollapsed] = useState(() => {
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('sidebar-collapsed')
       return saved === 'true'
@@ -32,6 +32,14 @@ export function AppLayout({ children, session }: AppLayoutProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const pathname = usePathname()
   const prevPathname = useRef(pathname)
+
+  // Sync sidebar collapsed state with localStorage
+  const handleSidebarToggle = (collapsed: boolean) => {
+    setSidebarCollapsed(collapsed)
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('sidebar-collapsed', String(collapsed))
+    }
+  }
 
   // Close mobile menu on route change
   // This is a legitimate use case for setState in effect - we want the menu to close when navigating
@@ -47,7 +55,7 @@ export function AppLayout({ children, session }: AppLayoutProps) {
     <div className="bg-background min-h-screen">
       {/* Desktop Sidebar */}
       <div className="hidden lg:block">
-        <Sidebar session={session} />
+        <Sidebar session={session} onToggle={handleSidebarToggle} />
       </div>
 
       {/* Mobile Sidebar Sheet */}
@@ -57,7 +65,7 @@ export function AppLayout({ children, session }: AppLayoutProps) {
             <SheetTitle>Menu</SheetTitle>
           </SheetHeader>
           <div className="h-[calc(100vh-60px)] overflow-y-auto">
-            <Sidebar session={session} />
+            <Sidebar session={session} onToggle={() => {}} />
           </div>
         </SheetContent>
       </Sheet>
