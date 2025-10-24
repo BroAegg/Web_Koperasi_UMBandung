@@ -122,40 +122,36 @@ export function Sidebar({ session, onToggle }: SidebarProps) {
   return (
     <aside
       className={cn(
-        'bg-card/95 supports-backdrop-filter:bg-card/80 fixed top-0 left-0 z-40 h-screen border-r backdrop-blur-sm transition-all duration-300',
-        collapsed ? 'w-16' : 'w-64'
+        'fixed top-0 left-0 z-40 h-screen border-r border-gray-200 bg-white transition-all duration-300 dark:border-slate-700 dark:bg-slate-800',
+        collapsed ? 'w-20' : 'w-64'
       )}
     >
-      {/* Logo & Brand */}
-      <div className="flex h-16 items-center justify-between border-b px-4">
-        {!collapsed && (
-          <Link href="/dashboard" className="flex items-center space-x-2">
-            <ShoppingBag className="text-primary h-6 w-6" />
-            <span className="text-lg font-bold">Koperasi UMB</span>
-          </Link>
-        )}
-        {collapsed && (
-          <Link href="/dashboard" className="flex w-full items-center justify-center">
-            <ShoppingBag className="text-primary h-6 w-6" />
-          </Link>
-        )}
+      {/* Logo & Brand - Orange to Green Gradient! */}
+      <div className="flex h-16 items-center justify-between border-b border-gray-200 px-4 dark:border-slate-700">
+        <div className="flex items-center gap-3">
+          {/* Snippet style: gradient logo */}
+          <div className="h-8 w-8 rounded-xl bg-gradient-to-tr from-orange-500 to-green-400" />
+          {!collapsed && (
+            <span className="font-semibold tracking-tight text-gray-900 dark:text-slate-100">
+              Koperasi UMB
+            </span>
+          )}
+        </div>
+        <Button size="icon" variant="ghost" className="h-8 w-8" onClick={handleToggle}>
+          {collapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
+        </Button>
       </div>
 
       {/* User Info */}
-      <div className="border-b p-4">
-        <div className="flex items-center space-x-3">
-          <div
-            className={cn(
-              'bg-primary/10 text-primary flex items-center justify-center rounded-full font-semibold',
-              collapsed ? 'h-8 w-8 text-sm' : 'h-10 w-10'
-            )}
-          >
-            {session.fullName.charAt(0).toUpperCase()}
-          </div>
+      <div className="border-b border-gray-200 p-3 dark:border-slate-700">
+        <div className="flex items-center gap-3">
+          <div className="h-8 w-8 rounded-full bg-gray-400/20" />
           {!collapsed && (
             <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-medium">{session.fullName}</p>
-              <p className="text-muted-foreground truncate text-xs">
+              <p className="truncate text-sm font-medium text-gray-900 dark:text-slate-100">
+                {session.fullName}
+              </p>
+              <p className="truncate text-xs text-gray-500 dark:text-slate-400">
                 {getRoleDisplayName(
                   session.role as
                     | 'DEVELOPER'
@@ -171,48 +167,41 @@ export function Sidebar({ session, onToggle }: SidebarProps) {
         </div>
       </div>
 
-      {/* Navigation */}
-      <nav className="flex-1 space-y-1 overflow-y-auto p-4">
+      {/* Navigation - Snippet style! */}
+      <nav className="mt-3 px-2">
         {filteredMenuItems.map((item) => {
           const Icon = item.icon
           const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`)
 
           return (
             <Link key={item.href} href={item.href}>
-              <Button
-                variant={isActive ? 'default' : 'ghost'}
+              <button
                 className={cn(
-                  'w-full justify-start',
-                  collapsed && 'justify-center px-2',
-                  !collapsed && 'px-3'
+                  'group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-colors',
+                  isActive
+                    ? 'bg-gray-100 font-medium text-orange-500 dark:bg-white/10 dark:text-orange-400'
+                    : 'text-gray-600 hover:bg-gray-100 dark:text-slate-300 dark:hover:bg-white/5'
                 )}
-                title={collapsed ? item.title : undefined}
               >
-                <Icon className={cn('h-5 w-5', !collapsed && 'mr-2')} />
+                <Icon className="h-5 w-5" />
                 {!collapsed && <span>{item.title}</span>}
-                {!collapsed && item.badge && (
-                  <span className="bg-primary/20 text-primary ml-auto rounded-full px-2 py-0.5 text-xs font-semibold">
-                    {item.badge}
-                  </span>
-                )}
-              </Button>
+              </button>
             </Link>
           )
         })}
       </nav>
 
-      {/* Collapse Toggle */}
-      <div className="border-t p-4">
-        <Button variant="ghost" size="sm" onClick={handleToggle} className="w-full justify-center">
-          {collapsed ? (
-            <ChevronRight className="h-5 w-5" />
-          ) : (
-            <>
-              <ChevronLeft className="mr-2 h-5 w-5" />
-              <span>Collapse</span>
-            </>
+      {/* Bottom section */}
+      <div className="absolute right-0 bottom-0 left-0 border-t border-gray-200 p-3 dark:border-slate-700">
+        <div className="flex items-center gap-3">
+          <div className="h-8 w-8 rounded-full bg-gray-400/20" />
+          {!collapsed && (
+            <div>
+              <p className="text-sm font-medium text-gray-900 dark:text-slate-100">Administrator</p>
+              <p className="text-xs text-gray-500 dark:text-slate-400">Admin</p>
+            </div>
           )}
-        </Button>
+        </div>
       </div>
     </aside>
   )
