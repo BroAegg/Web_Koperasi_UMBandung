@@ -27,52 +27,63 @@ export function MetricsCard({
 }: MetricsCardProps) {
   if (loading) {
     return (
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <Skeleton className="h-4 w-24" />
-          <Skeleton className="h-8 w-8 rounded-md" />
+      <Card className="border-border/50 from-background to-muted/20 border-2 bg-gradient-to-br">
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+          <Skeleton className="h-4 w-28" />
+          <Skeleton className="h-12 w-12 rounded-xl" />
         </CardHeader>
         <CardContent>
-          <Skeleton className="mb-2 h-8 w-32" />
+          <Skeleton className="mb-3 h-10 w-36" />
           <Skeleton className="h-3 w-full" />
+          <Skeleton className="mt-3 h-6 w-24 rounded-full" />
         </CardContent>
       </Card>
     )
   }
 
   return (
-    <Card hover className="group transition-all hover:shadow-lg">
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium">{title}</CardTitle>
+    <Card
+      hover
+      className="group border-border/50 from-background to-muted/20 hover:border-primary/50 hover:shadow-primary/10 relative overflow-hidden border-2 bg-gradient-to-br transition-all duration-300 hover:shadow-2xl"
+    >
+      {/* Subtle gradient overlay on hover */}
+      <div className="from-primary/0 to-primary/0 group-hover:from-primary/5 pointer-events-none absolute inset-0 bg-gradient-to-br opacity-0 transition-opacity duration-300 group-hover:to-orange-500/5 group-hover:opacity-100" />
+
+      <CardHeader className="relative flex flex-row items-center justify-between space-y-0 pb-3">
+        <CardTitle className="text-muted-foreground text-sm font-semibold tracking-wide uppercase">
+          {title}
+        </CardTitle>
         <div
           className={cn(
-            'rounded-lg p-2.5 transition-all duration-200 group-hover:scale-110',
-            colorClass,
-            'bg-primary/10'
+            'rounded-xl p-3 shadow-lg transition-all duration-300 group-hover:scale-110 group-hover:shadow-xl',
+            'from-primary/20 bg-gradient-to-br to-orange-500/20',
+            colorClass
           )}
         >
-          <Icon className="h-5 w-5" />
+          <Icon className="h-6 w-6" />
         </div>
       </CardHeader>
-      <CardContent>
-        <div className="text-foreground group-hover:text-primary text-3xl font-bold transition-colors duration-200">
+      <CardContent className="relative">
+        <div className="text-foreground group-hover:text-primary mb-2 text-4xl font-extrabold tracking-tight transition-all duration-300 group-hover:scale-105">
           {value}
         </div>
-        {description && <p className="text-muted-foreground mt-1.5 text-xs">{description}</p>}
+        {description && (
+          <p className="text-muted-foreground/80 text-xs font-medium">{description}</p>
+        )}
         {trend && (
-          <div className="mt-2 flex items-center gap-1">
+          <div className="mt-3 flex items-center gap-2">
             <div
               className={cn(
-                'flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-semibold',
+                'flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold shadow-sm',
                 trend.isPositive
-                  ? 'bg-green-500/10 text-green-600 dark:text-green-400'
-                  : 'bg-red-500/10 text-red-600 dark:text-red-400'
+                  ? 'bg-green-500/20 text-green-700 dark:bg-green-500/30 dark:text-green-300'
+                  : 'bg-red-500/20 text-red-700 dark:bg-red-500/30 dark:text-red-300'
               )}
             >
-              <span>{trend.isPositive ? '↑' : '↓'}</span>
+              <span className="text-base">{trend.isPositive ? '↑' : '↓'}</span>
               <span>{Math.abs(trend.value)}%</span>
             </div>
-            <span className="text-muted-foreground text-xs">vs last month</span>
+            <span className="text-muted-foreground/60 text-xs font-medium">vs last month</span>
           </div>
         )}
       </CardContent>
