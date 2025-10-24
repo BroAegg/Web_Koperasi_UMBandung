@@ -36,17 +36,15 @@ export const ShoppingCart = memo(function ShoppingCart({
   const itemCount = useMemo(() => items.reduce((sum, item) => sum + item.quantity, 0), [items])
 
   return (
-    <Card className="sticky top-6">
-      <CardHeader>
+    <Card className="border-primary/20 sticky top-6 border-2">
+      <CardHeader className="from-primary/5 bg-gradient-to-r to-orange-500/5">
         <CardTitle className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <CartIcon className="h-5 w-5" />
+            <div className="bg-primary/10 rounded-lg p-2">
+              <CartIcon className="text-primary h-5 w-5" />
+            </div>
             <span>Keranjang</span>
-            {itemCount > 0 && (
-              <Badge variant="secondary" className="ml-1">
-                {itemCount}
-              </Badge>
-            )}
+            {itemCount > 0 && <Badge className="bg-primary ml-1 text-white">{itemCount}</Badge>}
           </div>
           {items.length > 0 && (
             <Button

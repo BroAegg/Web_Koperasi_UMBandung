@@ -41,31 +41,32 @@ export function MetricsCard({
   }
 
   return (
-    <Card hover className="group">
+    <Card hover className="group hover:border-l-primary border-l-4 border-l-transparent">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-sm font-medium">{title}</CardTitle>
         <div
           className={cn(
-            'bg-muted rounded-md p-2 transition-all duration-200 group-hover:scale-110',
-            colorClass
+            'rounded-lg p-2.5 transition-all duration-200 group-hover:scale-110 group-hover:shadow-lg',
+            colorClass,
+            'from-primary/10 to-primary/5 bg-gradient-to-br'
           )}
         >
-          <Icon className="h-4 w-4" />
+          <Icon className="h-5 w-5" />
         </div>
       </CardHeader>
       <CardContent>
-        <div className="group-hover:text-primary text-2xl font-bold transition-colors duration-200">
+        <div className="from-primary bg-gradient-to-r to-orange-600 bg-clip-text text-3xl font-bold text-transparent transition-all duration-200">
           {value}
         </div>
-        {description && <p className="text-muted-foreground mt-1 text-xs">{description}</p>}
+        {description && <p className="text-muted-foreground mt-1.5 text-xs">{description}</p>}
         {trend && (
           <div className="mt-2 flex items-center gap-1">
             <div
               className={cn(
-                'flex items-center gap-1 text-xs font-medium',
+                'flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-semibold',
                 trend.isPositive
-                  ? 'text-green-600 dark:text-green-400'
-                  : 'text-red-600 dark:text-red-400'
+                  ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
+                  : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
               )}
             >
               <span>{trend.isPositive ? '↑' : '↓'}</span>

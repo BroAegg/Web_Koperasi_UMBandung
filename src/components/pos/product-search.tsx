@@ -140,7 +140,7 @@ export function ProductSearch({ onAddToCart }: ProductSearchProps) {
                   return (
                     <Card
                       key={product.id}
-                      className="group cursor-pointer transition-shadow hover:shadow-lg"
+                      className="group hover:border-primary cursor-pointer border-2 border-transparent transition-all hover:shadow-xl"
                     >
                       <CardContent className="p-4">
                         <div className="space-y-2">
@@ -172,11 +172,11 @@ export function ProductSearch({ onAddToCart }: ProductSearchProps) {
                                 Habis
                               </Badge>
                             ) : isLowStock ? (
-                              <Badge variant="secondary" className="text-xs">
+                              <Badge variant="warning" className="text-xs">
                                 Stok {product.stock}
                               </Badge>
                             ) : (
-                              <Badge variant="outline" className="text-xs">
+                              <Badge variant="success" className="text-xs">
                                 Stok {product.stock}
                               </Badge>
                             )}
